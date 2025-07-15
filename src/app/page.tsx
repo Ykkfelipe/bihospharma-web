@@ -8,75 +8,33 @@ export default function Home() {
           className="absolute inset-0 w-full h-full object-contain"
         />
       </section>
-      <section className="py-16 px-4 bg-gray-50">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-[#1C2B4E] mb-12">
-          Nuestros Servicios
-        </h2>
-        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {/* Service Card */}
-          <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-[#00AC17] text-4xl mb-4">🩺</div>
-            <h3 className="text-xl font-semibold mb-2">Medicina General</h3>
-            <p className="text-gray-600">
-              Atención médica integral para el cuidado de tu salud y bienestar.
-            </p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-[#00AC17] text-4xl mb-4">🏥</div>
-            <h3 className="text-xl font-semibold mb-2">Medicina Laboral</h3>
-            <p className="text-gray-600">
-              Evaluaciones y servicios de salud ocupacional para empresas.
-            </p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-[#00AC17] text-4xl mb-4">💉</div>
-            <h3 className="text-xl font-semibold mb-2">Enfermería</h3>
-            <p className="text-gray-600">
-              Procedimientos de enfermería con profesionalismo y calidad humana.
-            </p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-[#00AC17] text-4xl mb-4">📞</div>
-            <h3 className="text-xl font-semibold mb-2">Teleasistencia</h3>
-            <p className="text-gray-600">
-              Asesoría y atención médica a distancia para mayor comodidad.
-            </p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-[#00AC17] text-4xl mb-4">🩸</div>
-            <h3 className="text-xl font-semibold mb-2">Hemofilia</h3>
-            <p className="text-gray-600">
-              Programas especializados para el manejo integral de hemofilia.
-            </p>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6 text-center">
-            <div className="text-[#00AC17] text-4xl mb-4">🫀</div>
-            <h3 className="text-xl font-semibold mb-2">Nefroprotección</h3>
-            <p className="text-gray-600">
-              Servicios enfocados en el cuidado y protección de la salud renal.
-            </p>
-          </div>
-        </div>
-      </section>
-      {/* Mission & Vision Section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B4E] mb-6">
-            Nuestra Misión
-          </h2>
-          <p className="text-gray-700 mb-12">
-            Brindar servicios de salud con calidad, calidez humana y tecnología avanzada, 
-            enfocados en el bienestar integral de nuestros pacientes y sus familias.
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B4E] mb-6">
-            Nuestra Visión
-          </h2>
-          <p className="text-gray-700">
-            Ser líderes en atención en salud reconocidos por nuestra excelencia, innovación y compromiso social.
-          </p>
-        </div>
-      </section>
 
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <img
+              src="/images/services.png"
+              alt="Consulta médica"
+              className="rounded-lg w-full object-cover"
+            />
+          </div>
+          <div>
+            <h2 className="text-4xl font-bold text-black mb-4">Servicios</h2>
+            <p className="text-lg text-gray-800 mb-6">
+              Ofrecemos atención de la mejor calidad para todos nuestros usuarios que acceden a los servicios, 
+              seguimiento de controles, apoyados con un excelente equipo de especialistas, profesionales, 
+              técnicos y tecnólogos prestamos los servicios asistenciales con experiencia en el manejo de pacientes crónicos.
+            </p>
+            <a
+              href="/services"
+              className="inline-block bg-[#2BA7E2] text-white font-bold py-3 px-6 rounded-md hover:bg-[#1c85bb] transition"
+            >
+              VER TODOS
+            </a>
+          </div>
+        </div>
+      </section>
+      
       {/* Contact CTA Banner */}
       <section className="bg-[#4C80A4] text-white py-12 px-4 text-center">
         <h2 className="text-3xl md:text-4xl font-bold mb-4">
