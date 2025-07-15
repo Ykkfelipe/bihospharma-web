@@ -199,6 +199,23 @@ export default function Home() {
       </section>
 
       <section className="bg-white py-16 px-4">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-black mb-10">Confían en Nosotros</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-12 gap-x-6 items-center justify-items-center">
+            <img src="/logos/capresoca-eps-logo.png" alt="Capresoca" className="h-28 w-auto object-contain" />
+            <img src="/logos/medimas-eps-logo.png" alt="Medimás" className="h-28 w-auto object-contain" />
+            <img src="/logos/logo-asmetsalud.png" alt="Asmet Salud" className="h-28 w-auto object-contain" />
+            <img src="/logos/logo-convida.png" alt="Convida" className="h-28 w-auto object-contain" />
+            <img src="/logos/coosalud-logo.png" alt="Coosalud" className="h-28 w-auto object-contain" />
+            <img src="/logos/jersalud-logo.png" alt="Jersalud" className="h-28 w-auto object-contain" />
+            <img src="/logos/logo-cohan-mas-vital.png" alt="Cohan" className="h-28 w-auto object-contain" />
+            <img src="/logos/deposito-de-drogas-boyaca-logo.png" alt="Depósito de Drogas" className="h-28 w-auto object-contain" />
+            <img src="/logos/logo-clinica-casanare.png" alt="Clínica Casanare" className="h-28 w-auto object-contain" />
+          </div>
+        </div>
+      </section>
+      
+      <section className="bg-white py-16 px-4">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
           <div>
             <h2 className="text-4xl font-bold text-black mb-4">Contacto</h2>
