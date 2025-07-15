@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 export const metadata = {
   title: "Bihospharma",
@@ -16,6 +17,7 @@ export default function RootLayout({
       <body className="bg-white text-gray-800">
         <Navbar />
         <main>{children}</main>
+        <Footer />
       </body>
     </html>
   );

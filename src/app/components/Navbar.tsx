@@ -31,6 +31,9 @@ export default function Navbar() {
             <Link href="/about">
               <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Nosotros</span>
             </Link>
+            <Link href="/medicina-general">
+              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Medicina General</span>
+            </Link>
             <Link href="/services">
               <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Servicios</span>
             </Link>
@@ -68,6 +71,9 @@ export default function Navbar() {
           </Link>
           <Link href="/about">
             <span className="block px-3 py-2 hover:underline">Nosotros</span>
+          </Link>
+          <Link href="/medicina-general">
+            <span className="block px-3 py-2 hover:underline">Medicina General</span>
           </Link>
           <Link href="/services">
             <span className="block px-3 py-2 hover:underline">Servicios</span>

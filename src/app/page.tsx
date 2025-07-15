@@ -1,3 +1,4 @@
+import Image from 'next/image';
 export default function Home() {
   return (
     <main>
@@ -35,34 +36,225 @@ export default function Home() {
         </div>
       </section>
       
-      {/* Contact CTA Banner */}
-      <section className="bg-[#4C80A4] text-white py-12 px-4 text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">
-          ¿Necesitas agendar una cita?
-        </h2>
-        <p className="text-lg md:text-xl mb-6 max-w-xl mx-auto">
-          Contáctanos y recibe la mejor atención con calidez humana.
-        </p>
-        <a
-          href="/contact"
-          className="inline-block bg-[#00AC17] hover:bg-green-700 text-white font-semibold px-8 py-4 rounded-md transition"
-        >
-          Contáctanos
-        </a>
+      {/* Programas de Atención - New Layout */}
+      <section className="bg-[#51ADE5] py-16 px-4">
+        <div className="max-w-6xl mx-auto text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+            Programas de Atención
+          </h2>
+        </div>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
+            <img
+              src="/images/artritis.png"
+              alt="Artritis Reumatoide"
+              className="absolute inset-0 w-full h-full object-cover brightness-50"
+            />
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">ARTRITIS REUMATOIDE</h3>
+              <a
+                href="#"
+                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
+              >
+                VER MÁS
+              </a>
+            </div>
+          </div>
+          <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
+            <img
+              src="/images/diabetes.png"
+              alt="Diabetes"
+              className="absolute inset-0 w-full h-full object-cover brightness-50"
+            />
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
+              <div className="text-center px-2">
+                <h3 className="text-xl md:text-2xl font-bold mb-2">TELEASISTENCIA DOMICILIARIA PARA DIABETES</h3>
+              </div>
+              <a
+                href="#"
+                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
+              >
+                VER MÁS
+              </a>
+            </div>
+          </div>
+          <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
+            <img
+              src="/images/vih.png"
+              alt="VIH"
+              className="absolute inset-0 w-full h-full object-cover brightness-50"
+            />
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">VIH</h3>
+              <a
+                href="#"
+                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
+              >
+                VER MÁS
+              </a>
+            </div>
+          </div>
+          <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
+            <img
+              src="/images/hemofilia.png"
+              alt="Hemofilia"
+              className="absolute inset-0 w-full h-full object-cover brightness-50"
+            />
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">HEMOFILIA</h3>
+              <a
+                href="#"
+                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
+              >
+                VER MÁS
+              </a>
+            </div>
+          </div>
+
+          <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
+            <img
+              src="/images/anticoagulados.png"
+              alt="Anticoagulados"
+              className="absolute inset-0 w-full h-full object-cover brightness-50"
+            />
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">ANTICOAGULADOS</h3>
+              <a
+                href="#"
+                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
+              >
+                VER MÁS
+              </a>
+            </div>
+          </div>
+
+          <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
+            <img
+              src="/images/esclerosis.png"
+              alt="Esclerosis Múltiple"
+              className="absolute inset-0 w-full h-full object-cover brightness-50"
+            />
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">ESCLEROSIS MÚLTIPLE</h3>
+              <a
+                href="#"
+                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
+              >
+                VER MÁS
+              </a>
+            </div>
+          </div>
+
+          <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
+            <img
+              src="/images/hipertension.png"
+              alt="Diabetes e Hipertensión"
+              className="absolute inset-0 w-full h-full object-cover brightness-50"
+            />
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">DIABETES É HIPERTENSIÓN</h3>
+              <a
+                href="#"
+                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
+              >
+                VER MÁS
+              </a>
+            </div>
+          </div>
+
+          <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
+            <img
+              src="/images/extension.png"
+              alt="Extensión Domiciliaria"
+              className="absolute inset-0 w-full h-full object-cover brightness-50"
+            />
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">EXTENSIÓN DOMICILIARIA</h3>
+              <a
+                href="#"
+                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
+              >
+                VER MÁS
+              </a>
+            </div>
+          </div>
+
+          <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
+            <img
+              src="/images/nefro.png"
+              alt="Nefroprotección"
+              className="absolute inset-0 w-full h-full object-cover brightness-50"
+            />
+            <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
+              <h3 className="text-xl md:text-2xl font-bold mb-2">NEFROPROTECCIÓN</h3>
+              <a
+                href="#"
+                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
+              >
+                VER MÁS
+              </a>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* Testimonials / Partners Logos Placeholder */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B4E] mb-12">
-            Nuestros Aliados
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center">
-            {/* Replace these divs with <img> tags when you have logos */}
-            <div className="bg-white rounded shadow p-6">Logo 1</div>
-            <div className="bg-white rounded shadow p-6">Logo 2</div>
-            <div className="bg-white rounded shadow p-6">Logo 3</div>
-            <div className="bg-white rounded shadow p-6">Logo 4</div>
+      <section className="bg-white py-16 px-4">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 className="text-4xl font-bold text-black mb-4">Contacto</h2>
+            <p className="text-black mb-2">info@bihospharma.com</p>
+            <p className="text-black mb-4">www.bihospharma.com</p>
+            <p className="text-black font-semibold">TELÉFONO</p>
+            <p className="text-black mb-4">320 316 5870 - 350 2151683</p>
+            <p className="text-black font-semibold">YOPAL (CASANARE)</p>
+            <p className="text-black">Transversal 18 #7-05 Piso 5</p>
+            <p className="text-black mb-4">Edificio Mont Black</p>
+            <p className="text-black font-semibold">BOGOTÁ D.C</p>
+            <p className="text-black mb-4">Cra 25 No 4A-14</p>
+            <p className="text-black font-semibold mb-2">SÍGUENOS:</p>
+            <div className="flex space-x-4 mt-2">
+              <a href="https://www.instagram.com/bihospharma.ips/" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/logos/instagram.png"
+                  alt="Instagram"
+                  className="h-10 w-10 rounded-full bg-[#007bff] p-2"
+                />
+              </a>
+              <a href="https://www.facebook.com/Bihospharma.ips/" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/logos/facebook.png"
+                  alt="Facebook"
+                  className="h-10 w-10 rounded-full bg-[#007bff] p-2"
+                />
+              </a>
+              <a href="https://www.linkedin.com/company/bihospharma-sas/" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/logos/linkedin.png"
+                  alt="LinkedIn"
+                  className="h-10 w-10 rounded-full bg-[#007bff] p-2"
+                />
+              </a>
+              <a href="https://twitter.com/bihospharma" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/logos/x.png"
+                  alt="X/Twitter"
+                  className="h-10 w-10 rounded-full bg-[#007bff] p-2"
+                />
+              </a>
+            </div>
+          </div>
+          <div className="flex items-end justify-end">
+            <div className="relative">
+              <img src="/images/map.png" alt="Mapa" className="max-w-full rounded-lg" />
+              <a
+                href="https://wa.me/573203165870"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute bottom-[22px] right-[18px] w-[48px] h-[48px]"
+              >
+                <span className="sr-only">WhatsApp</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
