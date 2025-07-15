@@ -16,8 +16,8 @@ export default function Navbar() {
             <Image
               src="/logos/bihos-logo.png"
               alt="Bihospharma Logo"
-              width={95}
-              height={95}
+              width={100}
+              height={100}
               priority
               className="object-contain cursor-pointer"
             />

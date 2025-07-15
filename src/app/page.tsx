@@ -1,19 +1,12 @@
 export default function Home() {
   return (
     <main>
-      <section className="bg-[#1C2B4E] text-white py-20 px-4 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          Bienvenido a Bihospharma IPS
-        </h1>
-        <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto">
-          Servicios de salud integrales con calidez humana y tecnología avanzada.
-        </p>
-        <a
-          href="/contact"
-          className="inline-block bg-[#00AC17] hover:bg-green-700 text-white font-semibold px-8 py-4 rounded-md transition"
-        >
-          Agendar tu cita
-        </a>
+      <section className="relative w-full min-h-[200px] sm:min-h-[600px] md:min-h-[400px] lg:min-h-[500px]">
+        <img
+          src="/images/hero-inicio2.png"
+          alt="Hero"
+          className="absolute inset-0 w-full h-full object-contain"
+        />
       </section>
       <section className="py-16 px-4 bg-gray-50">
         <h2 className="text-3xl md:text-4xl font-bold text-center text-[#1C2B4E] mb-12">
