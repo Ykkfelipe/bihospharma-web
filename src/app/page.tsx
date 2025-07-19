@@ -1,13 +1,10 @@
 import Image from 'next/image';
+import HeroCarousel from './components/HeroCarousel';
 export default function Home() {
   return (
     <main>
-      <section className="relative w-full min-h-[200px] sm:min-h-[600px] md:min-h-[400px] lg:min-h-[500px]">
-        <img
-          src="/images/hero-inicio2.png"
-          alt="Hero"
-          className="absolute inset-0 w-full h-full object-contain"
-        />
+      <section className="relative w-full">
+        <HeroCarousel showDots={true} showArrows={true} />
       </section>
 
       <section className="py-16 px-4 bg-white">

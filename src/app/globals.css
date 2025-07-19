@@ -1,3 +1,4 @@
+@import url("https://unpkg.com/pdfjs-dist@2.16.105/web/pdf_viewer.css");
 @import "tailwindcss";
 
 :root {
@@ -5,12 +6,6 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -23,4 +18,47 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+/* Show slick arrows (default) */
+
+.slick-dots {
+  display: flex !important;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  visibility: visible;
+  z-index: 5;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.slick-dots li {
+  margin: 0 6px;
+}
+
+.slick-dots li button:before {
+  font-size: 10px;
+  color: #007bff;
+  opacity: 0.75;
+}
+
+.slick-dots li.slick-active button:before {
+  opacity: 1;
+  color: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .slick-dots {
+    margin-top: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+}
+
+.slick-prev, .slick-next {
+  display: block !important;
+  z-index: 10;
 }

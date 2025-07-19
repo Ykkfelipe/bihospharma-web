@@ -67,22 +67,22 @@ export default function Navbar() {
       {isOpen && (
         <div className="md:hidden px-4 pt-2 pb-4 space-y-2 font-medium uppercase text-[#1C2B4E]">
           <Link href="/">
-            <span className="block px-3 py-2 hover:underline">Inicio</span>
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Inicio</span>
           </Link>
           <Link href="/about">
-            <span className="block px-3 py-2 hover:underline">Nosotros</span>
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Nosotros</span>
           </Link>
           <Link href="/services">
-            <span className="block px-3 py-2 hover:underline">Servicios</span>
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Servicios</span>
           </Link>
           <Link href="/estados-financieros">
-            <span className="block px-3 py-2 hover:underline">Estados Financieros</span>
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Estados Financieros</span>
           </Link>
           <Link href="/blog">
-            <span className="block px-3 py-2 hover:underline">Blog</span>
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Blog</span>
           </Link>
           <Link href="/contact">
-            <span className="block px-3 py-2 hover:underline">Contacto</span>
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Contacto</span>
           </Link>
         </div>
       )}

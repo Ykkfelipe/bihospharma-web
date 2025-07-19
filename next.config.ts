@@ -1,7 +1,17 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  webpack: (config: any, { isServer }: { isServer: boolean }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        path: false,
+        canvas: false, // Prevent "canvas" resolution error in react-pdf
+      };
+    }
 
-const nextConfig: NextConfig = {
-  /* config options here */
+    return config;
+  },
 };
 
 export default nextConfig;
