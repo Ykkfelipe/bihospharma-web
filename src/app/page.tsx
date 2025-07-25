@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import HeroCarousel from './components/HeroCarousel';
+
 export default function Home() {
   return (
     <main>
@@ -10,9 +11,11 @@ export default function Home() {
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
           <div>
-            <img
+            <Image
               src="/images/services.png"
               alt="Consulta médica"
+              width={600} // Adjust based on your design
+              height={400} // Adjust based on your design
               className="rounded-lg w-full object-cover"
             />
           </div>
@@ -32,7 +35,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      
+
       {/* Programas de Atención - New Layout */}
       <section className="bg-[#51ADE5] py-16 px-4">
         <div className="max-w-6xl mx-auto text-center mb-12">
@@ -42,20 +45,24 @@ export default function Home() {
         </div>
         <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
-            <img
+            <Image
               src="/images/artritis.png"
               alt="Artritis Reumatoide"
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="brightness-50"
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">ARTRITIS REUMATOIDE</h3>
             </div>
           </div>
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
-            <img
+            <Image
               src="/images/diabetes.png"
               alt="Diabetes"
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="brightness-50"
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <div className="text-center px-2">
@@ -64,75 +71,84 @@ export default function Home() {
             </div>
           </div>
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
-            <img
+            <Image
               src="/images/vih.png"
               alt="VIH"
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="brightness-50"
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">VIH</h3>
             </div>
           </div>
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
-            <img
+            <Image
               src="/images/hemofilia.png"
               alt="Hemofilia"
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="brightness-50"
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">HEMOFILIA</h3>
             </div>
           </div>
-
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
-            <img
+            <Image
               src="/images/anticoagulados.png"
               alt="Anticoagulados"
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="brightness-50"
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">ANTICOAGULADOS</h3>
             </div>
           </div>
-
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
-            <img
+            <Image
               src="/images/esclerosis.png"
               alt="Esclerosis Múltiple"
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="brightness-50"
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">ESCLEROSIS MÚLTIPLE</h3>
             </div>
           </div>
-
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
-            <img
+            <Image
               src="/images/hipertension.png"
               alt="Diabetes e Hipertensión"
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="brightness-50"
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">DIABETES É HIPERTENSIÓN</h3>
             </div>
           </div>
-
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
-            <img
+            <Image
               src="/images/extension.png"
               alt="Extensión Domiciliaria"
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="brightness-50"
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">EXTENSIÓN DOMICILIARIA</h3>
             </div>
           </div>
-
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
-            <img
+            <Image
               src="/images/nefro.png"
               alt="Nefroprotección"
-              className="absolute inset-0 w-full h-full object-cover brightness-50"
+              fill
+              style={{ objectFit: 'cover' }}
+              className="brightness-50"
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">NEFROPROTECCIÓN</h3>
@@ -145,19 +161,19 @@ export default function Home() {
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-black mb-10">Confían en Nosotros</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-12 gap-x-6 items-center justify-items-center">
-            <img src="/logos/capresoca-eps-logo.png" alt="Capresoca" className="h-28 w-auto object-contain" />
-            <img src="/logos/medimas-eps-logo.png" alt="Medimás" className="h-28 w-auto object-contain" />
-            <img src="/logos/logo-asmetsalud.png" alt="Asmet Salud" className="h-28 w-auto object-contain" />
-            <img src="/logos/logo-convida.png" alt="Convida" className="h-28 w-auto object-contain" />
-            <img src="/logos/coosalud-logo.png" alt="Coosalud" className="h-28 w-auto object-contain" />
-            <img src="/logos/jersalud-logo.png" alt="Jersalud" className="h-28 w-auto object-contain" />
-            <img src="/logos/logo-cohan-mas-vital.png" alt="Cohan" className="h-28 w-auto object-contain" />
-            <img src="/logos/deposito-de-drogas-boyaca-logo.png" alt="Depósito de Drogas" className="h-28 w-auto object-contain" />
-            <img src="/logos/logo-clinica-casanare.png" alt="Clínica Casanare" className="h-28 w-auto object-contain" />
+            <Image src="/logos/capresoca-eps-logo.png" alt="Capresoca" width={112} height={112} className="object-contain" />
+            <Image src="/logos/medimas-eps-logo.png" alt="Medimás" width={112} height={112} className="object-contain" />
+            <Image src="/logos/logo-asmetsalud.png" alt="Asmet Salud" width={112} height={112} className="object-contain" />
+            <Image src="/logos/logo-convida.png" alt="Convida" width={112} height={112} className="object-contain" />
+            <Image src="/logos/coosalud-logo.png" alt="Coosalud" width={112} height={112} className="object-contain" />
+            <Image src="/logos/jersalud-logo.png" alt="Jersalud" width={112} height={112} className="object-contain" />
+            <Image src="/logos/logo-cohan-mas-vital.png" alt="Cohan" width={112} height={112} className="object-contain" />
+            <Image src="/logos/deposito-de-drogas-boyaca-logo.png" alt="Depósito de Drogas" width={112} height={112} className="object-contain" />
+            <Image src="/logos/logo-clinica-casanare.png" alt="Clínica Casanare" width={112} height={112} className="object-contain" />
           </div>
         </div>
       </section>
-      
+
       <section className="bg-white py-16 px-4">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
           <div>
@@ -174,50 +190,64 @@ export default function Home() {
             <p className="text-black font-semibold mb-2">SÍGUENOS:</p>
             <div className="flex space-x-4 mt-2">
               <a href="https://www.instagram.com/bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-                <img
+                <Image
                   src="/logos/instagram.png"
                   alt="Instagram"
-                  className="h-10 w-10 rounded-full bg-[#007bff] p-2"
+                  width={40}
+                  height={40}
+                  className="rounded-full bg-[#007bff] p-2"
                 />
               </a>
               <a href="https://www.facebook.com/Bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-                <img
+                <Image
                   src="/logos/facebook.png"
                   alt="Facebook"
-                  className="h-10 w-10 rounded-full bg-[#007bff] p-2"
+                  width={40}
+                  height={40}
+                  className="rounded-full bg-[#007bff] p-2"
                 />
               </a>
               <a href="https://www.linkedin.com/company/bihospharma-sas/" target="_blank" rel="noopener noreferrer">
-                <img
+                <Image
                   src="/logos/linkedin.png"
                   alt="LinkedIn"
-                  className="h-10 w-10 rounded-full bg-[#007bff] p-2"
+                  width={40}
+                  height={40}
+                  className="rounded-full bg-[#007bff] p-2"
                 />
               </a>
               <a href="https://twitter.com/bihospharma" target="_blank" rel="noopener noreferrer">
-                <img
+                <Image
                   src="/logos/x.png"
                   alt="X/Twitter"
-                  className="h-10 w-10 rounded-full bg-[#007bff] p-2"
+                  width={40}
+                  height={40}
+                  className="rounded-full bg-[#007bff] p-2"
                 />
               </a>
             </div>
           </div>
           <div className="flex items-end justify-end">
             <div className="relative">
-              <img src="/images/map.png" alt="Mapa" className="max-w-full rounded-lg" />
+              <Image src="/images/map.png" alt="Mapa" width={600} height={400} className="max-w-full rounded-lg" />
               <a
                 href="https://wa.me/573203165870"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="absolute bottom-[22px] right-[18px] w-[48px] h-[48px]"
               >
-                <span className="sr-only">WhatsApp</span>
+                <Image
+                  src="/logos/whatsapp.png"
+                  alt="WhatsApp"
+                  width={48}
+                  height={48}
+                  className="rounded-full bg-[#25D366] p-2"
+                />
               </a>
             </div>
           </div>
         </div>
       </section>
     </main>
-  )
+  );
 }
