@@ -6,9 +6,12 @@ import Image from 'next/image';
 export default function ServicesPage() {
   const [isClient, setIsClient] = useState(false);
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+useEffect(() => {
+  setIsClient(true);
+  if (typeof window !== "undefined") {
+    document.documentElement.style.scrollBehavior = 'smooth';
+  }
+}, []);
 
   if (!isClient) return null;
 
@@ -89,24 +92,37 @@ export default function ServicesPage() {
                 borderRadius: '10px',
               }} />
               <div style={{ zIndex: 1, whiteSpace: 'pre-wrap', textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>{title}</div>
-              <button style={{
-                zIndex: 1,
-                marginTop: '0.5rem',
-                padding: '6px 14px',
-                backgroundColor: '#48a4dc',
-                border: 'none',
-                borderRadius: '20px',
-                color: 'white',
-                fontWeight: '600',
-                fontSize: '0.8rem',
-                cursor: 'pointer',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-              }}>VER MÁS</button>
+              {title === 'MEDICINA GENERAL' && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('medicina-general-info');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                  style={{
+                    marginTop: '0.5rem',
+                    padding: '6px 14px',
+                    backgroundColor: '#48a4dc',
+                    border: 'none',
+                    borderRadius: '20px',
+                    color: 'white',
+                    fontWeight: '600',
+                    fontSize: '0.8rem',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    zIndex: 1
+                  }}
+                >
+                  VER MÁS
+                </button>
+              )}
             </div>
           ))}
         </div>
       </section>
-      <div style={{ marginBottom: '4rem' }}>
+      <div id="medicina-general-info" style={{ marginBottom: '4rem' }}>
         <div style={{ position: 'relative', width: '100%', height: '400px' }}>
           <Image
             src="/images/medicina-general-banner.png"

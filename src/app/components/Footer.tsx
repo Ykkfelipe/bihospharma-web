@@ -1,6 +1,13 @@
 export default function Footer() {
   return (
-    <footer className="bg-[#f2f2f2] text-center text-sm py-6 border-t border-[#e0e0e0] mt-8">
+    <footer className="bg-[#f2f2f2] text-center text-sm py-6 border-t border-[#e0e0e0] mt-12">
+      <div className="flex justify-center mb-4">
+        <img
+          src="/logos/vigilado-supersalud.png"
+          alt="Vigilado Supersalud"
+          className="w-40 h-auto rounded-md border border-blue-300 shadow-lg shadow-blue-200 hover:shadow-blue-400 hover:shadow-xl transition-all duration-500 ease-in-out"
+        />
+      </div>
       <div className="text-[#009cde] font-medium">
         <a
           href="#"

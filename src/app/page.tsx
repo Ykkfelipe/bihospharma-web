@@ -49,12 +49,6 @@ export default function Home() {
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">ARTRITIS REUMATOIDE</h3>
-              <a
-                href="#"
-                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
-              >
-                VER MÁS
-              </a>
             </div>
           </div>
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
@@ -67,12 +61,6 @@ export default function Home() {
               <div className="text-center px-2">
                 <h3 className="text-xl md:text-2xl font-bold mb-2">TELEASISTENCIA DOMICILIARIA PARA DIABETES</h3>
               </div>
-              <a
-                href="#"
-                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
-              >
-                VER MÁS
-              </a>
             </div>
           </div>
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
@@ -83,12 +71,6 @@ export default function Home() {
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">VIH</h3>
-              <a
-                href="#"
-                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
-              >
-                VER MÁS
-              </a>
             </div>
           </div>
           <div className="relative rounded-xl overflow-hidden shadow-lg h-48 sm:h-56 md:h-64">
@@ -99,12 +81,6 @@ export default function Home() {
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">HEMOFILIA</h3>
-              <a
-                href="#"
-                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
-              >
-                VER MÁS
-              </a>
             </div>
           </div>
 
@@ -116,12 +92,6 @@ export default function Home() {
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">ANTICOAGULADOS</h3>
-              <a
-                href="#"
-                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
-              >
-                VER MÁS
-              </a>
             </div>
           </div>
 
@@ -133,12 +103,6 @@ export default function Home() {
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">ESCLEROSIS MÚLTIPLE</h3>
-              <a
-                href="#"
-                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
-              >
-                VER MÁS
-              </a>
             </div>
           </div>
 
@@ -150,12 +114,6 @@ export default function Home() {
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">DIABETES É HIPERTENSIÓN</h3>
-              <a
-                href="#"
-                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
-              >
-                VER MÁS
-              </a>
             </div>
           </div>
 
@@ -167,12 +125,6 @@ export default function Home() {
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">EXTENSIÓN DOMICILIARIA</h3>
-              <a
-                href="#"
-                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
-              >
-                VER MÁS
-              </a>
             </div>
           </div>
 
@@ -184,12 +136,6 @@ export default function Home() {
             />
             <div className="relative z-10 flex flex-col justify-center items-center h-full text-white">
               <h3 className="text-xl md:text-2xl font-bold mb-2">NEFROPROTECCIÓN</h3>
-              <a
-                href="#"
-                className="bg-[#51ADE5] hover:bg-[#1C7DB5] text-white font-semibold py-2 px-4 rounded-full transition"
-              >
-                VER MÁS
-              </a>
             </div>
           </div>
         </div>

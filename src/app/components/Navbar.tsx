@@ -1,11 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showSustainabilityMenu, setShowSustainabilityMenu] = useState(false);
+
+  // Dropdown timeout logic
+  const dropdownTimeout = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
+    setDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    dropdownTimeout.current = setTimeout(() => {
+      setDropdownOpen(false);
+    }, 200); // delay to allow moving mouse to menu
+  };
 
   return (
     <nav className="bg-white text-[#1C2B4E] shadow-md">
@@ -34,12 +50,28 @@ export default function Navbar() {
             <Link href="/services">
               <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Servicios</span>
             </Link>
-            <Link href="/estados-financieros">
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Estados Financieros</span>
-            </Link>
-            <Link href="/blog">
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Blog</span>
-            </Link>
+            <div
+              className="relative group"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
+              <Link href="/estados-financieros-2024">
+                <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">
+                  Gestión y Sostenibilidad
+                </span>
+              </Link>
+              <div className={`absolute left-0 mt-2 w-56 bg-white shadow-lg rounded z-10 ${dropdownOpen ? 'flex' : 'hidden'} flex-col`}>
+                <Link href="/estados-financieros-2024">
+                  <span className="block px-4 py-2 text-sm hover:bg-gray-100 text-[#1C2B4E]">Estados Financieros 2024</span>
+                </Link>
+                <Link href="/estados-financieros-2023">
+                  <span className="block px-4 py-2 text-sm hover:bg-gray-100 text-[#1C2B4E]">Estados Financieros 2023</span>
+                </Link>
+                <Link href="/estados-financieros-2022">
+                  <span className="block px-4 py-2 text-sm hover:bg-gray-100 text-[#1C2B4E]">Estados Financieros 2022</span>
+                </Link>
+              </div>
+            </div>
             <Link href="/contact">
               <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Contacto</span>
             </Link>
@@ -75,12 +107,27 @@ export default function Navbar() {
           <Link href="/services">
             <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Servicios</span>
           </Link>
-          <Link href="/estados-financieros">
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Estados Financieros</span>
-          </Link>
-          <Link href="/blog">
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Blog</span>
-          </Link>
+          <div>
+            <span
+              className="block px-3 py-2 cursor-pointer hover:underline hover:text-[#1C2B4E]"
+              onClick={() => setShowSustainabilityMenu(!showSustainabilityMenu)}
+            >
+              Gestión y Sostenibilidad
+            </span>
+            {showSustainabilityMenu && (
+              <>
+                <Link href="/estados-financieros-2024">
+                  <span onClick={() => setIsOpen(false)} className="block px-6 py-2 hover:underline">Estados Financieros 2024</span>
+                </Link>
+                <Link href="/estados-financieros-2023">
+                  <span onClick={() => setIsOpen(false)} className="block px-6 py-2 hover:underline">Estados Financieros 2023</span>
+                </Link>
+                <Link href="/estados-financieros-2022">
+                  <span onClick={() => setIsOpen(false)} className="block px-6 py-2 hover:underline">Estados Financieros 2022</span>
+                </Link>
+              </>
+            )}
+          </div>
           <Link href="/contact">
             <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Contacto</span>
           </Link>
