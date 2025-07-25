@@ -8,7 +8,6 @@ import 'slick-carousel/slick/slick-theme.css';
 type HeroCarouselProps = {
   showDots?: boolean;
   showArrows?: boolean;
-  height?: number; // Optional height in pixels
 };
 
 const images = [
@@ -20,7 +19,6 @@ const images = [
 export default function HeroCarousel({
   showDots = true,
   showArrows = true,
-  height = 500,
 }: HeroCarouselProps) {
   const settings = {
     dots: showDots,
@@ -56,7 +54,6 @@ export default function HeroCarousel({
       </div>
     ),
     className: 'hero-carousel',
-    adaptiveHeight: true,
   };
 
   return (
