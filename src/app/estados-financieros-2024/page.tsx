@@ -38,7 +38,7 @@ export default function PDFViewer() {
         paddingBottom: "1.5rem"
       }}>
         <span style={{ display: "block" }}>Estados</span>
-        <span style={{ display: "block" }}>Financieros 2023</span>
+        <span style={{ display: "block" }}>Financieros 2024</span>
         <span style={{
           position: "absolute",
           left: "50%",
