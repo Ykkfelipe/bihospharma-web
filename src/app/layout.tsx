@@ -3,6 +3,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
   title: "Bihospharma",
@@ -20,6 +21,7 @@ export default function RootLayout({
         <Navbar />
         <main>{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );
