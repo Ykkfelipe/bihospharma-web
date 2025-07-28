@@ -8,6 +8,9 @@ import { Analytics } from '@vercel/analytics/react';
 export const metadata = {
   title: "Bihospharma",
   description: "Soluciones integrales en salud",
+  icons: {
+    icon: "/bihos-logo.ico",
+  },
 };
 
 export default function RootLayout({
