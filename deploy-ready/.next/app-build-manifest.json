@@ -1,0 +1,84 @@
+{
+  "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-3eff576efd347965.js",
+      "static/chunks/4bd1b696-3afdcf4f2246138b.js",
+      "static/chunks/684-0d786026dfc14d78.js",
+      "static/chunks/main-app-43a129332e703922.js",
+      "static/chunks/app/_not-found/page-67785d3978f9d9b5.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-3eff576efd347965.js",
+      "static/chunks/4bd1b696-3afdcf4f2246138b.js",
+      "static/chunks/684-0d786026dfc14d78.js",
+      "static/chunks/main-app-43a129332e703922.js",
+      "static/css/63c7182515913e2f.css",
+      "static/css/feb11583831397ec.css",
+      "static/chunks/63-440e48c862b3dde4.js",
+      "static/chunks/app/layout-d67223ef916cc539.js"
+    ],
+    "/about/page": [
+      "static/chunks/webpack-3eff576efd347965.js",
+      "static/chunks/4bd1b696-3afdcf4f2246138b.js",
+      "static/chunks/684-0d786026dfc14d78.js",
+      "static/chunks/main-app-43a129332e703922.js",
+      "static/chunks/63-440e48c862b3dde4.js",
+      "static/chunks/app/about/page-ed2e60e162c03f5e.js"
+    ],
+    "/estados-financieros-2022/page": [
+      "static/chunks/webpack-3eff576efd347965.js",
+      "static/chunks/4bd1b696-3afdcf4f2246138b.js",
+      "static/chunks/684-0d786026dfc14d78.js",
+      "static/chunks/main-app-43a129332e703922.js",
+      "static/css/47f0383ba59ebade.css",
+      "static/chunks/b99ed89f-6e4b46dbf01238f3.js",
+      "static/chunks/274-b072170b0b7c6388.js",
+      "static/chunks/app/estados-financieros-2022/page-d9c4d202e67f85d9.js"
+    ],
+    "/estados-financieros-2024/page": [
+      "static/chunks/webpack-3eff576efd347965.js",
+      "static/chunks/4bd1b696-3afdcf4f2246138b.js",
+      "static/chunks/684-0d786026dfc14d78.js",
+      "static/chunks/main-app-43a129332e703922.js",
+      "static/css/47f0383ba59ebade.css",
+      "static/chunks/b99ed89f-6e4b46dbf01238f3.js",
+      "static/chunks/274-b072170b0b7c6388.js",
+      "static/chunks/app/estados-financieros-2024/page-d31c861f8c70a1bd.js"
+    ],
+    "/estados-financieros-2023/page": [
+      "static/chunks/webpack-3eff576efd347965.js",
+      "static/chunks/4bd1b696-3afdcf4f2246138b.js",
+      "static/chunks/684-0d786026dfc14d78.js",
+      "static/chunks/main-app-43a129332e703922.js",
+      "static/css/47f0383ba59ebade.css",
+      "static/chunks/b99ed89f-6e4b46dbf01238f3.js",
+      "static/chunks/274-b072170b0b7c6388.js",
+      "static/chunks/app/estados-financieros-2023/page-81fbd9c652dce897.js"
+    ],
+    "/page": [
+      "static/chunks/webpack-3eff576efd347965.js",
+      "static/chunks/4bd1b696-3afdcf4f2246138b.js",
+      "static/chunks/684-0d786026dfc14d78.js",
+      "static/chunks/main-app-43a129332e703922.js",
+      "static/css/63c7182515913e2f.css",
+      "static/chunks/63-440e48c862b3dde4.js",
+      "static/chunks/315-5e26281fc55e62e4.js",
+      "static/chunks/app/page-2015ff8c563beb30.js"
+    ],
+    "/services/page": [
+      "static/chunks/webpack-3eff576efd347965.js",
+      "static/chunks/4bd1b696-3afdcf4f2246138b.js",
+      "static/chunks/684-0d786026dfc14d78.js",
+      "static/chunks/main-app-43a129332e703922.js",
+      "static/chunks/63-440e48c862b3dde4.js",
+      "static/chunks/app/services/page-3b1e5e86f6dd3904.js"
+    ],
+    "/contact/page": [
+      "static/chunks/webpack-3eff576efd347965.js",
+      "static/chunks/4bd1b696-3afdcf4f2246138b.js",
+      "static/chunks/684-0d786026dfc14d78.js",
+      "static/chunks/main-app-43a129332e703922.js",
+      "static/chunks/app/contact/page-6d1d7dbf3bbbe695.js"
+    ]
+  }
+}

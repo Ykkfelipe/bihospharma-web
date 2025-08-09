@@ -5,8 +5,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "NODE_ENV=production node server.js",
+    "export": "next export",
+    "lint": "next lint",
+    "postbuild": "next-sitemap",
+    "prepare-deploy": "rm -rf deploy-ready && mkdir deploy-ready && cp -r public deploy-ready/ && cp -r .next deploy-ready/.next && cp package.json deploy-ready/ && cp server.js deploy-ready/ && zip -r bihospharma-deploy.zip deploy-ready"
   },
   "dependencies": {
     "@vercel/analytics": "^1.5.0",

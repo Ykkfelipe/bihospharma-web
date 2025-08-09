@@ -15,7 +15,7 @@ export default function Home() {
               src="/images/services.png"
               alt="Consulta médica"
               width={600} // Adjust based on your design
-              height={400} // Adjust based on your design
+              height={400} // At djust based on your design
               className="rounded-lg w-full object-cover"
             />
           </div>

@@ -1,0 +1,10 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/about/page": "app/about/page.js",
+  "/estados-financieros-2022/page": "app/estados-financieros-2022/page.js",
+  "/estados-financieros-2024/page": "app/estados-financieros-2024/page.js",
+  "/estados-financieros-2023/page": "app/estados-financieros-2023/page.js",
+  "/page": "app/page.js",
+  "/services/page": "app/services/page.js",
+  "/contact/page": "app/contact/page.js"
+}
