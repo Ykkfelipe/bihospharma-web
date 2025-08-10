@@ -1,3 +1,5 @@
+'use client';
+
 import dynamic from 'next/dynamic';
 const PDFViewer = dynamic(() => import('@/app/components/clients/PDFViewer'), { ssr: false });
 
