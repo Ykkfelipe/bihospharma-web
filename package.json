@@ -12,7 +12,6 @@
     "prepare-deploy": "rm -rf deploy-ready && mkdir deploy-ready && cp -r public deploy-ready/ && cp -r .next deploy-ready/.next && cp package.json deploy-ready/ && cp server.js deploy-ready/ && zip -r bihospharma-deploy.zip deploy-ready"
   },
   "dependencies": {
-    "@vercel/analytics": "^1.5.0",
     "canvas": "^3.1.2",
     "next": "15.3.4",
     "next-sitemap": "^4.2.3",
