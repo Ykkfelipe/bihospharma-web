@@ -48,7 +48,7 @@ export default function Navbar() {
               <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Nosotros</span>
             </Link>
             <Link href="/services">
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Servicios</span>
+              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Nuestros Servicios</span>
             </Link>
             <div
               className="relative group"
