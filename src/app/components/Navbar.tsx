@@ -105,7 +105,7 @@ export default function Navbar() {
             <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Nosotros</span>
           </Link>
           <Link href="/services">
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Servicios</span>
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Nuestros Servicios</span>
           </Link>
           <div>
             <span
