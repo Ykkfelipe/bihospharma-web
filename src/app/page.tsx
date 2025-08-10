@@ -230,19 +230,20 @@ export default function Home() {
           <div className="flex items-end justify-end">
             <div className="relative">
               <Image src="/images/map.png" alt="Mapa" width={600} height={400} className="max-w-full rounded-lg" />
+              {/* Invisible hotspot over the WhatsApp logo that is part of the image */}
               <a
                 href="https://wa.me/573203165870"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="absolute bottom-[22px] right-[18px] w-[48px] h-[48px]"
+                aria-label="Abrir WhatsApp"
+                className="absolute bottom-[22px] right-[18px] z-20 w-[58px] h-[58px] rounded-full"
+                style={{
+                  // keep the hotspot invisible but focusable for a11y
+                  background: 'transparent',
+                  outline: 'none',
+                }}
               >
-                <Image
-                  src="/logos/whatsapp.png"
-                  alt="WhatsApp"
-                  width={48}
-                  height={48}
-                  className="rounded-full bg-[#25D366] p-2"
-                />
+                <span className="sr-only">Abrir chat de WhatsApp</span>
               </a>
             </div>
           </div>
