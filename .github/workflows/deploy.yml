@@ -1,0 +1,34 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ main ]   # deploy on every push to main
+  workflow_dispatch:      # allow manual "Run workflow" from GitHub
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
+          script: |
+            set -e
+            cd "${{ secrets.EC2_PATH }}"
+
+            # Make sure repo is on the latest commit from main
+            git fetch origin main
+            git reset --hard origin/main
+
+            # Build and restart
+            npm ci --prefer-offline --no-audit
+            npm run build
+
+            # Restart pm2 app (create if missing)
+            pm2 restart bihos || pm2 start npm --name bihos -- start
+            pm2 save
