@@ -68,7 +68,7 @@ export default function BlogIndexPage() {
           {/* Día Mundial de la Fibrosis Quística */}
           <article style={{ borderRadius: 12, border: '1px solid #e5e7eb', overflow: 'hidden', background: '#fff', boxShadow: '0 6px 16px rgba(0,0,0,0.08)' }}>
             <div style={{ position: 'relative', width: '100%', height: 180 }}>
-              <Image src="/images/radiografia.png" alt="Día Mundial de la Fibrosis Quística" fill style={{ objectFit: 'cover' }} />
+              <Image src="/images/fibrosis.png" alt="Día Mundial de la Fibrosis Quística" fill style={{ objectFit: 'cover' }} />
             </div>
             <div style={{ padding: '1rem 1rem 1.25rem' }}>
               <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1f2937', margin: '0 0 0.5rem' }}>

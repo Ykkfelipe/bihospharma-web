@@ -114,7 +114,7 @@ export default function MedicinaInternaPage() {
       </section>
 
 
-      {/* SERVICIOS layout (image left + three items right) */}
+      {/* SERVICIOS + ¿Qué es la Medicina Interna? (match PDF) */}
       <section style={{ backgroundColor: '#ffffff', padding: '2.5rem 1rem' }}>
         <div
           style={{
@@ -123,129 +123,76 @@ export default function MedicinaInternaPage() {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap: 'clamp(1.25rem, 3vw, 2.25rem)',
-            alignItems: 'stretch',
+            alignItems: 'start',
           }}
         >
-          {/* Left image with SERVICIOS title overlay */}
-          <div style={{ position: 'relative', minHeight: 'clamp(220px, 40vw, 420px)', borderRadius: 8, overflow: 'hidden' }}>
-            <Image src="/images/medicina-interna.png" alt="Medicina Interna" fill style={{ objectFit: 'cover' }} />
-            <h2
-              style={{
-                position: 'absolute',
-                left: 26,
-                bottom: 26,
-                margin: 0,
-                color: '#ffffff',
-                fontWeight: 800,
-                letterSpacing: '0.35rem',
-                textShadow: '0 2px 10px rgba(0,0,0,0.6)',
-                fontSize: 'clamp(1rem, 2.6vw, 1.75rem)',
-              }}
-            >
-              SERVICIOS
-            </h2>
+          {/* Left: Title + big rounded image */}
+          <div>
+            <h2 style={{
+              margin: '0 0 1rem',
+              fontSize: 'clamp(1.4rem, 3vw, 2.1rem)',
+              fontWeight: 800,
+              color: '#182033'
+            }}>Servicios</h2>
+            <div style={{ position: 'relative', minHeight: 'clamp(220px, 40vw, 420px)', borderRadius: 18, overflow: 'hidden' }}>
+              <Image src="/images/medicina-interna.png" alt="Servicios de Medicina Interna" fill style={{ objectFit: 'cover' }} />
+            </div>
           </div>
 
-          {/* Right: three items with circular images + blue titles (two-line where needed) */}
-          <div style={{ backgroundColor: '#fff' }}>
-            <div style={{ display: 'grid', gap: 'clamp(1.2rem, 3vw, 2.2rem)' }}>
-              {/* Item 1 */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'clamp(72px, 18vw, 122px) 1fr', alignItems: 'center', gap: 'clamp(12px, 3vw, 18px)' }}>
-                <div
-                  style={{
-                    width: 'clamp(72px, 18vw, 122px)',
-                    height: 'clamp(72px, 18vw, 122px)',
-                    borderRadius: '50%',
-                    border: 'clamp(6px, 1.8vw, 11px) solid #1e88e5',
-                    overflow: 'hidden',
-                    display: 'grid',
-                    placeItems: 'center',
-                    background: '#e3f2fd',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.08)'
-                  }}
-                >
-                  <Image src="/images/hipertension.png" alt="Exámenes ocupacionales" width={140} height={140} style={{ objectFit: 'cover' }} />
-                </div>
-                <div style={{ color: '#1e88e5', fontWeight: 900, fontSize: 'clamp(1rem, 2.8vw, 1.6rem)', lineHeight: 1.15 }}>
-                  Exámenes
-                  <br />
-                  ocupacionales
-                </div>
-              </div>
-
-              {/* Item 2 */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'clamp(72px, 18vw, 122px) 1fr', alignItems: 'center', gap: 'clamp(12px, 3vw, 18px)' }}>
-                <div
-                  style={{
-                    width: 'clamp(72px, 18vw, 122px)',
-                    height: 'clamp(72px, 18vw, 122px)',
-                    borderRadius: '50%',
-                    border: 'clamp(6px, 1.8vw, 11px) solid #1e88e5',
-                    overflow: 'hidden',
-                    display: 'grid',
-                    placeItems: 'center',
-                    background: '#e3f2fd',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.08)'
-                  }}
-                >
-                  <Image src="/images/diabetes.png" alt="Evaluaciones" width={140} height={140} style={{ objectFit: 'cover' }} />
-                </div>
-                <div style={{ color: '#1e88e5', fontWeight: 900, fontSize: 'clamp(1rem, 2.8vw, 1.6rem)', lineHeight: 1.15 }}>
-                  Evaluaciones de ingreso, periódicas
-                  <br />
-                  y de egreso
-                </div>
-              </div>
-
-              {/* Item 3 */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'clamp(72px, 18vw, 122px) 1fr', alignItems: 'center', gap: 'clamp(12px, 3vw, 18px)' }}>
-                <div
-                  style={{
-                    width: 'clamp(72px, 18vw, 122px)',
-                    height: 'clamp(72px, 18vw, 122px)',
-                    borderRadius: '50%',
-                    border: 'clamp(6px, 1.8vw, 11px) solid #1e88e5',
-                    overflow: 'hidden',
-                    display: 'grid',
-                    placeItems: 'center',
-                    background: '#e3f2fd',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.08)'
-                  }}
-                >
-                  <Image src="/images/medicina-general.png" alt="Énfasis osteomuscular" width={140} height={140} style={{ objectFit: 'cover' }} />
-                </div>
-                <div style={{ color: '#1e88e5', fontWeight: 900, fontSize: 'clamp(1rem, 2.8vw, 1.6rem)', lineHeight: 1.15 }}>
-                  Exámenes médico ocupacionales con
-                  <br />
-                  énfasis osteomuscular.
-                </div>
-              </div>
-            </div>
+          {/* Right: ¿Qué es la Medicina Interna? text */}
+          <div>
+            <h2 style={{
+              margin: '0 0 1rem',
+              color: '#2ea0df',
+              fontWeight: 900,
+              fontSize: 'clamp(1.4rem, 3vw, 2.1rem)'
+            }}>¿Qué es la Medicina Interna?</h2>
+            <p style={{
+              fontSize: 'clamp(1rem, 2.1vw, 1.1rem)',
+              lineHeight: 1.9,
+              color: '#182033',
+              margin: '0 0 1rem'
+            }}>
+              La Medicina Interna es la especialidad médica que aborda de manera integral las enfermedades que afectan a los adultos, especialmente aquellas complejas o que comprometen varios órganos y sistemas del cuerpo.
+            </p>
+            <p style={{
+              fontSize: 'clamp(1rem, 2.1vw, 1.1rem)',
+              lineHeight: 1.9,
+              color: '#182033',
+              margin: 0
+            }}>
+              Nuestros internistas actúan como médicos de cabecera especializados, coordinando la atención con otras especialidades cuando es necesario.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* Bloque: Ventajas de realizar sus exámenes con nosotros (panel azul + foto) */}
-      <section style={{ padding: '1rem 1rem 2rem' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '0', alignItems: 'stretch' }}>
-          {/* Left blue panel */}
-          <div style={{ backgroundColor: '#0d86d9', color: '#fff', padding: 'clamp(1.25rem, 3.2vw, 2.25rem) clamp(1rem, 2.5vw, 2rem)' }}>
-            <h3 style={{ fontSize: 'clamp(1.35rem,2.4vw,1.9rem)', fontWeight: 900, margin: 0, lineHeight: 1.15 }}>
-              Ventajas de realizar sus
-              <br />
-              exámenes con nosotros
-            </h3>
-            <ul style={{ marginTop: '1.1rem', fontSize: 'clamp(0.95rem, 2.1vw, 1.05rem)', lineHeight: 1.8, paddingLeft: '1.1rem' }}>
-              <li>Cumplimiento 100% con la Resolución 2346 de 2007 y demás normas vigentes.</li>
-              <li>Resultados rápidos y confidenciales.</li>
-              <li>Atención prioritaria para empresas y trabajadores.</li>
-              <li>Informe ocupacional detallado para la empresa.</li>
+      <section style={{ backgroundColor: '#2EA0DF', padding: '3.25rem 1rem' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+          <div>
+            <h2 style={{ color: '#ffffff', fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', fontWeight: 900, margin: '0 0 1rem' }}>
+              ¿Qué tratamos en Medicina Interna?
+            </h2>
+            <ul style={{ listStyle: 'disc', color: '#0E0E0E', fontSize: 'clamp(1.08rem, 2.3vw, 1.25rem)', lineHeight: 1.9, paddingLeft: '1.6rem', margin: 0 }}>
+              <li>Hipertensión arterial y enfermedades cardiovasculares.</li>
+              <li>Diabetes y trastornos endocrinos.</li>
+              <li>Enfermedades respiratorias crónicas.</li>
+              <li>Trastornos gastrointestinales y hepáticos.</li>
+              <li>Enfermedades autoinmunes.</li>
+              <li>Alteraciones del sistema inmune.</li>
+              <li>Valoración integral de pacientes con múltiples enfermedades.</li>
             </ul>
           </div>
-
-          {/* Right image */}
-          <div style={{ position: 'relative', minHeight: 'clamp(220px, 40vw, 420px)' }}>
-            <Image src="/images/feliz-medico-masculino-visitando-pacientes-mayores-en-casa-y-revisando-documentos-medicos.png" alt="Ventajas exámenes" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
+          <div>
+            <h2 style={{ color: '#ffffff', fontSize: 'clamp(1.6rem, 3.2vw, 2.4rem)', fontWeight: 900, margin: '0 0 1rem' }}>
+              Ventajas de atenderte con nosotros
+            </h2>
+            <ul style={{ listStyle: 'disc', color: '#0E0E0E', fontSize: 'clamp(1.08rem, 2.3vw, 1.25rem)', lineHeight: 1.9, paddingLeft: '1.6rem', margin: 0 }}>
+              <li>Evaluación médica integral.</li>
+              <li>Diagnóstico preciso y personalizado.</li>
+              <li>Coordinación con otras especialidades.</li>
+              <li>Atención cálida, humana y sin demoras innecesarias.</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -282,9 +229,10 @@ export default function MedicinaInternaPage() {
               fontWeight: 700,
             }}
           >
-            Tu bienestar en el trabajo es nuestra prioridad. En Bihospharma, te ofrecemos
-            exámenes ocupacionales y servicios en Medicina Laboral con calidad, rapidez y
-            cumplimiento normativo.
+            En Bihospharma, contamos con especialistas
+            para la prevención, diagnóstico y tratamiento
+            de enfermedades en adultos, con un enfoque
+            humano y profesional.
           </p>
         </div>
       </section>

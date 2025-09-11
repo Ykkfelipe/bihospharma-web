@@ -146,7 +146,7 @@ export default function MedicinaLaboralPage() {
             {/* Item 1 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ width: 96, height: 96, minWidth: 96, borderRadius: '50%', border: '8px solid #3bb0f3', display: 'grid', placeItems: 'center', overflow: 'hidden', background: '#eaf6fe' }}>
-                <Image src="/images/laboral-bubble-1.png" alt="Exámenes ocupacionales" width={96} height={96} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                <Image src="/images/laboral1.png" alt="Exámenes ocupacionales" width={96} height={96} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
               </div>
               <div>
                 <div style={{ color: '#2196f3', fontSize: '1.35rem', fontWeight: 800, lineHeight: 1.2 }}>Exámenes ocupacionales</div>
@@ -155,7 +155,7 @@ export default function MedicinaLaboralPage() {
             {/* Item 2 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ width: 96, height: 96, minWidth: 96, borderRadius: '50%', border: '8px solid #3bb0f3', display: 'grid', placeItems: 'center', overflow: 'hidden', background: '#eaf6fe' }}>
-                <Image src="/images/laboral-bubble-2.png" alt="Evaluaciones de ingreso, periódicas y de egreso" width={96} height={96} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                <Image src="/images/laboral2.png" alt="Evaluaciones de ingreso, periódicas y de egreso" width={96} height={96} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
               </div>
               <div>
                 <div style={{ color: '#2196f3', fontSize: '1.35rem', fontWeight: 800, lineHeight: 1.2 }}>
@@ -166,7 +166,7 @@ export default function MedicinaLaboralPage() {
             {/* Item 3 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
               <div style={{ width: 96, height: 96, minWidth: 96, borderRadius: '50%', border: '8px solid #3bb0f3', display: 'grid', placeItems: 'center', overflow: 'hidden', background: '#eaf6fe' }}>
-                <Image src="/images/laboral-bubble-3.png" alt="Exámenes médico-ocupacionales con énfasis osteomuscular" width={96} height={96} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+                <Image src="/images/laboral3.png" alt="Exámenes médico-ocupacionales con énfasis osteomuscular" width={96} height={96} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
               </div>
               <div>
                 <div style={{ color: '#2196f3', fontSize: '1.35rem', fontWeight: 800, lineHeight: 1.2 }}>
