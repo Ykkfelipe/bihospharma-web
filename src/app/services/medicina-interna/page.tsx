@@ -22,7 +22,7 @@ export default function MedicinaInternaPage() {
           overflow: 'hidden',
         }}
       >
-        <Image src="/images/servicios-banner.png" alt="Medicina Interna" fill priority style={{ objectFit: 'cover' }} />
+        <Image src="/images/medicina-interna-banner.png" alt="Medicina Interna" fill priority style={{ objectFit: 'cover' }} />
         <div
           style={{
             position: 'absolute',
@@ -253,7 +253,7 @@ export default function MedicinaInternaPage() {
       {/* CTA TOP: image with large serif text (no button here) */}
       <section style={{ position: 'relative', width: '100%', minHeight: 360 }}>
         <Image
-          src="/images/general-banner2.png"
+          src="/images/imagen3interna.png"
           alt="Agenda Medicina Interna"
           fill
           priority

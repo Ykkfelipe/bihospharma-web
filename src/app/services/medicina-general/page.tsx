@@ -119,6 +119,9 @@ export default function MedicinaGeneralPage() {
             <h3 style={{ fontSize: '1.6rem', color: '#1976d2', fontWeight: 800, marginBottom: '1rem' }}>
               ¿Cuándo Deberías Consultar a un Médico General?
             </h3>
+            <p style={{ fontSize: '1.1rem', lineHeight: '1.8rem', color: '#1f1f1f', marginBottom: '1rem' }}>
+              Si presentas alguno de los siguientes síntomas o situaciones, es recomendable agendar una consulta:
+            </p>
             <ul style={{ fontSize: '1.1rem', lineHeight: '1.8rem', color: '#1f1f1f', paddingLeft: '1rem', listStyleType: 'disc' }}>
               <li>Fiebre persistente, tos o síntomas gripales prolongados.</li>
               <li>Dolor de cabeza frecuente, mareos o fatiga extrema.</li>

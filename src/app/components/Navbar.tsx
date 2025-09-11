@@ -50,6 +50,9 @@ export default function Navbar() {
             <Link href="/services">
               <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Nuestros Servicios</span>
             </Link>
+            <Link href="/blog">
+              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Blog</span>
+            </Link>
             <div
               className="relative group"
               onMouseEnter={handleMouseEnter}
@@ -106,6 +109,9 @@ export default function Navbar() {
           </Link>
           <Link href="/services">
             <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Nuestros Servicios</span>
+          </Link>
+          <Link href="/blog">
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Blog</span>
           </Link>
           <div>
             <span

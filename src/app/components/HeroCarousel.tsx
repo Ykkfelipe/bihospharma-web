@@ -11,9 +11,9 @@ type HeroCarouselProps = {
 };
 
 const images = [
-  '/images/hero-inicio3.png',
-  '/images/hero-inicio3.png',
-  '/images/hero-inicio3.png',
+  '/images/1.png',
+  '/images/2.png',
+  '/images/3.png',
 ];
 
 export default function HeroCarousel({

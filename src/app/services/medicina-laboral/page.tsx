@@ -15,7 +15,7 @@ export default function MedicinaLaboralPage() {
           position: 'relative',
           width: '100%',
           height: '60vh',
-          backgroundImage: 'url("/images/servicios-banner.png")',
+          backgroundImage: 'url("/images/banner-laboral.png")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           display: 'flex',
@@ -117,7 +117,7 @@ export default function MedicinaLaboralPage() {
       >
         <div style={{ flex: '1 1 420px', maxWidth: 560 }}>
           <Image
-            src="/images/medicina-laboral.png"
+            src="/images/laboral-2.png"
             alt="Medicina Laboral"
             width={560}
             height={380}
@@ -152,19 +152,39 @@ export default function MedicinaLaboralPage() {
           >
             La Medicina Laboral evalúa y protege la salud de los trabajadores, cumpliendo la normativa vigente y promoviendo ambientes laborales seguros.
           </p>
-          <ul
-            style={{
-              fontSize: '1.05rem',
-              lineHeight: 1.8,
-              color: '#1f1f1f',
-              paddingLeft: '1rem',
-              listStyle: 'disc',
-              margin: 0,
-            }}
-          >
-            <li>Evaluaciones de ingreso, periódicas y de egreso.</li>
-            <li>Exámenes médico-ocupacionales con énfasis osteomuscular.</li>
-          </ul>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.35rem', marginTop: '0.75rem' }}>
+            {/* Item 1 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ width: 96, height: 96, minWidth: 96, borderRadius: '50%', border: '8px solid #3bb0f3', display: 'grid', placeItems: 'center', overflow: 'hidden', background: '#eaf6fe' }}>
+                <Image src="/images/laboral-bubble-1.png" alt="Exámenes ocupacionales" width={96} height={96} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+              </div>
+              <div>
+                <div style={{ color: '#2196f3', fontSize: '1.35rem', fontWeight: 800, lineHeight: 1.2 }}>Exámenes ocupacionales</div>
+              </div>
+            </div>
+            {/* Item 2 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ width: 96, height: 96, minWidth: 96, borderRadius: '50%', border: '8px solid #3bb0f3', display: 'grid', placeItems: 'center', overflow: 'hidden', background: '#eaf6fe' }}>
+                <Image src="/images/laboral-bubble-2.png" alt="Evaluaciones de ingreso, periódicas y de egreso" width={96} height={96} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+              </div>
+              <div>
+                <div style={{ color: '#2196f3', fontSize: '1.35rem', fontWeight: 800, lineHeight: 1.2 }}>
+                  Evaluaciones de<br />ingreso, periódicas y<br />de egreso
+                </div>
+              </div>
+            </div>
+            {/* Item 3 */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ width: 96, height: 96, minWidth: 96, borderRadius: '50%', border: '8px solid #3bb0f3', display: 'grid', placeItems: 'center', overflow: 'hidden', background: '#eaf6fe' }}>
+                <Image src="/images/laboral-bubble-3.png" alt="Exámenes médico-ocupacionales con énfasis osteomuscular" width={96} height={96} style={{ objectFit: 'cover', width: '100%', height: '100%' }} />
+              </div>
+              <div>
+                <div style={{ color: '#2196f3', fontSize: '1.35rem', fontWeight: 800, lineHeight: 1.2 }}>
+                  Exámenes médico<br />ocupacionales con<br />énfasis osteomuscular.
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -241,7 +261,7 @@ export default function MedicinaLaboralPage() {
       {/* CTA BANNER (only background + headline) */}
       <section style={{ position: 'relative', minHeight: 360, width: '100%' }}>
         <Image
-          src="/images/general-banner2.png"
+          src="/images/laboral-3.png"
           alt="Agenda Medicina Laboral"
           fill
           style={{ objectFit: 'cover' }}
