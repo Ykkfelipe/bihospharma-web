@@ -357,16 +357,16 @@ export default function TrabajoSocialPage() {
           <p><strong>BOGOTÁ D.C</strong><br />Cra 25 No 4A-14</p>
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
             <a href="https://www.instagram.com/bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-              <img src="/logos/instagram.png" alt="Instagram" style={{ width: '30px' }} />
+              <Image src="/logos/instagram.png" alt="Instagram" width={30} height={30} />
             </a>
             <a href="https://www.facebook.com/Bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-              <img src="/logos/facebook.png" alt="Facebook" style={{ width: '30px' }} />
+              <Image src="/logos/facebook.png" alt="Facebook" width={30} height={30} />
             </a>
             <a href="https://www.linkedin.com/company/bihospharma-sas/" target="_blank" rel="noopener noreferrer">
-              <img src="/logos/linkedin.png" alt="LinkedIn" style={{ width: '30px' }} />
+              <Image src="/logos/linkedin.png" alt="LinkedIn" width={30} height={30} />
             </a>
             <a href="https://twitter.com/bihospharma" target="_blank" rel="noopener noreferrer">
-              <img src="/logos/x.png" alt="X" style={{ width: '30px' }} />
+              <Image src="/logos/x.png" alt="X" width={30} height={30} />
             </a>
           </div>
         </div>

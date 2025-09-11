@@ -142,16 +142,6 @@ export default function MedicinaLaboralPage() {
           >
             ¿Qué es la Medicina Laboral?
           </h2>
-          <p
-            style={{
-              fontSize: '1.07rem',
-              lineHeight: 1.8,
-              color: '#1f1f1f',
-              marginBottom: '0.9rem',
-            }}
-          >
-            La Medicina Laboral evalúa y protege la salud de los trabajadores, cumpliendo la normativa vigente y promoviendo ambientes laborales seguros.
-          </p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.35rem', marginTop: '0.75rem' }}>
             {/* Item 1 */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -369,16 +359,16 @@ export default function MedicinaLaboralPage() {
           <p><strong>BOGOTÁ D.C</strong><br />Cra 25 No 4A-14</p>
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
             <a href="https://www.instagram.com/bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-              <img src="/logos/instagram.png" alt="Instagram" style={{ width: '30px' }} />
+              <Image src="/logos/instagram.png" alt="Instagram" width={30} height={30} />
             </a>
             <a href="https://www.facebook.com/Bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-              <img src="/logos/facebook.png" alt="Facebook" style={{ width: '30px' }} />
+              <Image src="/logos/facebook.png" alt="Facebook" width={30} height={30} />
             </a>
             <a href="https://www.linkedin.com/company/bihospharma-sas/" target="_blank" rel="noopener noreferrer">
-              <img src="/logos/linkedin.png" alt="LinkedIn" style={{ width: '30px' }} />
+              <Image src="/logos/linkedin.png" alt="LinkedIn" width={30} height={30} />
             </a>
             <a href="https://twitter.com/bihospharma" target="_blank" rel="noopener noreferrer">
-              <img src="/logos/x.png" alt="X" style={{ width: '30px' }} />
+              <Image src="/logos/x.png" alt="X" width={30} height={30} />
             </a>
           </div>
         </div>
