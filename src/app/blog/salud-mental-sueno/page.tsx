@@ -13,8 +13,7 @@ export default function BlogPostSaludMentalSueno() {
         style={{
           position: 'relative',
           width: '100%',
-          height: '56vh',
-          minHeight: 360,
+          height: 'clamp(280px, 56vh, 520px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -26,7 +25,7 @@ export default function BlogPostSaludMentalSueno() {
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.12)' }} />
 
         {/* Title directly over the image, centered, with layered drop-shadow to mimic the PDF outline */}
-        <div style={{ position: 'relative', top: '18%' }}>
+        <div className="heroTitleWrap" style={{ position: 'relative', top: 'clamp(0px, 8vh, 90px)' }}>
           <h1 className="heroTitle"
             style={{
               margin: 0,
@@ -61,7 +60,7 @@ export default function BlogPostSaludMentalSueno() {
           </div>
 
           {/* rounded image under the paragraph like the PDF */}
-          <div className="introImg" style={{ position: 'relative', marginTop: '1.25rem', width: 'min(720px, 100%)', height: 360, borderRadius: 18, overflow: 'hidden', boxShadow: '0 12px 26px rgba(0,0,0,0.12)' }}>
+          <div className="introImg" style={{ position: 'relative', marginTop: '1.25rem', width: 'min(720px, 100%)', height: 'clamp(200px, 36vw, 360px)', borderRadius: 18, overflow: 'hidden', boxShadow: '0 12px 26px rgba(0,0,0,0.12)' }}>
             <Image src="/images/salud-mental-2.png" alt="Bienestar y descanso" fill style={{ objectFit: 'cover' }} />
           </div>
         </div>
@@ -70,7 +69,7 @@ export default function BlogPostSaludMentalSueno() {
       {/* PAGE 3: Efectos del sueño en la salud mental (match PDF) */}
       <section className="effects" style={{ backgroundColor: '#ededf0', padding: '2.25rem 1rem 2.75rem' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 min(4vw, 54px)' }}>
-          <div className="effectsGrid" style={{ display: 'grid', gridTemplateColumns: 'minmax(360px, 1.15fr) minmax(340px, 1fr)', gap: '2rem', alignItems: 'start' }}>
+          <div className="effectsGrid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', alignItems: 'start' }}>
             {/* Left column: blue title + bullets */}
             <div>
               <h2 style={{
@@ -103,7 +102,7 @@ export default function BlogPostSaludMentalSueno() {
             </div>
 
             {/* Right column: image with soft drop shadow */}
-            <div className="effectsImg" style={{ position: 'relative', width: '100%', height: 380, borderRadius: 18, overflow: 'hidden', boxShadow: '0 18px 36px rgba(0,0,0,0.18)' }}>
+            <div className="effectsImg" style={{ position: 'relative', width: '100%', height: 'clamp(220px, 42vw, 380px)', borderRadius: 18, overflow: 'hidden', boxShadow: '0 18px 36px rgba(0,0,0,0.18)' }}>
               <Image src="/images/salud-mental-3.png" alt="Ilustración salud mental" fill style={{ objectFit: 'cover' }} />
             </div>
           </div>
@@ -144,9 +143,9 @@ export default function BlogPostSaludMentalSueno() {
 
       {/* PAGE 5: CTA section (match PDF) */}
       <section className="ctaGrid" style={{ backgroundColor: '#ededf0', padding: '2.5rem 1rem' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'center' }}>
+        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '2rem', alignItems: 'center' }}>
           {/* Left: image */}
-          <div style={{ position: 'relative', width: '100%', height: 280, borderRadius: 18, overflow: 'hidden', boxShadow: '0 12px 28px rgba(0,0,0,0.12)' }}>
+          <div style={{ position: 'relative', width: '100%', height: 'clamp(220px, 38vw, 280px)', borderRadius: 18, overflow: 'hidden', boxShadow: '0 12px 28px rgba(0,0,0,0.12)' }}>
             <Image src="/images/services.png" alt="Consulta médica" fill style={{ objectFit: 'cover' }} />
           </div>
           {/* Right: paragraph */}
