@@ -23,7 +23,7 @@ export default function BlogPostPrevencionSuicidio() {
         }}
       >
         <Image
-          src="/images/blog/suicidio-hero.jpg"
+          src="/images/prev1.png"
           alt="Día Internacional para la Prevención del Suicidio"
           fill
           priority
@@ -89,7 +89,7 @@ export default function BlogPostPrevencionSuicidio() {
               }}
             >
               <Image
-                src="/images/blog/suicidio-intro.jpg"
+                src="/images/prev2.png"
                 alt="Conciencia y prevención del suicidio"
                 width={1920}
                 height={1080}
@@ -183,7 +183,7 @@ export default function BlogPostPrevencionSuicidio() {
               }}
             >
               <Image
-                src="/images/blog/suicidio-alerta.jpg"
+                src="/images/prev3.png"
                 alt="Señales de alerta"
                 width={1600}
                 height={1067}
@@ -200,22 +200,7 @@ export default function BlogPostPrevencionSuicidio() {
           <h2 style={{ color: '#1e88e5', fontWeight: 900, fontSize: 'clamp(1.35rem, 3vw, 2rem)', margin: '0 0 1rem' }}>
             La importancia de la prevención y el apoyo
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.25fr', gap: '1.25rem', alignItems: 'center' }}>
-            <div
-              style={{
-                borderRadius: 22,
-                overflow: 'hidden',
-                boxShadow: '0 10px 24px rgba(0,0,0,0.12)',
-              }}
-            >
-              <Image
-                src="/images/blog/suicidio-apoyo.jpg"
-                alt="Acompañamiento y apoyo profesional"
-                width={1600}
-                height={1067}
-                style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
-              />
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.25rem' }}>
             <div>
               <p style={{ fontSize: '1.12rem', lineHeight: 1.9, color: '#0f172a', margin: 0 }}>
                 Cada vida perdida representa a un hijo, padre, madre, amigo o compañero que deja una huella

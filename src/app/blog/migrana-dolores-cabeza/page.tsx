@@ -23,7 +23,7 @@ export default function BlogPostMigranaODolores() {
         }}
       >
         <Image
-          src="/images/blog/migrana-hero.jpg"
+          src="/images/migrana1.png"
           alt="¿Migraña o dolores de cabeza?"
           fill
           priority
@@ -77,7 +77,7 @@ export default function BlogPostMigranaODolores() {
               }}
             >
               <Image
-                src="/images/blog/migrana-intro.jpg"
+                src="/images/migrana2.png"
                 alt="Dolor de cabeza"
                 width={1920}
                 height={1080}
@@ -118,7 +118,7 @@ export default function BlogPostMigranaODolores() {
               }}
             >
               <Image
-                src="/images/blog/migrana-que-es.jpg"
+                src="/images/migrana3.png"
                 alt="Persona con migraña"
                 width={1600}
                 height={1067}
@@ -212,7 +212,7 @@ export default function BlogPostMigranaODolores() {
               }}
             >
               <Image
-                src="/images/blog/migrana-aura.jpg"
+                src="/images/migrana4.png"
                 alt="Migraña con aura"
                 width={1600}
                 height={1067}

@@ -23,7 +23,7 @@ export default function BlogPostDiaMundialDelLinfoma() {
         }}
       >
         <Image
-          src="/images/blog/linfoma-hero-pdf.jpg"
+          src="/images/linfoma-banner.png"
           alt="Día Mundial del Linfoma"
           fill
           priority
@@ -84,7 +84,7 @@ export default function BlogPostDiaMundialDelLinfoma() {
       <section style={{ background: '#f1f5f9', padding: '2.25rem 1rem' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <h2 style={{ color: '#1e88e5', fontWeight: 900, fontSize: 'clamp(1.35rem, 3vw, 2rem)', margin: '0 0 1rem' }}>
-            ¿Qué es la migraña?
+            Tipos de linfomas
           </h2>
 
           <p style={{ fontSize: '1.12rem', lineHeight: 1.9, color: '#0f172a', marginBottom: '1rem' }}>
@@ -121,7 +121,7 @@ export default function BlogPostDiaMundialDelLinfoma() {
             {/* Columna izquierda: Factores de riesgo (título como en PDF) */}
             <div>
               <h2 style={{ color: '#1e88e5', fontWeight: 900, fontSize: 'clamp(1.35rem, 3vw, 2rem)', margin: '0 0 1rem' }}>
-                Migraña con aura vs. migraña sin aura
+                Factores de riesgo
               </h2>
               <p style={{ fontSize: '1.12rem', lineHeight: 1.9, color: '#0f172a', margin: 0 }}>
                 Aunque muchas veces no se conoce la causa exacta, algunos factores pueden aumentar el riesgo de desarrollar linfoma:

@@ -22,7 +22,7 @@ export default function DiaMundialFibrosisQuisticaPage() {
         }}
       >
         <Image
-          src="/images/blog/fq-hero.jpg"
+          src="/images/fibrosis.png"
           alt="Día Mundial de la Fibrosis Quística"
           fill
           priority
@@ -64,7 +64,7 @@ export default function DiaMundialFibrosisQuisticaPage() {
           <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <div style={{ width: 'min(980px, 100%)', borderRadius: 24, overflow: 'hidden', boxShadow: '0 10px 24px rgba(0,0,0,0.12)' }}>
               <Image
-                src="/images/blog/fq-intro.jpg"
+                src="/images/fibrosis2.png"
                 alt="Consulta sobre síntomas respiratorios"
                 width={1920}
                 height={1080}
@@ -108,7 +108,7 @@ export default function DiaMundialFibrosisQuisticaPage() {
             </div>
             <div style={{ borderRadius: 22, overflow: 'hidden', boxShadow: '0 10px 24px rgba(0,0,0,0.12)' }}>
               <Image
-                src="/images/blog/fq-neonatal.jpg"
+                src="/images/fibrosis3.png"
                 alt="Prueba del talón en recién nacido"
                 width={1600}
                 height={1067}
@@ -125,7 +125,7 @@ export default function DiaMundialFibrosisQuisticaPage() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', alignItems: 'center' }}>
             <div style={{ borderRadius: 22, overflow: 'hidden', boxShadow: '0 10px 24px rgba(0,0,0,0.12)' }}>
               <Image
-                src="/images/blog/fq-radiografia.jpg"
+                src="/images/fibrosis4.png"
                 alt="Revisión de radiografía pulmonar"
                 width={1600}
                 height={1067}
@@ -145,7 +145,7 @@ export default function DiaMundialFibrosisQuisticaPage() {
         </div>
       </section>
 
-      {/* CTA azul */}
+      {/* CTA AZUL */}
       <section style={{ background: '#1991eb', padding: '1.25rem 1rem', marginTop: '2rem' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <p
@@ -157,12 +157,56 @@ export default function DiaMundialFibrosisQuisticaPage() {
               textAlign: 'center',
             }}
           >
-            Agenda tu cita con nuestros especialistas y recibe acompañamiento integral para ti y tu familia.
+            En <strong>Bihospharma</strong> contamos con profesionales dispuestos a acompañarte
+            en el cuidado de tu salud. Si sufres de migrañas o dolores de cabeza frecuentes,
+            agenda tu cita y recibe la atención que necesitas.
           </p>
         </div>
       </section>
 
-      {/* Contacto */}
+      {/* Centered CTA button (match services style) */}
+      <section className="ctaButton" style={{ background: '#ffffff', padding: '1.5rem 1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <a
+            href="https://wa.me/573001234567?text=Hola%2C%20quiero%20agendar%20una%20cita"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              background: 'linear-gradient(180deg, #2EA0DF 0%, #1c82c3 100%)',
+              color: '#ffffff',
+              padding: '0.95rem 1.8rem',
+              borderRadius: 9999,
+              fontWeight: 800,
+              letterSpacing: '0.02em',
+              fontSize: 'clamp(0.98rem, 1.9vw, 1.25rem)',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 12,
+              textDecoration: 'none',
+              boxShadow: '0 8px 16px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.4)',
+              border: '3px solid #ffffff'
+            }}
+          >
+            <span aria-hidden style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 38,
+              height: 38,
+              borderRadius: 9999,
+              border: '2px solid #ffffff',
+              background: 'rgba(255,255,255,0.18)'
+            }}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                <path d="M20.52 3.48A11.79 11.79 0 0012 0C5.373 0 0 5.373 0 12a11.94 11.94 0 001.64 6.01L0 24l6.1-1.6A11.96 11.96 0 0012 24c6.627 0 12-5.373 12-12 0-3.2-1.25-6.21-3.48-8.52zm-8.5 16.07a8.5 8.5 0 01-4.58-1.3l-.33-.2-3.1.81.83-3.02-.21-.34a8.5 8.5 0 1110.4 3.05 8.44 8.44 0 01-3.01 1zm4.32-5.4c-.24-.12-1.42-.7-1.64-.78s-.38-.12-.54.12-.62.78-.76.94-.28.18-.52.06a6.54 6.54 0 01-1.92-1.18 7.28 7.28 0 01-1.35-1.68c-.14-.24 0-.36.1-.48.1-.1.24-.26.36-.4a1.5 1.5 0 00.24-.4.25.25 0 00-.02-.4c-.06-.06-.54-1.3-.74-1.8s-.38-.42-.54-.42h-.46a1.4 1.4 0 00-1 .48 4.15 4.15 0 00-1.28 3.06 6.62 6.62 0 003.05 4.72 13.9 13.9 0 004.06 2.02 4.43 4.43 0 002 .16 3.27 3.27 0 001.98-1.44 2.91 2.91 0 00.2-1.44c-.06-.12-.24-.18-.54-.3z"/>
+              </svg>
+            </span>
+            <span style={{ fontSize: 'clamp(0.95rem, 2.6vw, 1.2rem)' }}>AGENDA TU CITA</span>
+          </a>
+        </div>
+      </section>
+
+      {/* CONTACTO */}
       <section className="contact" style={{ position: 'relative', background: '#ffffff', padding: '3rem 1rem' }}>
         <div style={{ position: 'absolute', right: 0, bottom: -30, width: 320, height: 320, opacity: 0.12, pointerEvents: 'none' }}>
           <Image src="/images/bihospharma-logo-banner.png" alt="" fill style={{ objectFit: 'contain' }} />
