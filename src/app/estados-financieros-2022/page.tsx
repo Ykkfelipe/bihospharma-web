@@ -21,6 +21,7 @@ export default function PDFViewer() {
     // Configure PDF.js worker on client before rendering <Document>
     (async () => {
       try {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mod: any = await import("react-pdf");
         const v = mod?.pdfjs?.version || '3.11.174';
         if (mod?.pdfjs?.GlobalWorkerOptions) {
