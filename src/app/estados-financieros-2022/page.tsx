@@ -5,8 +5,8 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
 // Dynamically import react-pdf only on the client to avoid server bundling issues
-const Document: any = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false });
-const Page: any = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false });
+const Document: any = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false, loading: () => null });
+const Page: any = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false, loading: () => null });
 
 // Note: worker configuration is done inside the component's effect
 
