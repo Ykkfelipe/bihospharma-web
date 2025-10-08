@@ -1,40 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-
-// Use the browser ESM entry to avoid node-canvas
-const Document = dynamic(
-  () => import('react-pdf/dist/esm/entry.webpack').then(m => m.Document),
-  { ssr: false, loading: () => null }
-);
-const Page = dynamic(
-  () => import('react-pdf/dist/esm/entry.webpack').then(m => m.Page),
-  { ssr: false, loading: () => null }
-);
-
-export default function PdfViewer({ file, width = 900 }: { file: string; width?: number }) {
-  const [numPages, setNumPages] = useState<number>(0);
-
-  // Set the worker at runtime from the same browser entry
-  useEffect(() => {
-    (async () => {
-      const { pdfjs } = await import('react-pdf/dist/esm/entry.webpack');
-      pdfjs.GlobalWorkerOptions.workerSrc =
-        `//unpkg.com/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs`;
-    })();
-  }, []);
-
+// Placeholder client component to avoid importing react-pdf in builds.
+// Estados pages now use PdfIframe for robust rendering and zero bundling issues.
+export default function PdfViewer(props: { file: string; title?: string }) {
   return (
-    <div style={{ width: '100%', maxWidth: width, margin: '0 auto' }}>
-      <Document
-        file={file}
-        onLoadSuccess={(doc: { numPages: number }) => setNumPages(doc.numPages)}
-      >
-        {Array.from({ length: numPages }, (_, i) => (
-          <Page key={i} pageNumber={i + 1} width={width} />
-        ))}
-      </Document>
+    <div style={{ padding: '1rem', textAlign: 'center', color: '#6b7280' }}>
+      Visor PDF deshabilitado en esta versión. Usa PdfIframe en las páginas.
     </div>
   );
 }
