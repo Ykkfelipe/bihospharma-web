@@ -1,14 +1,16 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import type { DocumentProps, PageProps } from "react-pdf";
+// Avoid importing react-pdf types server-side; define minimal local types
+type DocumentProps = { file: string | File | Uint8Array; onLoadSuccess?: (info: { numPages: number }) => void };
+type PageProps = { pageNumber: number; width?: number; renderTextLayer?: boolean; renderAnnotationLayer?: boolean };
 // Avoid importing react-pdf default CSS that may affect layout.
 // We'll keep rendering clean without text/annotation layers to prevent overlays
 // that can look like duplicated pages.
 
 // Dynamically import react-pdf components client-side only
-const Document = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false, loading: () => null }) as React.ComponentType<DocumentProps>;
-const Page = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false, loading: () => null }) as React.ComponentType<PageProps>;
+const Document = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false, loading: () => null }) as unknown as React.ComponentType<DocumentProps>;
+const Page = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false, loading: () => null }) as unknown as React.ComponentType<PageProps>;
 
 type Props = {
   file: string;
