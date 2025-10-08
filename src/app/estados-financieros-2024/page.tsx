@@ -1,5 +1,5 @@
 "use client";
-import PdfViewer from "@/app/components/clients/PDFViewer";
+import PdfIframe from "@/app/components/clients/PdfIframe";
 
 export default function Estados2024() {
   return (
@@ -13,7 +13,7 @@ export default function Estados2024() {
         <div style={{ width: 64, height: 4, background: '#0F1A2A', borderRadius: 2 }} />
         <div style={{ width: 32, height: 4, background: '#1f78c0', borderRadius: 2 }} />
       </div>
-      <PdfViewer file="/EEFF_DIC_2024.pdf" title="Estados Financieros 2024" mode="book" />
+      <PdfIframe file="/EEFF_DIC_2024.pdf" title="Estados Financieros 2024" />
     </div>
   );
 }
