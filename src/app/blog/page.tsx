@@ -53,6 +53,24 @@ export default function BlogIndexPage() {
             </div>
           </article>
 
+          {/* Síndrome de Burnout */}
+          <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
+            <div className="relative w-full h-48 rounded-lg overflow-hidden">
+              <Image src="/images/burnout-card.png" alt="Síndrome de Burnout" fill style={{ objectFit: 'cover' }} />
+            </div>
+            <div className="p-4 flex flex-col h-full">
+              <h2 className="text-lg font-bold text-gray-800">
+                Síndrome de Burnout: cuando el trabajo se vuelve agotador
+              </h2>
+              <p className="text-gray-700 leading-relaxed mt-2 mb-4">
+                El agotamiento laboral crónico que afecta la energía, la motivación y el desempeño. Conoce causas, síntomas y estrategias para prevenir y manejar el burnout.
+              </p>
+              <div className="mt-auto pt-2">
+                <Link href="/blog/sindrome-de-burnout-cuando-el-trabajo-se-vuelve-agotador" className={btn}>Leer más</Link>
+              </div>
+            </div>
+          </article>
+
           {/* ¿Migraña o dolores de cabeza? */}
           <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
             <div className="relative w-full h-48 rounded-lg overflow-hidden">
@@ -135,6 +153,38 @@ export default function BlogIndexPage() {
               </p>
               <div className="mt-auto pt-2">
                 <Link href="/blog/dia-mundial-corazon" className={btn}>Leer más</Link>
+              </div>
+            </div>
+          </article>
+
+          {/* Día Mundial de la Parálisis Cerebral */}
+          <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
+            <div className="relative w-full h-48 rounded-lg overflow-hidden">
+              <Image src="/images/general-banner2.png" alt="Día Mundial de la Parálisis Cerebral" fill style={{ objectFit: 'cover' }} />
+            </div>
+            <div className="p-4 flex flex-col h-full">
+              <h2 className="text-lg font-bold text-gray-800">Día Mundial de la Parálisis Cerebral</h2>
+              <p className="text-gray-700 leading-relaxed mt-2 mb-4">
+                Inclusión, esperanza y resiliencia: visibilizamos la parálisis cerebral, sus apoyos, terapias y el compromiso con la inclusión.
+              </p>
+              <div className="mt-auto pt-2">
+                <Link href="/blog/dia-mundial-paralisis-cerebral" className={btn}>Leer más</Link>
+              </div>
+            </div>
+          </article>
+
+          {/* Día Mundial de los Cuidados Paliativos */}
+          <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
+            <div className="relative w-full h-48 rounded-lg overflow-hidden">
+              <Image src="/images/cuidados-card.png" alt="Día Mundial de los Cuidados Paliativos" fill style={{ objectFit: 'cover' }} />
+            </div>
+            <div className="p-4 flex flex-col h-full">
+              <h2 className="text-lg font-bold text-gray-800">Día Mundial de los Cuidados Paliativos: cumplir la promesa del acceso universal</h2>
+              <p className="text-gray-700 leading-relaxed mt-2 mb-4">
+                Los cuidados paliativos son un derecho. Conoce por qué es crucial garantizar su acceso universal y cómo podemos contribuir desde la comunidad y las políticas públicas.
+              </p>
+              <div className="mt-auto pt-2">
+                <Link href="/blog/dia-mundial-cuidados-paliativos" className={btn}>Leer más</Link>
               </div>
             </div>
           </article>
