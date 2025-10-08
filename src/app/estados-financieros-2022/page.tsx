@@ -1,10 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
+import dynamic from "next/dynamic";
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+// Dynamically import react-pdf only on the client to avoid server bundling issues
+const Document: any = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false });
+const Page: any = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false });
+
+// Note: worker configuration is done inside the component's effect
 
 export default function PDFViewer() {
   const [numPages, setNumPages] = useState<number | null>(null);
@@ -12,6 +16,19 @@ export default function PDFViewer() {
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
+    // Configure PDF.js worker on client
+    (async () => {
+      try {
+        const mod = await import("react-pdf");
+        const { pdfjs } = mod as any;
+        if (pdfjs?.GlobalWorkerOptions) {
+          pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+        }
+      } catch (e) {
+        console.warn('Failed to configure pdfjs worker', e);
+      }
+    })();
+
     function handleResize() {
       setWindowWidth(window.innerWidth);
     }
