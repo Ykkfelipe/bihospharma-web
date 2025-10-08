@@ -1,22 +1,32 @@
 'use client';
+
 import { useState } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-import 'react-pdf/dist/esm/Page/TextLayer.css';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
 
-// Use the worker from the CDN to avoid bundling it server-side
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// match your installed pdfjs-dist version
+pdfjs.GlobalWorkerOptions.workerSrc =
+  `//unpkg.com/pdfjs-dist@4.10.38/build/pdf.worker.min.mjs`;
+type PdfViewerProps = {
+  file: string;
+  width?: number;
+};
 
-export type PDFViewerProps = { file: string };
-
-export default function PDFViewer({ file }: PDFViewerProps) {
+export default function PdfViewer({ file, width = 900 }: PdfViewerProps) {
   const [numPages, setNumPages] = useState<number>(0);
+
+  const handleLoadSuccess = ({ numPages }: { numPages: number }) => {
+    setNumPages(numPages);
+  };
+
   return (
-    <Document file={file} onLoadSuccess={({ numPages }) => setNumPages(numPages)}>
-      {Array.from({ length: numPages }, (_, i) => (
-        <Page key={i} pageNumber={i + 1} />
-      ))}
-    </Document>
+    <div style={{ width: '100%', maxWidth: width, margin: '0 auto' }}>
+      <Document file={file} onLoadSuccess={handleLoadSuccess}>
+        {Array.from({ length: numPages }, (_, i) => (
+          <Page key={i} pageNumber={i + 1} width={width} />
+        ))}
+      </Document>
+    </div>
   );
-  
 }

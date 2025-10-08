@@ -1,12 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import type { DocumentProps, PageProps } from "react-pdf";
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
 // Dynamically import react-pdf only on the client to avoid server bundling issues
-const Document: any = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false, loading: () => null });
-const Page: any = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false, loading: () => null });
+const Document = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false, loading: () => null }) as React.ComponentType<DocumentProps>;
+const Page = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false, loading: () => null }) as React.ComponentType<PageProps>;
 
 // Note: worker configuration is done inside the component's effect
 
@@ -14,21 +15,23 @@ export default function PDFViewer() {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [windowWidth, setWindowWidth] = useState(0);
+  const [pdfReady, setPdfReady] = useState(false);
 
   useEffect(() => {
-    // Configure PDF.js worker on client
+    // Configure PDF.js worker on client before rendering <Document>
     (async () => {
       try {
-        const mod = await import("react-pdf");
-        const { pdfjs } = mod as any;
-        if (pdfjs?.GlobalWorkerOptions) {
-          pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+        const mod: any = await import("react-pdf");
+        const v = mod?.pdfjs?.version || '3.11.174';
+        if (mod?.pdfjs?.GlobalWorkerOptions) {
+          mod.pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${v}/build/pdf.worker.min.js`;
         }
       } catch (e) {
         console.warn('Failed to configure pdfjs worker', e);
+      } finally {
+        setPdfReady(true);
       }
     })();
-
     function handleResize() {
       setWindowWidth(window.innerWidth);
     }
@@ -78,9 +81,15 @@ export default function PDFViewer() {
         }} />
       </h1>
       <div style={{ background: "#fff", padding: "1rem", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
-        <Document file="/EEFF_DIC_2022.pdf" onLoadSuccess={onDocumentLoadSuccess}>
-          <Page pageNumber={pageNumber} width={Math.min(windowWidth - 32, 600)} />
-        </Document>
+        {pdfReady ? (
+          <Document file="/EEFF_DIC_2022.pdf" onLoadSuccess={onDocumentLoadSuccess}>
+            <Page pageNumber={pageNumber} width={Math.min(windowWidth - 32, 600)} />
+          </Document>
+        ) : (
+          <div style={{ width: Math.min(windowWidth - 32, 600), height: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>
+            Cargando visor de PDF...
+          </div>
+        )}
         <div style={{ marginTop: "1rem", textAlign: "center" }}>
           <button onClick={() => setPageNumber(prev => Math.max(prev - 1, 1))} disabled={pageNumber <= 1}>
             Previous
