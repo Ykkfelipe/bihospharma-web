@@ -1,6 +1,5 @@
 "use client";
-
-import Image from 'next/image';
+import React from "react";
 
 type Props = {
   file: string;
@@ -19,8 +18,24 @@ export default function PdfIframe({ file, title }: Props) {
       </div>
 
       <div style={{ marginTop: 16, display: 'flex', gap: 12, alignItems: 'center' }}>
-        <a href={file} download style={{ background: '#1f78c0', color: '#fff', padding: '0.6rem 1rem', borderRadius: 8, textDecoration: 'none', fontWeight: 700 }}>Descargar PDF</a>
-        <a href={file} target="_blank" rel="noopener noreferrer" style={{ color: '#1f78c0' }}>Abrir en nueva pestaña</a>
+        <a
+          href={file}
+          download
+          style={{
+            background: '#1f78c0',
+            color: '#fff',
+            padding: '0.6rem 1rem',
+            borderRadius: 8,
+            textDecoration: 'none',
+            fontWeight: 700
+          }}
+        >
+          Descargar PDF
+        </a>
+
+        <a href={file} target="_blank" rel="noopener noreferrer" style={{ color: '#1f78c0' }}>
+          Abrir en nueva pestaña
+        </a>
       </div>
     </div>
   );
