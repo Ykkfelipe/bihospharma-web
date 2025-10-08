@@ -27,7 +27,10 @@ export default function PdfViewer({ file, width = 900 }: { file: string; width?:
 
   return (
     <div style={{ width: '100%', maxWidth: width, margin: '0 auto' }}>
-      <Document file={file} onLoadSuccess={(doc) => setNumPages((doc as any).numPages)}>
+      <Document
+        file={file}
+        onLoadSuccess={(doc: { numPages: number }) => setNumPages(doc.numPages)}
+      >
         {Array.from({ length: numPages }, (_, i) => (
           <Page key={i} pageNumber={i + 1} width={width} />
         ))}
