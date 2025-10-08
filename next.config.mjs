@@ -1,3 +1,5 @@
+import webpack from 'webpack';
+
 /**
  * Next.js config to avoid bundling native canvas from react-pdf/pdfjs on server.
  */
@@ -21,6 +23,10 @@ const nextConfig = {
       ...(config.resolve.fallback || {}),
       canvas: false,
     };
+
+    // Ignore any native .node binaries (like canvas/build/Release/canvas.node)
+    config.plugins = config.plugins || [];
+    config.plugins.push(new webpack.IgnorePlugin({ resourceRegExp: /\.node$/ }));
 
     return config;
   },
