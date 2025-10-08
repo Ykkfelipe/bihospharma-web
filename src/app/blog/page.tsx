@@ -56,7 +56,7 @@ export default function BlogIndexPage() {
           {/* Síndrome de Burnout */}
           <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
             <div className="relative w-full h-48 rounded-lg overflow-hidden">
-              <Image src="/images/burnout-card.png" alt="Síndrome de Burnout" fill style={{ objectFit: 'cover' }} />
+              <Image src="/images/burnout.png" alt="Síndrome de Burnout" fill style={{ objectFit: 'cover' }} />
             </div>
             <div className="p-4 flex flex-col h-full">
               <h2 className="text-lg font-bold text-gray-800">
@@ -160,7 +160,7 @@ export default function BlogIndexPage() {
           {/* Día Mundial de la Parálisis Cerebral */}
           <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
             <div className="relative w-full h-48 rounded-lg overflow-hidden">
-              <Image src="/images/general-banner2.png" alt="Día Mundial de la Parálisis Cerebral" fill style={{ objectFit: 'cover' }} />
+              <Image src="/images/paralisis1.png" alt="Día Mundial de la Parálisis Cerebral" fill style={{ objectFit: 'cover' }} />
             </div>
             <div className="p-4 flex flex-col h-full">
               <h2 className="text-lg font-bold text-gray-800">Día Mundial de la Parálisis Cerebral</h2>
@@ -176,7 +176,7 @@ export default function BlogIndexPage() {
           {/* Día Mundial de los Cuidados Paliativos */}
           <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
             <div className="relative w-full h-48 rounded-lg overflow-hidden">
-              <Image src="/images/cuidados-card.png" alt="Día Mundial de los Cuidados Paliativos" fill style={{ objectFit: 'cover' }} />
+              <Image src="/images/cuidados1.png" alt="Día Mundial de los Cuidados Paliativos" fill style={{ objectFit: 'cover' }} />
             </div>
             <div className="p-4 flex flex-col h-full">
               <h2 className="text-lg font-bold text-gray-800">Día Mundial de los Cuidados Paliativos: cumplir la promesa del acceso universal</h2>

@@ -14,7 +14,7 @@ export default function BlogPostCuidadosPaliativos() {
           overflow: 'hidden',
         }}
       >
-        <Image src="/images/cuidados-000.png" alt="Día Mundial de los Cuidados Paliativos" fill priority style={{ objectFit: 'cover' }} />
+        <Image src="/images/cuidados1.png" alt="Día Mundial de los Cuidados Paliativos" fill priority style={{ objectFit: 'cover' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.35)' }} />
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 1100, padding: '0 1rem' }}>
           <h1
