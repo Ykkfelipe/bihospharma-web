@@ -53,6 +53,24 @@ export default function BlogIndexPage() {
             </div>
           </article>
 
+          {/* Día Mundial de la Salud Mental */}
+          <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
+            <div className="relative w-full h-48 rounded-lg overflow-hidden">
+              <Image src="/images/mental.png" alt="Día Mundial de la Salud Mental" fill style={{ objectFit: 'cover' }} />
+            </div>
+            <div className="p-4 flex flex-col h-full">
+              <h2 className="text-lg font-bold text-gray-800">
+                Día Mundial de la Salud Mental: cuidar la mente también es cuidar la vida
+              </h2>
+              <p className="text-gray-700 leading-relaxed mt-2 mb-4">
+                Una jornada para recordar la importancia de cuidar la salud mental. Recursos, apoyo y acciones para proteger el bienestar emocional.
+              </p>
+              <div className="mt-auto pt-2">
+                <Link href="/blog/dia-mundial-salud-mental" className={btn}>Leer más</Link>
+              </div>
+            </div>
+          </article>
+
           {/* Síndrome de Burnout */}
           <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
             <div className="relative w-full h-48 rounded-lg overflow-hidden">

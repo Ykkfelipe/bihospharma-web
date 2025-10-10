@@ -360,21 +360,6 @@ export default function BlogPostBurnout() {
       </section>
 
       {/* CTA azul de texto */}
-      <section style={{ background: '#1991eb', padding: '1.25rem 1rem', marginTop: '2rem' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <p
-            style={{
-              margin: 0,
-              color: '#ffffff',
-              fontSize: 'clamp(1.15rem, 3vw, 1.6rem)',
-              fontWeight: 800,
-              textAlign: 'center',
-            }}
-          >
-            Agenda tu cita con nuestros especialistas y recibe acompañamiento integral para ti y tu familia.
-          </p>
-        </div>
-      </section>
 
       {/* Final tagline and CTA */}
       <section
