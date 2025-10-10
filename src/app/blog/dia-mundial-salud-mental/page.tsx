@@ -147,16 +147,16 @@ export default function DiaMundialSaludMental() {
       {/* Back to Blog removed per request */}
       
       {/* Tips list with watermark logo and image on right */}
-      <section style={{ position: 'relative', marginTop: '2rem' }}>
+      <section className="tipsSection" style={{ position: 'relative', marginTop: '2rem' }}>
         {/* Watermark logo using Next Image for consistency - larger and centered like PDF */}
-        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.06 }}>
+        <div className="watermark" style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.06 }}>
           <div style={{ position: 'relative', width: '60%', maxWidth: 760, height: '70%' }}>
             <Image src="/images/bihospharma-logo-banner.png" alt="Bihospharma logo" fill style={{ objectFit: 'contain', filter: 'grayscale(100%)' }} />
           </div>
         </div>
 
         {/* Two-column layout: flexible text + fixed right column for the image (desktop). On mobile it stacks */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 420px', gap: '2rem', alignItems: 'start' }}>
+        <div className="tipsGrid" style={{ display: 'grid', gridTemplateColumns: '1fr 420px', gap: '2rem', alignItems: 'start' }}>
           <div style={{ fontSize: '1.18rem', lineHeight: 2.05, color: '#111827' }}>
             <p style={{ marginTop: 0 }}>
               Hablar de lo que sentimos es el primer paso para cuidar la salud mental. Normalizar el diálogo sobre las emociones reduce estigmas y alivia el peso emocional.
@@ -171,17 +171,18 @@ export default function DiaMundialSaludMental() {
               <li style={{ marginBottom: '0.55rem' }}>Expresar lo que sientes en un diario te ayuda a liberar emociones y entenderte mejor.</li>
             </ul>
           </div>
-          <div style={{ position: 'relative', width: '100%', height: '420px', borderRadius: 12, overflow: 'hidden', boxShadow: '0 18px 40px rgba(0,0,0,0.12)', justifySelf: 'end' }}>
+          <div className="tipsImage" style={{ position: 'relative', width: '100%', height: '420px', borderRadius: 12, overflow: 'hidden', boxShadow: '0 18px 40px rgba(0,0,0,0.12)', justifySelf: 'end' }}>
             <Image src="/images/mental3.png" alt="Consejos salud mental" fill style={{ objectFit: 'cover', objectPosition: 'center' }} />
           </div>
         </div>
-        {/* responsive tweak: when viewport narrow, stack and make image full width */}
+        {/* Responsive tweaks for Tips section */}
         <style>{`
-          @media (max-width: 980px) {
-            section[style*="position: relative"][style*="marginTop: '2rem'"] > div:nth-of-type(2) {
-              grid-template-columns: 1fr !important;
-            }
-            section[style*="position: relative"][style*="marginTop: '2rem'"] img { object-position: center !important; }
+          /* Mobile stacking and image sizing for Tips section */
+          @media (max-width: 900px) {
+            .tipsGrid { grid-template-columns: 1fr !important; gap: 1.1rem !important; }
+            .tipsImage { height: clamp(180px, 52vw, 260px) !important; justify-self: stretch !important; }
+            .tipsImage img { object-position: center !important; }
+            .tipsSection .watermark { display: none !important; }
           }
         `}</style>
       </section>
