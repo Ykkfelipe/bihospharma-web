@@ -71,6 +71,20 @@ export default function BlogIndexPage() {
             </div>
           </article>
 
+          {/* Día Mundial del Lavado de Manos */}
+          <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
+            <div className="relative w-full h-48 rounded-lg overflow-hidden">
+              <Image src="/images/hand-heart.png" alt="Día Mundial del Lavado de Manos" fill style={{ objectFit: 'cover' }} />
+            </div>
+            <div className="p-4 flex flex-col h-full">
+              <h2 className="text-lg font-bold text-gray-800">Día Mundial del Lavado de Manos</h2>
+              <p className="text-gray-700 leading-relaxed mt-2 mb-4">Consejos prácticos y la importancia del lavado de manos para prevenir enfermedades.</p>
+              <div className="mt-auto pt-2">
+                <Link href="/blog/dia-mundial-del-lavado-de-manos" className={btn}>Leer más</Link>
+              </div>
+            </div>
+          </article>
+
           {/* Síndrome de Burnout */}
           <article className="rounded-xl border border-gray-200 overflow-hidden bg-white shadow-md flex flex-col h-full">
             <div className="relative w-full h-48 rounded-lg overflow-hidden">

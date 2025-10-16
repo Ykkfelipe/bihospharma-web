@@ -4,15 +4,10 @@ import PdfIframe from "@/app/components/clients/PdfIframe";
 export default function Estados2022() {
   return (
     <div style={{ backgroundColor: '#f7f7f7', minHeight: '100vh', padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <h1 style={{ fontSize: '2.25rem', fontWeight: 800, textAlign: 'center', marginBottom: '1.25rem', color: '#1a1a1a' }}>
-        Estados
-        <br />
-        Financieros 2022
+      <h1 style={{ fontSize: '2.25rem', fontWeight: 700, textAlign: 'center', marginBottom: '2.5rem', color: '#1a1a1a' }}>
+        <span style={{ display: 'block' }}>Estados</span>
+        <span style={{ display: 'block' }}>Financieros 2022</span>
       </h1>
-      <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: '1.5rem' }}>
-        <div style={{ width: 64, height: 4, background: '#0F1A2A', borderRadius: 2 }} />
-        <div style={{ width: 32, height: 4, background: '#1f78c0', borderRadius: 2 }} />
-      </div>
       <PdfIframe file="/EEFF_DIC_2022.pdf" title="Estados Financieros 2022" />
     </div>
   );
