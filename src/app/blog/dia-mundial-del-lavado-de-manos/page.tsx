@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import Link from 'next/link';
 
 export const metadata = {
   title: 'Día Mundial del Lavado de Manos | Bihospharma',
@@ -121,7 +120,7 @@ export default function DiaLavadoManos() {
         </div>
 
         <div style={{ flex: '1 1 320px', display: 'flex', justifyContent: 'center' }}>
-          <img
+          <Image
             className="fiveImage"
             src="/images/lavado-manos.png"
             alt="Lavado de manos con jabón"
@@ -131,6 +130,8 @@ export default function DiaLavadoManos() {
               borderRadius: 12,
               objectFit: 'cover'
             }}
+            width={380}
+            height={380}
           />
         </div>
       </section>
@@ -149,7 +150,7 @@ export default function DiaLavadoManos() {
           Adoptar este hábito previene la propagación de enfermedades y protege tu salud y la de los demás.
         </h2>
 
-        <img
+        <Image
           src="/images/lavado-manos2.png"
           alt="Niño lavándose las manos con ayuda de un adulto"
           style={{
@@ -159,6 +160,8 @@ export default function DiaLavadoManos() {
             margin: '0 auto 2.5rem auto',
             display: 'block'
           }}
+          width={700}
+          height={467}
         />
 
         <div

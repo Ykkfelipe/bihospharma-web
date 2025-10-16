@@ -2,8 +2,7 @@
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 // Avoid importing react-pdf types server-side; define minimal local types
-type DocumentProps = { file: string | File | Uint8Array; onLoadSuccess?: (info: { numPages: number }) => void; children?: React.ReactNode };
-type PageProps = { pageNumber: number; width?: number; renderTextLayer?: boolean; renderAnnotationLayer?: boolean };
+// (Keep names internal to avoid unused warnings.)
 // Avoid importing react-pdf default CSS that may affect layout.
 // We'll keep rendering clean without text/annotation layers to prevent overlays
 // that can look like duplicated pages.
@@ -11,8 +10,11 @@ type PageProps = { pageNumber: number; width?: number; renderTextLayer?: boolean
 // Dynamically import react-pdf components client-side only
 // Use loose any typing for the dynamically-loaded components so JSX children
 // are accepted without conflicting with the minimal local types above.
-const Document = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false, loading: () => null }) as unknown as React.ComponentType<any>;
-const Page = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false, loading: () => null }) as unknown as React.ComponentType<any>;
+type DocumentComponent = React.ComponentType<{ file: string; onLoadSuccess?: (info: { numPages: number }) => void; children?: React.ReactNode }>;
+type PageComponent = React.ComponentType<{ pageNumber: number; width?: number; renderTextLayer?: boolean; renderAnnotationLayer?: boolean }>;
+
+const Document = dynamic(() => import("react-pdf").then(m => m.Document as unknown as DocumentComponent), { ssr: false, loading: () => null });
+const Page = dynamic(() => import("react-pdf").then(m => m.Page as unknown as PageComponent), { ssr: false, loading: () => null });
 
 type Props = {
   file: string;
@@ -20,7 +22,7 @@ type Props = {
   mode?: 'single' | 'book';
 };
 
-export default function PdfViewer({ file, title }: Props) {
+export default function PdfViewer({ file }: Props) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [windowWidth, setWindowWidth] = useState(0);
@@ -30,8 +32,9 @@ export default function PdfViewer({ file, title }: Props) {
     // configure pdfjs worker to use local copy in /public
     (async () => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const mod: any = await import('react-pdf');
+        const mod = (await import('react-pdf')) as unknown as {
+          pdfjs?: { GlobalWorkerOptions?: { workerSrc: string } };
+        };
         if (mod?.pdfjs?.GlobalWorkerOptions) {
           // Prefer local worker shipped in public/
           mod.pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.js';
