@@ -1,9 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-// Avoid importing react-pdf types server-side; define minimal local types
-type DocumentProps = { file: string | File | Uint8Array; onLoadSuccess?: (info: { numPages: number }) => void; children?: React.ReactNode };
-type PageProps = { pageNumber: number; width?: number; renderTextLayer?: boolean; renderAnnotationLayer?: boolean };
 // Avoid importing react-pdf default CSS that may affect layout.
 // We'll keep rendering clean without text/annotation layers to prevent overlays
 // that can look like duplicated pages.
@@ -11,8 +8,8 @@ type PageProps = { pageNumber: number; width?: number; renderTextLayer?: boolean
 // Dynamically import react-pdf components client-side only
 // Use loose any typing for the dynamically-loaded components so JSX children
 // are accepted without conflicting with the minimal local types above.
-const Document = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false, loading: () => null }) as unknown as React.ComponentType<any>;
-const Page = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false, loading: () => null }) as unknown as React.ComponentType<any>;
+const Document = dynamic(() => import("react-pdf").then(m => m.Document), { ssr: false, loading: () => null }) as unknown as React.ComponentType<Record<string, unknown>>;
+const Page = dynamic(() => import("react-pdf").then(m => m.Page), { ssr: false, loading: () => null }) as unknown as React.ComponentType<Record<string, unknown>>;
 
 type Props = {
   file: string;
@@ -20,7 +17,7 @@ type Props = {
   mode?: 'single' | 'book';
 };
 
-export default function PdfViewer({ file, title }: Props) {
+export default function PdfViewer({ file }: Props) {
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [windowWidth, setWindowWidth] = useState(0);
