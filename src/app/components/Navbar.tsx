@@ -78,6 +78,9 @@ export default function Navbar() {
             <Link href="/contact">
               <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Contacto</span>
             </Link>
+            <Link href="/pqrs">
+              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">PQRS</span>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -136,6 +139,9 @@ export default function Navbar() {
           </div>
           <Link href="/contact">
             <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Contacto</span>
+          </Link>
+          <Link href="/pqrs">
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">PQRS</span>
           </Link>
         </div>
       )}
