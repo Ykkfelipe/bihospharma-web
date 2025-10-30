@@ -13,14 +13,18 @@ export default function Footer() {
       </div>
       <div className="text-[#009cde] font-medium">
         <a
-          href="#"
+          href="/TRATAMIENTO%20%20Y%20PROTECCION%20DE%20DATOS.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-[#009cde] font-medium hover:underline mr-2"
         >
           Política Protección de datos
         </a>
         -
         <a
-          href="#"
+          href="/TRATAMIENTO%20%20Y%20PROTECCION%20DE%20DATOS.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-[#009cde] font-medium hover:underline ml-2"
         >
           Formato tratamiento de datos
