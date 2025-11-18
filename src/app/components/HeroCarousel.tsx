@@ -11,8 +11,8 @@ type HeroCarouselProps = {
 };
 
 const images = [
-  '/images/Banner 2025 (6).png',
-  '/images/Banner 2025 (5).png',
+  '/images/Banner1.png',
+  '/images/Banner2.png',
   '/images/3.png',
 ];
 
