@@ -11,15 +11,15 @@ const MOBILE_BREAKPOINT = 720;
 
 type FormPayload = {
   date: string;
-  fullName: string;
-  idNumber: string;
+  registrantName: string;
+  registrantId: string;
   phone: string;
   eps: string;
   email: string;
   address: string;
   requestType: RequestType | '';
   description: string;
-  signature: string;
+  // signature removed per UX feedback; registrant name & id used instead
 };
 
 export default function PQRSFormCard() {
@@ -86,21 +86,20 @@ export default function PQRSFormCard() {
 
     const payload: FormPayload = {
       date: (formData.get('date') ?? '').toString().trim(),
-      fullName: (formData.get('fullName') ?? '').toString().trim(),
-      idNumber: (formData.get('idNumber') ?? '').toString().trim(),
+      registrantName: (formData.get('registrantName') ?? '').toString().trim(),
+      registrantId: (formData.get('registrantId') ?? '').toString().trim(),
       phone: (formData.get('phone') ?? '').toString().trim(),
       eps: (formData.get('eps') ?? '').toString().trim(),
       email: (formData.get('email') ?? '').toString().trim(),
       address: (formData.get('address') ?? '').toString().trim(),
       requestType: (formData.get('requestType') ?? '').toString() as RequestType | '',
       description: (formData.get('description') ?? '').toString().trim(),
-      signature: (formData.get('signature') ?? '').toString().trim(),
     };
 
     const missing: string[] = [];
     if (!payload.date) missing.push('Fecha');
-    if (!payload.fullName) missing.push('Nombre y apellidos');
-    if (!payload.idNumber) missing.push('Documento de identidad');
+    if (!payload.registrantName) missing.push('Nombre y apellidos de quien registra');
+    if (!payload.registrantId) missing.push('Documento de identidad de quien registra');
     if (!payload.phone) missing.push('Teléfono');
     if (!payload.email) missing.push('Correo electrónico');
     if (!payload.requestType) missing.push('Tipo de solicitud');
@@ -174,11 +173,7 @@ export default function PQRSFormCard() {
 
           <div style={gridStyles}>
             <InputLine label="Fecha:" name="date" placeholder="DD/MM/AAAA" required compact={isCompact} />
-            <div style={isCompact ? { display: 'none' } : undefined} />
-            <div style={spanStyles}>
-              <InputLine label="Nombre y apellidos:" name="fullName" placeholder="Nombre completo" required compact={isCompact} />
-            </div>
-            <InputLine label="Documento de identidad:" name="idNumber" placeholder="Número" required compact={isCompact} />
+            {/* Nombre y documento del registrante se solicitan al final del formulario */}
             <div style={pairStyles}>
               <InputLine label="Tel:" name="phone" placeholder="Teléfono" required compact={isCompact} />
               <InputLine label="EPS:" name="eps" placeholder="EPS" compact={isCompact} />
@@ -236,7 +231,12 @@ export default function PQRSFormCard() {
           </div>
 
           <div style={{ marginTop: 38 }}>
-            <InputLine label="Firma y CC.:" name="signature" placeholder="" compact={isCompact} />
+            <div style={sectionLabel}>Datos de quien registra la solicitud</div>
+            <div style={{ marginTop: 12, display: 'grid', gridTemplateColumns: isCompact ? '1fr' : '1fr 1fr', gap: 12 }}>
+              <InputLine label="Nombre de quien registra:" name="registrantName" placeholder="Nombre completo" required compact={isCompact} />
+              <InputLine label="Documento de quien registra:" name="registrantId" placeholder="Número" required compact={isCompact} />
+            </div>
+            <p style={{ ...disclaimerStyles, marginTop: 12 }}>Puedes registrar la solicitud a nombre de un familiar o tercero si es necesario.</p>
           </div>
 
           <div style={{ marginTop: 34, display: 'flex', flexDirection: 'column', gap: 14 }}>
