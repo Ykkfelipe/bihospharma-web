@@ -4,15 +4,15 @@ const allowedTypes = new Set(['Petición', 'Queja', 'Reclamo', 'Sugerencia', 'Fe
 
 type PQRSSubmission = {
   date: string;
-  fullName: string;
-  idNumber: string;
+  registrantName: string;
+  registrantId: string;
   phone: string;
   eps?: string;
   email: string;
   address?: string;
   requestType: string;
   description: string;
-  signature?: string;
+  // signature removed; registrant name & id are required
 };
 
 export const dynamic = 'force-dynamic';
@@ -32,21 +32,21 @@ export async function POST(request: NextRequest) {
 
   const payload = {
     date: sanitize(body.date),
-    fullName: sanitize(body.fullName),
-    idNumber: sanitize(body.idNumber),
+    registrantName: sanitize(body.registrantName),
+    registrantId: sanitize(body.registrantId),
     phone: sanitize(body.phone),
     eps: sanitize(body.eps),
     email: sanitize(body.email),
     address: sanitize(body.address),
     requestType: sanitize(body.requestType),
     description: sanitize(body.description),
-    signature: sanitize(body.signature),
+    // signature intentionally not captured
   };
 
   const missing: string[] = [];
   if (!payload.date) missing.push('Fecha');
-  if (!payload.fullName) missing.push('Nombre y apellidos');
-  if (!payload.idNumber) missing.push('Documento de identidad');
+  if (!payload.registrantName) missing.push('Nombre y apellidos de quien registra');
+  if (!payload.registrantId) missing.push('Documento de identidad de quien registra');
   if (!payload.phone) missing.push('Teléfono');
   if (!payload.email) missing.push('Correo electrónico');
   if (!payload.requestType) missing.push('Tipo de solicitud');
@@ -102,7 +102,7 @@ async function deliverViaResend(summary: SummaryPayload) {
     body: JSON.stringify({
       from: process.env.PQRS_EMAIL_FROM ?? 'pqrs@bihospharma.com',
       to: recipients,
-      subject: `PQRS (${summary.type}) - ${summary.fullName}`,
+      subject: `PQRS (${summary.type}) - ${summary.registrantName}`,
       text: summary.text,
       html: summary.html,
     }),
@@ -145,15 +145,15 @@ async function deliverViaWebhook(summary: SummaryPayload) {
 
 type FormFields = {
   date: string;
-  fullName: string;
-  idNumber: string;
+  registrantName: string;
+  registrantId: string;
   phone: string;
   eps: string;
   email: string;
   address: string;
   requestType: string;
   description: string;
-  signature: string;
+  // signature removed
 };
 
 type SummaryPayload = FormFields & {
@@ -166,13 +166,13 @@ function buildSummary(payload: FormFields): SummaryPayload {
   return {
     ...payload,
     type: payload.requestType,
-    text: `Fecha: ${payload.date}\nNombre y apellidos: ${payload.fullName}\nDocumento de identidad: ${payload.idNumber}\nTeléfono: ${payload.phone}\nEPS: ${payload.eps || 'N/A'}\nCorreo electrónico: ${payload.email}\nDirección: ${payload.address || 'N/A'}\nTipo de solicitud: ${payload.requestType}\nDescripción:\n${payload.description}\n\nFirma y CC.: ${payload.signature || 'N/A'}`,
+    text: `Fecha: ${payload.date}\nRegistrante: ${payload.registrantName}\nDocumento registrante: ${payload.registrantId}\nTeléfono: ${payload.phone}\nEPS: ${payload.eps || 'N/A'}\nCorreo electrónico: ${payload.email}\nDirección: ${payload.address || 'N/A'}\nTipo de solicitud: ${payload.requestType}\nDescripción:\n${payload.description}`,
     html: `
       <h2 style="font-family:Arial,Helvetica,sans-serif;color:#0f2342;margin:0 0 12px">Nueva PQRS (${escapeHtml(payload.requestType)})</h2>
       <ul style="font-family:Arial,Helvetica,sans-serif;color:#1f2937;padding:0;list-style:none;margin:0 0 16px">
         <li><strong>Fecha:</strong> ${escapeHtml(payload.date)}</li>
-        <li><strong>Nombre y apellidos:</strong> ${escapeHtml(payload.fullName)}</li>
-        <li><strong>Documento de identidad:</strong> ${escapeHtml(payload.idNumber)}</li>
+        <li><strong>Registrante:</strong> ${escapeHtml(payload.registrantName)}</li>
+        <li><strong>Documento registrante:</strong> ${escapeHtml(payload.registrantId)}</li>
         <li><strong>Teléfono:</strong> ${escapeHtml(payload.phone)}</li>
         <li><strong>EPS:</strong> ${escapeHtml(payload.eps || 'N/A')}</li>
         <li><strong>Correo electrónico:</strong> ${escapeHtml(payload.email)}</li>
@@ -180,7 +180,6 @@ function buildSummary(payload: FormFields): SummaryPayload {
         <li><strong>Tipo de solicitud:</strong> ${escapeHtml(payload.requestType)}</li>
       </ul>
       <p style="font-family:Arial,Helvetica,sans-serif;color:#1f2937;margin:0 0 16px"><strong>Descripción:</strong><br/>${escapeHtml(payload.description).replace(/\n/g, '<br/>')}</p>
-      <p style="font-family:Arial,Helvetica,sans-serif;color:#1f2937;margin:0"><strong>Firma y CC.:</strong> ${escapeHtml(payload.signature || 'N/A')}</p>
     `,
   };
 }
