@@ -490,9 +490,6 @@ const gridTwoCols: CSSProperties = {
   gap: '16px 28px',
 };
 
-const spanTwoCols: CSSProperties = { gridColumn: 'span 2 / span 2' };
-const spanTwoColsMobile: CSSProperties = { gridColumn: 'span 1 / span 1' };
-
 const pairRow: CSSProperties = {
   display: 'grid',
   gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
