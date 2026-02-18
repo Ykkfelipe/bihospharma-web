@@ -137,10 +137,11 @@ export default function HeroCarousel({
               <Image
                 src={src}
                 alt={`Slide ${index + 1}`}
-                width={1300}
-                height={500}
+                width={1920}
+                height={600}
                 className="w-full h-full object-contain"
                 priority={index === 0}
+                fetchPriority={index === 0 ? 'high' : 'low'}
                 loading={index === 0 ? 'eager' : 'lazy'}
                 quality={80}
                 sizes="100vw"
