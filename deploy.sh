@@ -1,35 +1,36 @@
 #!/usr/bin/env bash
+# deploy.sh — build locally, rsync to EC2, restart PM2
+# Usage: ./deploy.sh
 set -euo pipefail
 
-# --- ensure Node 20 is used ---
-export NVM_DIR="$HOME/.nvm"
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-  . "$NVM_DIR/nvm.sh"
-  if command -v node >/dev/null 2>&1 && node -v | grep -q '^v20\.'; then
-    echo "→ Node v20 already available; skipping nvm install"
-  else
-    nvm install 20 || true
-    nvm use 20 || true
-  fi
-else
-  echo "→ nvm not installed; assuming system node is v20 or higher"
-fi
+EC2_HOST="bihos"
+EC2_APP_DIR="$HOME/bihospharma-web"
+LOCAL_APP_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-APP_DIR="$HOME/bihospharma-web"
-cd "$APP_DIR"
-
-echo "→ Pulling latest code…"
-git fetch origin main
-git reset --hard origin/main
-
-echo "→ Installing deps…"
-npm ci --prefer-offline --no-audit
-
-echo "→ Building…"
+# --- 1. Build locally ---
+echo "→ Building locally…"
+cd "$LOCAL_APP_DIR"
 npm run build
 
+# --- 2. Sync built output + source to EC2 ---
+echo "→ Syncing to EC2…"
+rsync -az --delete \
+  --exclude='.git' \
+  --exclude='node_modules' \
+  "$LOCAL_APP_DIR/" "$EC2_HOST:~/bihospharma-web/"
+
+# --- 3. Install production deps on server (fast — no build) ---
+echo "→ Installing production deps on server…"
+ssh "$EC2_HOST" "cd $EC2_APP_DIR && npm ci --omit=dev --prefer-offline --no-audit 2>/dev/null || npm install --omit=dev --prefer-offline --no-audit"
+
+# --- 4. Restart PM2 ---
 echo "→ Restarting PM2…"
-pm2 restart bihos --update-env || pm2 start npm --name bihos -- start -- -p 3000
-pm2 save
+ssh "$EC2_HOST" "
+  export NVM_DIR=\"\$HOME/.nvm\"
+  [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
+  cd $EC2_APP_DIR
+  pm2 restart bihos --update-env || pm2 start npm --name bihos -- start -- -p 3000
+  pm2 save
+"
 
 echo "✓ Deploy complete."
