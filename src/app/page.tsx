@@ -14,16 +14,18 @@ export default function Home() {
             <Image
               src="/images/services.png"
               alt="Consulta médica"
-              width={600} // Adjust based on your design
-              height={400} // At djust based on your design
+              width={600}
+              height={400}
+              loading="lazy"
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="rounded-lg w-full object-cover"
             />
           </div>
           <div>
             <h2 className="text-4xl font-bold text-black mb-4">Servicios</h2>
             <p className="text-lg text-gray-800 mb-6">
-              Ofrecemos atención de la mejor calidad para todos nuestros usuarios que acceden a los servicios, 
-              seguimiento de controles, apoyados con un excelente equipo de especialistas, profesionales, 
+              Ofrecemos atención de la mejor calidad para todos nuestros usuarios que acceden a los servicios,
+              seguimiento de controles, apoyados con un excelente equipo de especialistas, profesionales,
               técnicos y tecnólogos prestamos los servicios asistenciales con experiencia en el manejo de pacientes crónicos.
             </p>
             <a
@@ -49,6 +51,8 @@ export default function Home() {
               src="/images/artritis.png"
               alt="Artritis Reumatoide"
               fill
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               className="brightness-50"
             />
@@ -61,6 +65,8 @@ export default function Home() {
               src="/images/diabetes.png"
               alt="Diabetes"
               fill
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               className="brightness-50"
             />
@@ -75,6 +81,8 @@ export default function Home() {
               src="/images/vih.png"
               alt="VIH"
               fill
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               className="brightness-50"
             />
@@ -87,6 +95,8 @@ export default function Home() {
               src="/images/hemofilia.png"
               alt="Hemofilia"
               fill
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               className="brightness-50"
             />
@@ -99,6 +109,8 @@ export default function Home() {
               src="/images/anticoagulados.png"
               alt="Anticoagulados"
               fill
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               className="brightness-50"
             />
@@ -111,6 +123,8 @@ export default function Home() {
               src="/images/esclerosis.png"
               alt="Esclerosis Múltiple"
               fill
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               className="brightness-50"
             />
@@ -123,6 +137,8 @@ export default function Home() {
               src="/images/hipertension.png"
               alt="Diabetes e Hipertensión"
               fill
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               className="brightness-50"
             />
@@ -135,6 +151,8 @@ export default function Home() {
               src="/images/extension.png"
               alt="Extensión Domiciliaria"
               fill
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               className="brightness-50"
             />
@@ -147,6 +165,8 @@ export default function Home() {
               src="/images/nefro.png"
               alt="Nefroprotección"
               fill
+              loading="lazy"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               style={{ objectFit: 'cover' }}
               className="brightness-50"
             />
@@ -161,15 +181,15 @@ export default function Home() {
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-black mb-10">Confían en Nosotros</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-y-12 gap-x-6 items-center justify-items-center">
-            <Image src="/logos/capresoca-eps-logo.png" alt="Capresoca" width={112} height={112} className="object-contain" />
-            <Image src="/logos/medimas-eps-logo.png" alt="Medimás" width={112} height={112} className="object-contain" />
-            <Image src="/logos/logo-asmetsalud.png" alt="Asmet Salud" width={112} height={112} className="object-contain" />
-            <Image src="/logos/logo-convida.png" alt="Convida" width={112} height={112} className="object-contain" />
-            <Image src="/logos/coosalud-logo.png" alt="Coosalud" width={112} height={112} className="object-contain" />
-            <Image src="/logos/jersalud-logo.png" alt="Jersalud" width={112} height={112} className="object-contain" />
-            <Image src="/logos/logo-cohan-mas-vital.png" alt="Cohan" width={112} height={112} className="object-contain" />
-            <Image src="/logos/deposito-de-drogas-boyaca-logo.png" alt="Depósito de Drogas" width={112} height={112} className="object-contain" />
-            <Image src="/logos/logo-clinica-casanare.png" alt="Clínica Casanare" width={112} height={112} className="object-contain" />
+            <Image src="/logos/capresoca-eps-logo.png" alt="Capresoca" width={112} height={112} loading="lazy" className="object-contain" />
+            <Image src="/logos/medimas-eps-logo.png" alt="Medimás" width={112} height={112} loading="lazy" className="object-contain" />
+            <Image src="/logos/logo-asmetsalud.png" alt="Asmet Salud" width={112} height={112} loading="lazy" className="object-contain" />
+            <Image src="/logos/logo-convida.png" alt="Convida" width={112} height={112} loading="lazy" className="object-contain" />
+            <Image src="/logos/coosalud-logo.png" alt="Coosalud" width={112} height={112} loading="lazy" className="object-contain" />
+            <Image src="/logos/jersalud-logo.png" alt="Jersalud" width={112} height={112} loading="lazy" className="object-contain" />
+            <Image src="/logos/logo-cohan-mas-vital.png" alt="Cohan" width={112} height={112} loading="lazy" className="object-contain" />
+            <Image src="/logos/deposito-de-drogas-boyaca-logo.png" alt="Depósito de Drogas" width={112} height={112} loading="lazy" className="object-contain" />
+            <Image src="/logos/logo-clinica-casanare.png" alt="Clínica Casanare" width={112} height={112} loading="lazy" className="object-contain" />
           </div>
         </div>
       </section>
@@ -229,7 +249,7 @@ export default function Home() {
           </div>
           <div className="flex items-end justify-end">
             <div className="relative">
-              <Image src="/images/map.png" alt="Mapa" width={600} height={400} className="max-w-full rounded-lg" />
+              <Image src="/images/map.png" alt="Mapa" width={600} height={400} loading="lazy" sizes="(max-width: 768px) 100vw, 50vw" className="max-w-full rounded-lg" />
               {/* Invisible hotspot over the WhatsApp logo that is part of the image */}
               <a
                 href="https://wa.me/573203165870"

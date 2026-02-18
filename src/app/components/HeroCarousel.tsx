@@ -3,8 +3,7 @@
 import { useRef } from 'react';
 import Slider from 'react-slick';
 import Image from 'next/image';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+
 
 type HeroCarouselProps = {
   showDots?: boolean;
@@ -139,11 +138,9 @@ export default function HeroCarousel({
                 width={1300}
                 height={500}
                 className="w-full h-full object-contain"
-                // 1. Performance: First image priority=true (fetchpriority='high' & loading='eager')
-                // Others: default/lazy
                 priority={index === 0}
-                quality={100}
-                unoptimized={true}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                quality={80}
                 sizes="100vw"
               />
             </div>
