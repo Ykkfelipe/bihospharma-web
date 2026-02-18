@@ -17,8 +17,10 @@ const images = [
   '/images/3.png',
 ];
 
+type SlickArrowProps = { className?: string; style?: React.CSSProperties; onClick?: () => void };
+
 // Custom Arrow Components for accessibility (44x44px minimum touch target)
-function NextArrow(props: any) {
+function NextArrow(props: SlickArrowProps) {
   const { className, style, onClick } = props;
   return (
     <div
@@ -41,7 +43,7 @@ function NextArrow(props: any) {
   );
 }
 
-function PrevArrow(props: any) {
+function PrevArrow(props: SlickArrowProps) {
   const { className, style, onClick } = props;
   return (
     <div

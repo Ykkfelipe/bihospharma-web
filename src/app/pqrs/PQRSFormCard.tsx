@@ -37,7 +37,6 @@ export default function PQRSFormCard() {
   const gridStyles = isCompact
     ? { ...gridTwoCols, gridTemplateColumns: '1fr', gap: '16px' }
     : gridTwoCols;
-  const spanStyles = isCompact ? spanTwoColsMobile : spanTwoCols;
   const pairStyles = isCompact
     ? { ...pairRow, gridTemplateColumns: '1fr', gap: 14 }
     : pairRow;
