@@ -21,7 +21,7 @@ rsync -az --delete \
 
 # --- 3. Install production deps on server (fast — no build) ---
 echo "→ Installing production deps on server…"
-ssh "$EC2_HOST" "cd $EC2_APP_DIR && npm ci --omit=dev --prefer-offline --no-audit 2>/dev/null || npm install --omit=dev --prefer-offline --no-audit"
+ssh "$EC2_HOST" "cd ~/bihospharma-web && npm ci --omit=dev --prefer-offline --no-audit 2>/dev/null || npm install --omit=dev --prefer-offline --no-audit"
 
 # --- 4. Restart PM2 ---
 echo "→ Restarting PM2…"
