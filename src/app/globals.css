@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Override slick-carousel icon font to prevent font-display blocking */
+@font-face {
+  font-family: 'slick';
+  font-display: swap;
+  src: url('../../../node_modules/slick-carousel/slick/fonts/slick.woff') format('woff');
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

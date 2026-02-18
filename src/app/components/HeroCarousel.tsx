@@ -124,6 +124,7 @@ export default function HeroCarousel({
   return (
     <div
       className="w-full overflow-hidden relative"
+      style={{ minHeight: '315px' }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
