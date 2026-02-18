@@ -345,8 +345,8 @@ export default function MedicinaLaboralPage() {
           <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Laboratorio Clínico</a></p>
           <br />
           <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Estados financieros</a></p>
-          <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Trabaja con nosotros</a></p>
-          <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Escríbenos PQRFS</a></p>
+          <p><a href="/contact" style={{ color: 'white', textDecoration: 'underline' }}>Trabaja con nosotros</a></p>
+          <p><a href="/pqrs" style={{ color: 'white', textDecoration: 'underline' }}>Escríbenos PQRFS</a></p>
         </div>
         <div style={{ flex: '1 1 300px' }}>
           <h2 style={{ fontSize: '2.2rem', fontWeight: 'bold', marginBottom: '1rem' }}>Contacto</h2>

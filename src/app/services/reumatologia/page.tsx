@@ -317,8 +317,8 @@ export default function ReumatologiaPage() {
           <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Laboratorio Clínico</a></p>
           <br />
           <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Estados financieros</a></p>
-          <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Trabaja con nosotros</a></p>
-          <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Escríbenos PQRSF</a></p>
+          <p><a href="/contact" style={{ color: 'white', textDecoration: 'underline' }}>Trabaja con nosotros</a></p>
+          <p><a href="/pqrs" style={{ color: 'white', textDecoration: 'underline' }}>Escríbenos PQRSF</a></p>
         </div>
 
         <div style={{ flex: '1 1 300px' }}>
