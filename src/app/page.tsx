@@ -16,7 +16,7 @@ export default function Home() {
               alt="Consulta médica"
               width={600}
               height={400}
-              loading="lazy"
+              priority
               sizes="(max-width: 768px) 100vw, 50vw"
               className="rounded-lg w-full object-cover"
             />

@@ -100,7 +100,7 @@ export default function HeroCarousel({
       <div
         style={{
           position: 'relative',
-          marginTop: '-90px',
+          marginTop: '-50px',
           marginBottom: '16px',
         }}
       >
@@ -124,7 +124,6 @@ export default function HeroCarousel({
   return (
     <div
       className="w-full overflow-hidden relative"
-      style={{ minHeight: '315px' }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -133,7 +132,7 @@ export default function HeroCarousel({
           {images.map((src, index) => (
             <div
               key={index}
-              className="w-full aspect-[3.17/1] relative mb-10"
+              className="w-full aspect-[3.17/1] relative"
             >
               <Image
                 src={src}
