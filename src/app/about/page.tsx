@@ -31,7 +31,7 @@ export default function AboutPage() {
           </div>
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B4E] mb-6">QUIENES SOMOS</h2>
-            <p className="text-gray-700 text-lg text-justify">
+            <p className="text-gray-700 text-lg">
               Somos una compañía Colombiana orientada al manejo clínico ambulatorio de servicios de baja, mediana y alta complejidad;
               especializada en enfermedades de Alto Costo y en el suministro de productos farmacéuticos y hospitalarios.
             </p>
@@ -48,7 +48,7 @@ export default function AboutPage() {
           {/* Left side: Text and image */}
           <div className="w-full md:w-1/2 bg-white p-8 flex flex-col justify-center">
             <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B4E] mb-4">¿A qué contribuimos?</h2>
-            <p className="text-gray-700 text-lg text-justify mb-6">
+            <p className="text-gray-700 text-lg mb-6">
               Formación de Redes Integrales con modelos de gestión del riesgo como eje transversal en la prestación de servicios de salud.
               Somos una organización funcional que:
             </p>
@@ -78,9 +78,9 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B4E] mb-6">Misión</h2>
-            <p className="text-gray-700 text-lg text-justify">
-              Nuestra compañía tiene el firme compromiso de brindar a nuestros clientes y pacientes Soluciones Integrales en el sector salud. 
-              Con la calidez y eficacia necesaria: contamos con una gama amplia de profesionales capacitados para brindar una atención personalizada 
+            <p className="text-gray-700 text-lg">
+              Nuestra compañía tiene el firme compromiso de brindar a nuestros clientes y pacientes Soluciones Integrales en el sector salud.
+              Con la calidez y eficacia necesaria: contamos con una gama amplia de profesionales capacitados para brindar una atención personalizada
               con los más altos estándares de calidad y entregando los mejores indicadores de servicio y economía.
             </p>
           </div>
@@ -101,7 +101,7 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div className="md:order-2">
             <h2 className="text-3xl md:text-4xl font-bold text-[#1C2B4E] mb-6">Visión</h2>
-            <p className="text-gray-700 text-lg text-justify">
+            <p className="text-gray-700 text-lg">
               Nos proyectamos para el 2027 como una compañía de servicios médicos y farmacéuticos importantes en la administración del riesgo y su intervención oportuna, reconocida por las empresas administradoras de planes de beneficios y aseguradoras para Colombia, trabajamos como una compañía que brinda solución en la optimización de recursos, con resultados positivos acordes con las necesidades actuales del Sistema de Salud.
             </p>
           </div>
@@ -138,11 +138,10 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <span
-                  className={`mt-4 px-3 py-1 font-semibold rounded-full text-sm ${
-                    ["LEALTAD", "DIFERENCIA", "EXCELENCIA", "PUNTUALIDAD"].includes(valor.label)
+                  className={`mt-4 px-3 py-1 font-semibold rounded-full text-sm ${["LEALTAD", "DIFERENCIA", "EXCELENCIA", "PUNTUALIDAD"].includes(valor.label)
                       ? "bg-[#1C2B4E] text-white"
                       : "bg-[#79C3EA] text-[#1C2B4E]"
-                  }`}
+                    }`}
                 >
                   {valor.label}
                 </span>
@@ -157,15 +156,15 @@ export default function AboutPage() {
         <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-md p-8 grid md:grid-cols-2 gap-8 items-start">
           <div className="bg-[#3CA5DA] text-white rounded-2xl p-8 space-y-4 text-lg">
             <ul className="space-y-2">
-              <li><a href="#" className="underline hover:text-white">Medicina General</a></li>
-              <li><a href="#" className="underline hover:text-white">Programas de atención</a></li>
-              <li><a href="#" className="underline hover:text-white">SST</a></li>
-              <li><a href="#" className="underline hover:text-white">Laboratorio Clínico</a></li>
+              <li><a href="/services/medicina-general" className="underline hover:text-white">Medicina General</a></li>
+              <li><a href="/services" className="underline hover:text-white">Programas de atención</a></li>
+              <li><a href="/services/medicina-laboral" className="underline hover:text-white">SST</a></li>
+              <li><span>Laboratorio Clínico</span></li>
             </ul>
             <ul className="space-y-2 pt-4">
-              <li><a href="#" className="underline hover:text-white">Estados financieros</a></li>
-              <li><a href="#" className="underline hover:text-white">Trabaja con nosotros</a></li>
-              <li><a href="#" className="underline hover:text-white">Escríbenos PQRFS</a></li>
+              <li><a href="/estados-financieros-2024" className="underline hover:text-white">Estados financieros</a></li>
+              <li><a href="/contact" className="underline hover:text-white">Trabaja con nosotros</a></li>
+              <li><a href="/pqrs" className="underline hover:text-white">Escríbenos PQRFS</a></li>
             </ul>
           </div>
           <div className="text-[#1C2B4E] space-y-4 text-lg">

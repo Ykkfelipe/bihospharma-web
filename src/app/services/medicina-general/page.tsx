@@ -83,13 +83,13 @@ export default function MedicinaGeneralPage() {
           style={{
             maxWidth: 1140,
             margin: '0 auto',
-            display: 'grid',
-            gridTemplateColumns: 'minmax(320px, 1.1fr) minmax(280px, 1fr)',
+            display: 'flex',
+            flexWrap: 'wrap',
             gap: '2rem',
             alignItems: 'center',
           }}
         >
-          <div>
+          <div style={{ flex: '1 1 300px' }}>
             <Image
               src="/images/medicina-general.png"
               alt="Doctora Medicina General"
@@ -99,7 +99,7 @@ export default function MedicinaGeneralPage() {
               priority
             />
           </div>
-          <div>
+          <div style={{ flex: '1 1 280px' }}>
             <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', color: '#2196f3', fontWeight: 800, margin: 0, marginBottom: '1rem' }}>
               ¿Qué es la Medicina General?
             </h2>
@@ -202,13 +202,13 @@ export default function MedicinaGeneralPage() {
       <section style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', padding: '4rem 2rem', gap: '2rem' }}>
         <div style={{ flex: '1 1 300px', backgroundColor: '#48a4dc', borderRadius: '20px', padding: '2rem', color: 'white', fontWeight: 500, lineHeight: '2rem' }}>
           <p><a href="/services/medicina-general" style={{ color: 'white', textDecoration: 'underline' }}>Medicina General</a></p>
-          <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Programas de atención</a></p>
-          <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>SST</a></p>
-          <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Laboratorio Clínico</a></p>
+          <p><a href="/services" style={{ color: 'white', textDecoration: 'underline' }}>Programas de atención</a></p>
+          <p><a href="/services/medicina-laboral" style={{ color: 'white', textDecoration: 'underline' }}>SST</a></p>
+          <p><span style={{ color: 'white' }}>Laboratorio Clínico</span></p>
           <br />
           <p><a href="/estados-financieros-2024" style={{ color: 'white', textDecoration: 'underline' }}>Estados financieros</a></p>
-          <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Trabaja con nosotros</a></p>
-          <p><a href="#" style={{ color: 'white', textDecoration: 'underline' }}>Escríbenos PQRFS</a></p>
+          <p><a href="/contact" style={{ color: 'white', textDecoration: 'underline' }}>Trabaja con nosotros</a></p>
+          <p><a href="/pqrs" style={{ color: 'white', textDecoration: 'underline' }}>Escríbenos PQRFS</a></p>
         </div>
         <div style={{ flex: '1 1 300px' }}>
           <h2 style={{ fontSize: '2.2rem', fontWeight: 'bold', marginBottom: '1rem' }}>Contacto</h2>
