@@ -29,7 +29,7 @@ echo "→ Building…"
 npm run build
 
 echo "→ Restarting PM2…"
-pm2 restart bihos || pm2 start npm --name bihos -- start -- -p 3000
+pm2 restart bihos --update-env || pm2 start npm --name bihos -- start -- -p 3000
 pm2 save
 
 echo "✓ Deploy complete."
