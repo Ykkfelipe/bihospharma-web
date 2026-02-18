@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import Slider from 'react-slick';
 import Image from 'next/image';
 import 'slick-carousel/slick/slick.css';
@@ -11,15 +12,74 @@ type HeroCarouselProps = {
 };
 
 const images = [
-  '/images/Banner1.png',
-  '/images/Banner2.png',
+  '/images/Banner-1-updatedd.png',
+  '/images/Banner-2-updated.png',
   '/images/3.png',
 ];
+
+// Custom Arrow Components for accessibility (44x44px minimum touch target)
+function NextArrow(props: any) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '44px',
+        height: '44px',
+        zIndex: 1,
+        right: '25px', // Positioning adjustment
+        cursor: 'pointer',
+      }}
+      onClick={onClick}
+      role="button"
+      aria-label="Next Slide"
+    />
+  );
+}
+
+function PrevArrow(props: any) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '44px',
+        height: '44px',
+        zIndex: 1,
+        left: '25px', // Positioning adjustment
+        cursor: 'pointer',
+      }}
+      onClick={onClick}
+      role="button"
+      aria-label="Previous Slide"
+    />
+  );
+}
 
 export default function HeroCarousel({
   showDots = true,
   showArrows = true,
 }: HeroCarouselProps) {
+  const sliderRef = useRef<Slider>(null);
+
+  // JavaScript event listener to PAUSE auto-rotation on mouseenter
+  const handleMouseEnter = () => {
+    sliderRef.current?.slickPause();
+  };
+
+  // JavaScript event listener to RESUME auto-rotation on mouseleave
+  const handleMouseLeave = () => {
+    sliderRef.current?.slickPlay();
+  };
+
   const settings = {
     dots: showDots,
     arrows: showArrows,
@@ -30,7 +90,9 @@ export default function HeroCarousel({
     slidesToShow: 1,
     slidesToScroll: 1,
     fade: true,
-    pauseOnHover: false,
+    pauseOnHover: false, // Disabled built-in to use custom event listeners
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
     appendDots: (dots: React.ReactNode) => (
       <div
         style={{
@@ -53,22 +115,34 @@ export default function HeroCarousel({
         </ul>
       </div>
     ),
-    className: 'hero-carousel',
+    className: 'hero-carousel', // Ensure custom CSS class is applied
   };
 
   return (
-    <div className="w-full overflow-hidden relative">
+    <div
+      className="w-full overflow-hidden relative"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="relative w-full overflow-hidden">
-        <Slider {...settings}>
+        <Slider ref={sliderRef} {...settings}>
           {images.map((src, index) => (
-            <div key={index} className="w-full h-[190px] sm:h-[100px] md:h-[100px] lg:h-[450px] relative mb-10">
+            <div
+              key={index}
+              className="w-full aspect-[3.17/1] relative mb-10"
+            >
               <Image
                 src={src}
                 alt={`Slide ${index + 1}`}
                 width={1300}
                 height={500}
                 className="w-full h-full object-contain"
+                // 1. Performance: First image priority=true (fetchpriority='high' & loading='eager')
+                // Others: default/lazy
                 priority={index === 0}
+                quality={100}
+                unoptimized={true}
+                sizes="100vw"
               />
             </div>
           ))}
