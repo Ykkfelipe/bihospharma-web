@@ -42,3 +42,4 @@ next-env.d.ts
 
 # Next.js build
 .next/
+deploy.tar.gz

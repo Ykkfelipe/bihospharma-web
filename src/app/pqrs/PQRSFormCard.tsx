@@ -1,14 +1,85 @@
 'use client';
 
-import Image from 'next/image';
-import { useState, useEffect, type CSSProperties, type FormEvent, type ReactNode } from 'react';
+// ============================================================
+// DOCUMENTACIÓN DE HANDOVER — PQRSFormCard
+// Proyecto: Sitio web Bihospharma IPS
+// ============================================================
+// Este archivo contiene el formulario de PQRS (Petición, Queja,
+// Reclamo, Sugerencia, Felicitación) que usan los pacientes y
+// usuarios para enviar una solicitud formal a Bihospharma.
+//
+// Si estás tomando el proyecto, aquí te explico cómo funciona
+// este componente de principio a fin.
+//
+// Para cambiar los campos del formulario, busca el componente
+// <InputLine> más abajo — cada campo es una instancia de ese.
+// Para cambiar a dónde se envía el formulario, ve a /api/pqrs/.
+// Los estilos visuales están separados en pqrsStyles.ts.
+// ============================================================
 
+import Image from 'next/image';
+import { useState, useEffect, type FormEvent, type ReactNode } from 'react';
+import {
+  outerShell,
+  formShell,
+  watermarkLayer,
+  topBanner,
+  topGradient,
+  topInnerArc,
+  topSoftArc,
+  topWaveDark,
+  topWaveLight,
+  topRightGlow,
+  logoBadge,
+  contentBody,
+  formTitle,
+  gridTwoCols,
+  pairRow,
+  sectionLabel,
+  typeGrid,
+  typePill,
+  textareaField,
+  submitButton,
+  disclaimerText,
+  feedbackText,
+  contactBar,
+  infoItem,
+  infoIcon,
+  infoItemMobile,
+  infoIconMobile,
+  bottomBanner,
+  bottomBlueOne,
+  bottomBlueTwo,
+  bottomGray,
+  lineRow,
+  lineRowMobile,
+  lineLabel,
+  lineLabelMobile,
+  requiredMark,
+  lineInput,
+  lineInputMobile,
+} from './pqrsStyles';
+
+// Estas son las 5 categorías válidas de solicitud.
+// Si Bihospharma pide agregar una nueva (ej. "Denuncia"),
+// simplemente agrégala aquí en el arreglo y aparecerá en el formulario.
 const requestTypes = ['Petición', 'Queja', 'Reclamo', 'Sugerencia', 'Felicitación'] as const;
 type RequestType = (typeof requestTypes)[number];
+
+// El formulario puede estar en uno de 4 estados posibles.
+// Esto controla qué se muestra en pantalla (botón desactivado, mensaje de error, etc.)
+// - 'idle'       → el usuario no ha hecho nada todavía
+// - 'submitting' → esperando respuesta del servidor
+// - 'success'    → el formulario se envió correctamente
+// - 'error'      → hubo un problema (campo vacío, correo inválido, error del servidor)
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
+// Ancho máximo en píxeles antes de cambiar al diseño de una sola columna (móvil).
 const MOBILE_BREAKPOINT = 720;
 
+// Estructura de datos que se envía al servidor cuando el usuario hace submit.
+// Si el equipo de Bihospharma necesita un campo adicional (ej. "ciudad"),
+// hay que agregarlo aquí Y en el archivo /api/pqrs/route.ts.
 type FormPayload = {
   date: string;
   registrantName: string;
@@ -19,15 +90,23 @@ type FormPayload = {
   address: string;
   requestType: RequestType | '';
   description: string;
-  // signature removed per UX feedback; registrant name & id used instead
+  // La firma se eliminó — se usa nombre + documento como identificación
 };
 
 export default function PQRSFormCard() {
+  // Estado del tipo de solicitud seleccionado (los 5 botones de la parte media).
   const [selectedType, setSelectedType] = useState<RequestType | ''>('');
+
+  // Estado del envío: controla el mensaje de éxito/error y el botón de enviar.
   const [status, setStatus] = useState<SubmitStatus>('idle');
   const [message, setMessage] = useState('');
+
+  // Si la pantalla es pequeña (≤720px), isCompact = true y el diseño cambia
+  // a una sola columna para que todo quepa bien en celular.
   const [isCompact, setIsCompact] = useState(false);
 
+  // Estos son los estilos que cambian dependiendo del tamaño de pantalla.
+  // Toman el estilo base de pqrsStyles.ts y le sobreescriben ciertos valores.
   const outerStyles = isCompact
     ? { ...outerShell, maxWidth: 430, padding: '24px 18px 32px', borderRadius: 22, boxShadow: '0 16px 32px rgba(20, 40, 72, 0.16)' }
     : outerShell;
@@ -62,16 +141,23 @@ export default function PQRSFormCard() {
     ? { ...contactBar, gap: 12, padding: '0.9rem 1.2rem', justifyContent: 'flex-start' }
     : contactBar;
 
+  // Este useEffect escucha cuando el usuario cambia el tamaño de la ventana
+  // y actualiza isCompact en tiempo real. Usé un listener de JavaScript en vez
+  // de media queries de CSS porque los estilos son objetos JS (no clases CSS).
+  //
+  // IMPORTANTE: el "return" al final limpia el listener cuando el componente
+  // se desmonta. Sin esto habría una fuga de memoria (memory leak).
   useEffect(() => {
     function handleResize() {
       setIsCompact(window.innerWidth <= MOBILE_BREAKPOINT);
     }
 
-    handleResize();
+    handleResize(); // Ejecutar al cargar para establecer el estado inicial
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Borra el mensaje de éxito/error en cuanto el usuario empieza a escribir de nuevo.
   const resetFeedback = () => {
     if (status !== 'idle') {
       setStatus('idle');
@@ -79,10 +165,17 @@ export default function PQRSFormCard() {
     }
   };
 
+  // Esta función corre cuando el usuario hace clic en "Enviar PQRS".
+  // Primero valida los campos, luego hace la petición al servidor.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault(); // Evita que la página se recargue al enviar
+
+    // FormData lee todos los campos del formulario de una sola vez
+    // sin necesidad de referencias individuales a cada <input>.
     const formData = new FormData(event.currentTarget);
 
+    // Construimos el objeto que se va a enviar al servidor.
+    // .trim() elimina espacios en blanco al inicio y al final de cada campo.
     const payload: FormPayload = {
       date: (formData.get('date') ?? '').toString().trim(),
       registrantName: (formData.get('registrantName') ?? '').toString().trim(),
@@ -95,6 +188,8 @@ export default function PQRSFormCard() {
       description: (formData.get('description') ?? '').toString().trim(),
     };
 
+    // Revisamos todos los campos obligatorios antes de mostrar el error,
+    // así el usuario ve de una sola vez qué le falta llenar.
     const missing: string[] = [];
     if (!payload.date) missing.push('Fecha');
     if (!payload.registrantName) missing.push('Nombre y apellidos de quien registra');
@@ -110,6 +205,7 @@ export default function PQRSFormCard() {
       return;
     }
 
+    // Validación básica del correo electrónico antes de enviar.
     const emailPattern = /.+@.+\..+/i;
     if (!emailPattern.test(payload.email)) {
       setStatus('error');
@@ -118,8 +214,15 @@ export default function PQRSFormCard() {
     }
 
     try {
+      // Cambiamos el estado a 'submitting' para desactivar el botón
+      // y evitar que el usuario envíe el formulario dos veces.
       setStatus('submitting');
       setMessage('');
+
+      // Aquí enviamos los datos al backend.
+      // La ruta /api/pqrs está definida en src/app/api/pqrs/route.ts
+      // Ahí se configura a qué correo llegan las PQRS — si Bihospharma
+      // necesita cambiar el destinatario, ese es el archivo a modificar.
       const response = await fetch('/api/pqrs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -127,10 +230,13 @@ export default function PQRSFormCard() {
       });
 
       if (!response.ok) {
+        // Si el servidor responde con un error, intentamos leer el mensaje.
+        // Si el cuerpo no es JSON válido, usamos un mensaje genérico.
         const { error } = await response.json().catch(() => ({ error: 'No fue posible enviar la solicitud.' }));
         throw new Error(error ?? 'No fue posible enviar la solicitud.');
       }
 
+      // Todo salió bien: mostramos confirmación y reseteamos el formulario.
       setStatus('success');
       setMessage('Tu PQRS fue enviada. Pronto nos comunicaremos contigo.');
       setSelectedType('');
@@ -144,7 +250,12 @@ export default function PQRSFormCard() {
 
   return (
     <div style={outerStyles}>
+      {/* noValidate desactiva las validaciones nativas del navegador
+          para que usemos nuestros propios mensajes de error en español */}
       <form onSubmit={handleSubmit} onChange={resetFeedback} noValidate style={formShell}>
+
+        {/* Marca de agua del logo de Bihospharma detrás del formulario.
+            Es solo decorativa — pointerEvents: none evita que bloquee los inputs */}
         <div style={watermarkLayer}>
           <Image
             src="/logos/bihos-logo.png"
@@ -155,6 +266,8 @@ export default function PQRSFormCard() {
           />
         </div>
 
+        {/* Encabezado azul con el logo. Los divs decorativos son
+            capas de gradiente y arcos para el efecto visual. */}
         <div style={topBanner}>
           <div style={topGradient} />
           <div style={topInnerArc} />
@@ -167,12 +280,14 @@ export default function PQRSFormCard() {
           </div>
         </div>
 
+        {/* ——— Cuerpo del formulario ——— */}
         <div style={contentStyles}>
           <h1 style={formTitle}>PETICIÓN, QUEJA, RECLAMO, SUGERENCIA O FELICITACIÓN</h1>
 
+          {/* Campos de información básica en cuadrícula de 2 columnas
+              (en móvil cambia a 1 columna automáticamente) */}
           <div style={gridStyles}>
             <InputLine label="Fecha:" name="date" placeholder="DD/MM/AAAA" required compact={isCompact} />
-            {/* Nombre y documento del registrante se solicitan al final del formulario */}
             <div style={pairStyles}>
               <InputLine label="Tel:" name="phone" placeholder="Teléfono" required compact={isCompact} />
               <InputLine label="EPS:" name="eps" placeholder="EPS" compact={isCompact} />
@@ -181,6 +296,9 @@ export default function PQRSFormCard() {
             <InputLine label="Dirección:" name="address" placeholder="Dirección" compact={isCompact} />
           </div>
 
+          {/* Selector del tipo de solicitud.
+              El valor seleccionado se guarda en el estado selectedType
+              y se envía al servidor mediante un <input type="hidden">. */}
           <div style={{ marginTop: 26 }}>
             <div style={sectionLabelStyle}>Marque con una X según corresponda:</div>
             <input type="hidden" name="requestType" value={selectedType} />
@@ -188,16 +306,23 @@ export default function PQRSFormCard() {
               {requestTypes.map((type, index) => {
                 const isActive = selectedType === type;
                 const isLastItem = index === requestTypes.length - 1;
+
+                // Lógica de bordes: el último botón de cada fila no lleva borde derecho
                 const isLastColumn = !isCompact
                   ? isLastItem
                   : index % 2 === 1 || isLastItem;
+
                 const lastRowThreshold = requestTypes.length - (requestTypes.length % 2 === 0 ? 2 : 1);
                 const needsBottomBorder = isCompact && index < lastRowThreshold;
+
+                // Si hay número impar de opciones en móvil, el último botón ocupa 2 columnas
                 const columnSpan = isCompact && isLastItem && requestTypes.length % 2 !== 0 ? 'span 2' : 'auto';
+
                 return (
                   <button
                     key={type}
                     type="button"
+                    // Si el usuario hace clic sobre el tipo ya seleccionado, lo deselecciona
                     onClick={() => setSelectedType((prev) => (prev === type ? '' : type))}
                     aria-pressed={isActive}
                     style={{
@@ -218,6 +343,7 @@ export default function PQRSFormCard() {
             </div>
           </div>
 
+          {/* Campo de texto libre donde el usuario describe su solicitud */}
           <div style={{ marginTop: 30 }}>
             <div style={sectionLabel}>Descripción de la manifestación</div>
             <textarea
@@ -229,6 +355,8 @@ export default function PQRSFormCard() {
             />
           </div>
 
+          {/* Datos de quien hace el registro (pueden ser datos del paciente
+              o de un familiar que registra en nombre de otro) */}
           <div style={{ marginTop: 38 }}>
             <div style={sectionLabel}>Datos de quien registra la solicitud</div>
             <div style={{ marginTop: 12, display: 'grid', gridTemplateColumns: isCompact ? '1fr' : '1fr 1fr', gap: 12 }}>
@@ -238,11 +366,14 @@ export default function PQRSFormCard() {
             <p style={{ ...disclaimerStyles, marginTop: 12 }}>Puedes registrar la solicitud a nombre de un familiar o tercero si es necesario.</p>
           </div>
 
+          {/* Botón de envío + mensajes de estado */}
           <div style={{ marginTop: 34, display: 'flex', flexDirection: 'column', gap: 14 }}>
             <button
               type="submit"
               style={{
                 ...submitStyles,
+                // El botón se ve semitransparente y el cursor cambia a "espera"
+                // mientras la solicitud está en vuelo para que el usuario no haga clic dos veces
                 opacity: status === 'submitting' ? 0.75 : 1,
                 cursor: status === 'submitting' ? 'wait' : 'pointer',
               }}
@@ -251,6 +382,10 @@ export default function PQRSFormCard() {
               {status === 'submitting' ? 'Enviando...' : 'Enviar PQRS'}
             </button>
             <p style={disclaimerStyles}>Al enviar este formulario autorizas el tratamiento de tus datos para responder a tu solicitud de PQRS.</p>
+
+            {/* Mensajes de retroalimentación.
+                role="status" y role="alert" permiten que los lectores de pantalla
+                anuncien el resultado del envío a usuarios con discapacidad visual. */}
             {status === 'success' && (
               <p style={{ ...feedbackStyles, color: '#0d7a4d' }} role="status" aria-live="polite">{message}</p>
             )}
@@ -260,6 +395,7 @@ export default function PQRSFormCard() {
           </div>
         </div>
 
+        {/* Barra de contacto al pie del formulario */}
         <div style={contactStyles}>
           <InfoItem icon={<PhoneIcon />} text="Cel: +57 (320) 316 5870" compact={isCompact} />
           <InfoItem icon={<WebIcon />} text="www.bihospharma.com" compact={isCompact} />
@@ -267,6 +403,7 @@ export default function PQRSFormCard() {
           <InfoItem icon={<MapIcon />} text="Carrera 25 # 4A-14 Bogotá" compact={isCompact} />
         </div>
 
+        {/* Franja decorativa inferior */}
         <div style={bottomBanner}>
           <div style={bottomBlueOne} />
           <div style={bottomBlueTwo} />
@@ -277,6 +414,13 @@ export default function PQRSFormCard() {
   );
 }
 
+// ============================================================
+// Sub-componentes internos
+// ============================================================
+
+// InputLine: campo de texto reutilizable con etiqueta y línea inferior.
+// Para agregar un nuevo campo al formulario, basta con añadir otra línea
+// <InputLine label="..." name="..." /> en el JSX de arriba.
 function InputLine({
   label,
   name,
@@ -317,6 +461,7 @@ function InputLine({
   );
 }
 
+// InfoItem: elemento de la barra de contacto (ícono + texto).
 function InfoItem({ icon, text, compact }: { icon: ReactNode; text: string; compact?: boolean }) {
   const containerStyle = compact ? infoItemMobile : infoItem;
   const iconStyle = compact ? infoIconMobile : infoIcon;
@@ -327,6 +472,11 @@ function InfoItem({ icon, text, compact }: { icon: ReactNode; text: string; comp
     </div>
   );
 }
+
+// ============================================================
+// Íconos SVG — incluidos directamente para no depender de una
+// librería externa de íconos y mantener el bundle más liviano.
+// ============================================================
 
 function PhoneIcon() {
   return (
@@ -363,332 +513,3 @@ function MapIcon() {
     </svg>
   );
 }
-
-const outerShell: CSSProperties = {
-  width: '100%',
-  maxWidth: 780,
-  background: 'rgba(255,255,255,0.96)',
-  padding: '32px 32px 42px',
-  borderRadius: 30,
-  boxShadow: '0 20px 42px rgba(23, 54, 94, 0.18)',
-  border: '1px solid rgba(15, 35, 66, 0.06)',
-};
-
-const formShell: CSSProperties = {
-  position: 'relative',
-  background: '#fff',
-  borderRadius: 24,
-  overflow: 'hidden',
-  display: 'flex',
-  flexDirection: 'column',
-};
-
-const watermarkLayer: CSSProperties = {
-  position: 'absolute',
-  inset: '180px 0 220px',
-  display: 'flex',
-  justifyContent: 'center',
-  pointerEvents: 'none',
-  opacity: 0.18,
-};
-
-const topBanner: CSSProperties = {
-  position: 'relative',
-  height: 170,
-  overflow: 'hidden',
-};
-
-const topGradient: CSSProperties = {
-  position: 'absolute',
-  inset: 0,
-  background: 'linear-gradient(130deg, #061c33 0%, #0b4f87 45%, #0f83c1 80%, #4fc9f2 100%)',
-};
-
-const topInnerArc: CSSProperties = {
-  position: 'absolute',
-  left: -220,
-  top: -180,
-  width: 460,
-  height: 460,
-  borderRadius: '50%',
-  background: 'linear-gradient(150deg, rgba(255,255,255,0.42) 0%, rgba(21,96,152,0.35) 55%, rgba(8,50,90,0.08) 100%)',
-};
-
-const topSoftArc: CSSProperties = {
-  position: 'absolute',
-  left: -70,
-  top: -70,
-  width: 320,
-  height: 220,
-  borderRadius: '0 0 190px 190px',
-  background: 'linear-gradient(150deg, rgba(255,255,255,0.65) 0%, rgba(109,196,235,0.4) 70%, rgba(12,92,149,0) 100%)',
-};
-
-const topWaveDark: CSSProperties = {
-  position: 'absolute',
-  left: -130,
-  bottom: -60,
-  width: 360,
-  height: 190,
-  borderRadius: '0 150px 140px 0',
-  background: 'linear-gradient(130deg, rgba(4,30,57,0.78) 0%, rgba(4,49,82,0.58) 68%, rgba(4,49,82,0) 100%)',
-};
-
-const topWaveLight: CSSProperties = {
-  position: 'absolute',
-  left: -50,
-  bottom: -72,
-  width: 330,
-  height: 170,
-  borderRadius: '0 150px 140px 0',
-  background: 'linear-gradient(130deg, rgba(42,154,205,0.72) 0%, rgba(42,154,205,0.36) 65%, rgba(42,154,205,0) 100%)',
-};
-
-const topRightGlow: CSSProperties = {
-  position: 'absolute',
-  right: -120,
-  top: -110,
-  width: 320,
-  height: 320,
-  borderRadius: '50%',
-  background: 'radial-gradient(circle at center, rgba(255,255,255,0.86) 0%, rgba(255,255,255,0.04) 100%)',
-};
-
-const logoBadge: CSSProperties = {
-  position: 'absolute',
-  right: 32,
-  top: 28,
-  width: 118,
-  height: 118,
-  borderRadius: 26,
-  background: '#fff',
-  boxShadow: '0 12px 26px rgba(15, 52, 94, 0.22)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-};
-
-const contentBody: CSSProperties = {
-  padding: '2.4rem 2.8rem 2.6rem',
-  position: 'relative',
-  zIndex: 1,
-};
-
-const formTitle: CSSProperties = {
-  textAlign: 'center',
-  color: '#0f2342',
-  fontWeight: 800,
-  letterSpacing: 1.1,
-  fontSize: '1.08rem',
-  textTransform: 'uppercase',
-};
-
-const gridTwoCols: CSSProperties = {
-  marginTop: 28,
-  display: 'grid',
-  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-  gap: '16px 28px',
-};
-
-const pairRow: CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-  gap: 20,
-};
-
-const sectionLabel: CSSProperties = {
-  marginBottom: 12,
-  color: '#102b49',
-  fontWeight: 600,
-  fontSize: 13,
-  letterSpacing: 0.2,
-};
-
-const typeGrid: CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
-  border: '1.4px solid #1c3559',
-  borderRadius: 8,
-  overflow: 'hidden',
-  background: '#fdfefe',
-};
-
-const typePill: CSSProperties = {
-  padding: '10px 8px',
-  border: 'none',
-  fontSize: 13,
-  fontWeight: 600,
-  cursor: 'pointer',
-  transition: 'all 0.18s ease',
-};
-
-const textareaField: CSSProperties = {
-  width: '100%',
-  borderRadius: 14,
-  border: '1.4px solid rgba(15,35,66,0.28)',
-  padding: '16px 16px',
-  fontSize: 14,
-  color: '#0f2342',
-  resize: 'vertical',
-  minHeight: 150,
-  background: 'transparent',
-  outline: 'none',
-  lineHeight: 1.55,
-};
-
-const submitButton: CSSProperties = {
-  padding: '0.9rem 1.2rem',
-  borderRadius: 999,
-  border: 'none',
-  background: 'linear-gradient(135deg, #0a4c7a 0%, #0e8abf 48%, #16bbe8 100%)',
-  color: '#fff',
-  fontWeight: 800,
-  letterSpacing: 0.35,
-  fontSize: '0.98rem',
-  cursor: 'pointer',
-  boxShadow: '0 12px 24px rgba(10, 76, 122, 0.3)',
-  transition: 'transform 0.18s ease',
-};
-
-const disclaimerText: CSSProperties = {
-  fontSize: 12,
-  color: '#4b5563',
-  textAlign: 'center',
-  letterSpacing: 0.15,
-};
-
-const feedbackText: CSSProperties = {
-  fontSize: 13,
-  fontWeight: 600,
-  textAlign: 'center',
-};
-
-const contactBar: CSSProperties = {
-  position: 'relative',
-  zIndex: 1,
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: 16,
-  justifyContent: 'center',
-  padding: '1.05rem 2rem',
-  background: '#f4f7fb',
-};
-
-const infoItem: CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 10,
-  color: '#0f2342',
-  fontWeight: 600,
-  fontSize: 12,
-};
-
-const infoIcon: CSSProperties = {
-  width: 26,
-  height: 26,
-  borderRadius: 6,
-  background: '#0d84c1',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: '#fff',
-};
-
-const infoItemMobile: CSSProperties = {
-  ...infoItem,
-  fontSize: 11,
-  gap: 8,
-};
-
-const infoIconMobile: CSSProperties = {
-  ...infoIcon,
-  width: 24,
-  height: 24,
-};
-
-const bottomBanner: CSSProperties = {
-  position: 'relative',
-  height: 90,
-  overflow: 'hidden',
-};
-
-const bottomBlueOne: CSSProperties = {
-  position: 'absolute',
-  left: -90,
-  bottom: -70,
-  width: 220,
-  height: 220,
-  borderRadius: '50%',
-  background: '#1c3d67',
-};
-
-const bottomBlueTwo: CSSProperties = {
-  position: 'absolute',
-  left: 40,
-  bottom: -90,
-  width: 240,
-  height: 230,
-  borderRadius: '50%',
-  background: '#1070aa',
-};
-
-const bottomGray: CSSProperties = {
-  position: 'absolute',
-  right: -90,
-  bottom: -110,
-  width: 280,
-  height: 240,
-  borderRadius: '50%',
-  background: '#dce3ea',
-};
-
-const lineRow: CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: 'max-content minmax(0, 1fr)',
-  alignItems: 'end',
-  gap: 10,
-};
-
-const lineRowMobile: CSSProperties = {
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'stretch',
-  gap: 4,
-};
-
-const lineLabel: CSSProperties = {
-  whiteSpace: 'nowrap',
-  color: '#0f2342',
-  fontWeight: 600,
-  fontSize: 13,
-  letterSpacing: 0.2,
-};
-
-const lineLabelMobile: CSSProperties = {
-  ...lineLabel,
-  whiteSpace: 'normal',
-  fontSize: 12,
-};
-
-const requiredMark: CSSProperties = {
-  marginLeft: 4,
-  color: '#b42318',
-};
-
-const lineInput: CSSProperties = {
-  minWidth: 0,
-  border: 'none',
-  borderBottom: '1.6px solid #0f2342',
-  padding: '4px 0 2px',
-  fontSize: 14,
-  color: '#0f2342',
-  background: 'transparent',
-  outline: 'none',
-  fontFamily: 'inherit',
-};
-
-const lineInputMobile: CSSProperties = {
-  ...lineInput,
-  fontSize: 13,
-  padding: '3px 0 1px',
-};

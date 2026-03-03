@@ -1,13 +1,36 @@
+// ============================================================
+// DOCUMENTACIÓN DE HANDOVER — Página de Inicio (Home)
+// Proyecto: Sitio web Bihospharma IPS
+// ============================================================
+// Esta es la página principal — lo que ve el usuario al entrar
+// a www.bihospharma.com. Está dividida en 5 secciones visuales.
+//
+// Las imágenes están en: /public/images/
+// Los logos de las EPS están en: /public/logos/
+// Para editar el carrusel principal: src/app/components/HeroCarousel.tsx
+// ============================================================
+
 import Image from 'next/image';
 import HeroCarousel from './components/HeroCarousel';
 
 export default function Home() {
   return (
     <main>
+
+      {/* ——— SECCIÓN 1: Carrusel de imágenes principal ———
+          Ocupa todo el ancho de la pantalla en la parte superior.
+          Para cambiar las imágenes o los textos del carrusel,
+          editar el archivo: src/app/components/HeroCarousel.tsx
+          Ahí hay un arreglo de "slides" con las rutas de imagen. */}
       <section className="relative w-full">
         <HeroCarousel showDots={true} showArrows={true} />
       </section>
 
+      {/* ——— SECCIÓN 2: Bloque de Servicios ———
+          Imagen a la izquierda, texto y botón a la derecha.
+          Para cambiar la imagen: reemplazar /public/images/services.png
+          Para cambiar el texto: editar el <h2> y el <p> de abajo.
+          El botón "VER TODOS" lleva a /services */}
       <section className="py-16 px-4 bg-white">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
           <div>
@@ -38,7 +61,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Programas de Atención - New Layout */}
+      {/* ——— SECCIÓN 3: Programas de Atención ———
+          Cuadrícula de 9 tarjetas con imágenes de los programas especializados.
+          Para agregar un programa nuevo:
+          1. Copiar uno de los bloques <div className="relative rounded-xl...">
+          2. Cambiar src, alt, y el texto del <h3>
+          3. Agregar la imagen a /public/images/
+          Los programas actuales: Artritis, Diabetes, VIH, Hemofilia,
+          Anticoagulados, Esclerosis Múltiple, Hipertensión, Extensión Domiciliaria, Nefroprotección */}
       <section className="bg-[#51ADE5] py-16 px-4">
         <div className="max-w-6xl mx-auto text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
@@ -177,6 +207,12 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ——— SECCIÓN 4: Confían en Nosotros (logos de EPS) ———
+          Cuadrícula con los logos de las entidades aliadas de Bihospharma.
+          Para agregar una EPS nueva:
+          1. Subir el logo a /public/logos/
+          2. Agregar un <Image src="/logos/nombre.png" alt="Nombre EPS" ...>
+          El tamaño estándar de cada logo es width={112} height={112} */}
       <section className="bg-white py-16 px-4">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-black mb-10">Confían en Nosotros</h2>
@@ -194,6 +230,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ——— SECCIÓN 5: Contacto ———
+          Columna izquierda: información de contacto y redes sociales.
+          Columna derecha: imagen del mapa con un hotspot invisible de WhatsApp.
+          El hotspot es un <a> transparente encima del ícono de WhatsApp
+          que ya está dibujado dentro de la imagen map.png.
+          Para cambiar el número de WhatsApp: editar el href="https://wa.me/57XXXXXXXXXX"
+          Para cambiar la información de contacto: editar los <p> de abajo. */}
       <section className="bg-white py-16 px-4">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
           <div>
@@ -208,6 +251,8 @@ export default function Home() {
             <p className="text-black font-semibold">BOGOTÁ D.C</p>
             <p className="text-black mb-4">Cra 25 No 4A-14</p>
             <p className="text-black font-semibold mb-2">SÍGUENOS:</p>
+            {/* Íconos de redes sociales — para agregar una red nueva,
+                copiar uno de estos <a> y cambiar el href y la imagen */}
             <div className="flex space-x-4 mt-2">
               <a href="https://www.instagram.com/bihospharma.ips/" target="_blank" rel="noopener noreferrer">
                 <Image
@@ -250,7 +295,8 @@ export default function Home() {
           <div className="flex items-end justify-end">
             <div className="relative">
               <Image src="/images/map.png" alt="Mapa" width={600} height={400} loading="lazy" sizes="(max-width: 768px) 100vw, 50vw" className="max-w-full rounded-lg" />
-              {/* Invisible hotspot over the WhatsApp logo that is part of the image */}
+              {/* Área de clic invisible encima del ícono de WhatsApp que
+                  ya aparece en la imagen del mapa. Al hacer clic abre el chat. */}
               <a
                 href="https://wa.me/573203165870"
                 target="_blank"
@@ -258,7 +304,6 @@ export default function Home() {
                 aria-label="Abrir WhatsApp"
                 className="absolute bottom-[22px] right-[18px] z-20 w-[58px] h-[58px] rounded-full"
                 style={{
-                  // keep the hotspot invisible but focusable for a11y
                   background: 'transparent',
                   outline: 'none',
                 }}
