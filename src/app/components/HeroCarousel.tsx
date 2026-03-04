@@ -14,7 +14,7 @@ type HeroCarouselProps = {
 
 const images = [
   '/images/Banner-2026.png',
-  '/images/Banner-2-updated.png',
+  '/images/Marzo-2026.png',
   '/images/3.png',
 ];
 
