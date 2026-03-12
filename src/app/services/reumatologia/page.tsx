@@ -326,7 +326,7 @@ export default function ReumatologiaPage() {
           <div style={{ height: '1rem' }} />
           <p>info@bihospharma.com<br />www.bihospharma.com</p>
           <div style={{ height: '1rem' }} />
-          <p><strong>TELÉFONO</strong><br />320 316 5870 - 350 2151683</p>
+          <p><strong>TELÉFONO</strong><br />PBX 3103158806 Opc1 - 3232347791</p>
           <div style={{ height: '1rem' }} />
           <p><strong>YOPAL (CASANARE)</strong><br />Transversal 18 #7-05 Piso 5<br />Edificio Mont Black</p>
           <div style={{ height: '1rem' }} />

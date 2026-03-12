@@ -244,7 +244,7 @@ export default function Home() {
             <p className="text-black mb-2">info@bihospharma.com</p>
             <p className="text-black mb-4">www.bihospharma.com</p>
             <p className="text-black font-semibold">TELÉFONO</p>
-            <p className="text-black mb-4">320 316 5870 - 350 2151683</p>
+            <p className="text-black mb-4">PBX 3103158806 Opc1 - 3232347791</p>
             <p className="text-black font-semibold">YOPAL (CASANARE)</p>
             <p className="text-black">Transversal 18 #7-05 Piso 5</p>
             <p className="text-black mb-4">Edificio Mont Black</p>

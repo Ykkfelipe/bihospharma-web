@@ -348,7 +348,7 @@ export default function BlogPostMigranaODolores() {
             <p style={{ margin: '0 0 1rem' }}>www.bihospharma.com</p>
 
             <p style={{ margin: '0 0 0.25rem', fontWeight: 700 }}>TELÉFONO</p>
-            <p style={{ margin: '0 0 1rem' }}>320 316 5870 - 350 2151683</p>
+            <p style={{ margin: '0 0 1rem' }}>PBX 3103158806 Opc1 - 3232347791</p>
 
             <p style={{ margin: '0 0 0.5rem', fontWeight: 700 }}>SÍGUENOS:</p>
             <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>

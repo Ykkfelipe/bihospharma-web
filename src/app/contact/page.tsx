@@ -148,7 +148,7 @@ export default function ContactPage() {
               </div>
               <div className="mt-4">
                 <span className="font-bold text-[#B6E0FF]">TELÉFONO</span>
-                <span className="block">320 316 5870 - 350 2151683</span>
+                <span className="block">PBX 3103158806 Opc1 - 3232347791</span>
               </div>
               <div className="mt-4">
                 <span className="font-bold text-[#B6E0FF]">YOPAL (CASANARE)</span>

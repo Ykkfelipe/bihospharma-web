@@ -160,7 +160,7 @@ export default function ServicesPage() {
           <h2 style={{ fontSize: '2.2rem', fontWeight: 'bold', marginBottom: '1rem' }}>Contacto</h2>
           <p>info@bihospharma.com<br />www.bihospharma.com</p>
           <br />
-          <p><strong>TELÉFONO</strong><br />320 316 5870 - 350 2151683</p>
+          <p><strong>TELÉFONO</strong><br />PBX 3103158806 Opc1 - 3232347791</p>
           <br />
           <p><strong>YOPAL (CASANARE)</strong><br />Tranversal 18 #7-05 Piso 5<br />Edificio Mont Black</p>
           <br />

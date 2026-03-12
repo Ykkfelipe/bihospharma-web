@@ -170,7 +170,7 @@ export default function AboutPage() {
           <div className="text-[#1C2B4E] space-y-4 text-lg">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Contacto</h2>
             <p>info@bihospharma.com<br />www.bihospharma.com</p>
-            <p><strong>TELÉFONO</strong><br />320 316 5870 - 350 2151683</p>
+            <p><strong>TELÉFONO</strong><br />PBX 3103158806 Opc1 - 3232347791</p>
             <p><strong>YOPAL (CASANARE)</strong><br />Tranversal 18 #7-05 Piso 5<br />Edificio Mont Black</p>
             <p><strong>BOGOTÁ D.C</strong><br />Cra 25 No 4A-14</p>
             <div className="flex gap-6 pt-4">

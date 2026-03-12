@@ -149,7 +149,7 @@ export default function DiaMundialCorazonPage() {
             <p className="m-0 mb-4">www.bihospharma.com</p>
 
             <p className="m-0 mb-1 font-bold">TELÉFONO</p>
-            <p className="m-0 mb-4">320 316 5870 - 350 2151683</p>
+            <p className="m-0 mb-4">PBX 3103158806 Opc1 - 3232347791</p>
 
             <p className="m-0 mb-2 font-bold">SÍGUENOS:</p>
             <div className="flex gap-3 mt-2">
