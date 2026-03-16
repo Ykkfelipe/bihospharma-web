@@ -24,4 +24,8 @@ export const transporter = nodemailer.createTransport({
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
     },
+    tls: {
+        // Ignorar errores de certificado si el servidor de correo tiene uno autofirmado
+        rejectUnauthorized: false
+    }
 });
