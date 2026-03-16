@@ -8,6 +8,7 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     subject: "",
     message: "",
   });
@@ -44,7 +45,7 @@ export default function ContactPage() {
 
       setStatus("success");
       setFeedbackMsg("¡Mensaje enviado! Nos comunicaremos contigo pronto.");
-      setFormData({ name: "", email: "", subject: "", message: "" });
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
     } catch (err) {
       setStatus("error");
       setFeedbackMsg(
@@ -82,6 +83,17 @@ export default function ContactPage() {
               type="email"
               name="email"
               value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00AC17] text-base md:text-lg"
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-semibold text-base md:text-lg">Tu número de celular</label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
               required
               className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#00AC17] text-base md:text-lg"

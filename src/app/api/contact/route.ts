@@ -4,6 +4,7 @@ import { transporter } from '@/lib/mailer';
 type ContactSubmission = {
   name: string;
   email: string;
+  phone: string;
   subject: string;
   message: string;
 };
@@ -25,6 +26,7 @@ export async function POST(request: NextRequest) {
 
   const name = sanitize(body.name);
   const email = sanitize(body.email);
+  const phone = sanitize(body.phone);
   const subject = sanitize(body.subject);
   const message = sanitize(body.message);
 
@@ -32,6 +34,7 @@ export async function POST(request: NextRequest) {
   const missing: string[] = [];
   if (!name) missing.push('Nombre');
   if (!email) missing.push('Correo electrónico');
+  if (!phone) missing.push('Celular');
   if (!subject) missing.push('Asunto');
   if (!message) missing.push('Mensaje');
 
@@ -59,8 +62,8 @@ export async function POST(request: NextRequest) {
       to,
       replyTo: email, // Al hacer "Responder", el correo va directamente al remitente
       subject: `Contacto: ${subject}`,
-      text: `De: ${name} <${email}>\n\n${message}`,
-      html: buildHtml({ name, email, subject, message }),
+      text: `De: ${name} <${email}>\nCelular: ${phone}\n\n${message}`,
+      html: buildHtml({ name, email, phone, subject, message }),
     });
   } catch (err) {
     console.error('[CONTACT] Error enviando correo:', err);
@@ -92,7 +95,7 @@ function escapeHtml(value: string) {
     .replace(/'/g, '&#39;');
 }
 
-function buildHtml(p: { name: string; email: string; subject: string; message: string }) {
+function buildHtml(p: { name: string; email: string; phone: string; subject: string; message: string }) {
   return `<!DOCTYPE html>
 <html lang="es">
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
@@ -138,6 +141,10 @@ function buildHtml(p: { name: string; email: string; subject: string; message: s
               </td>
             </tr>
             <tr style="background:#f8fafc;">
+              <td style="padding:10px 16px;font-size:13px;color:#64748b;border-bottom:1px solid #e2e8f0;">Celular</td>
+              <td style="padding:10px 16px;font-size:13px;color:#1e293b;font-weight:600;border-bottom:1px solid #e2e8f0;">${escapeHtml(p.phone)}</td>
+            </tr>
+            <tr style="background:#ffffff;">
               <td style="padding:10px 16px;font-size:13px;color:#64748b;">Asunto</td>
               <td style="padding:10px 16px;font-size:13px;color:#1e293b;font-weight:600;">${escapeHtml(p.subject)}</td>
             </tr>
