@@ -89,7 +89,7 @@ export default function ContactPage() {
             />
           </div>
           <div>
-            <label className="block mb-1 font-semibold text-base md:text-lg">Tu número de celular</label>
+            <label className="block mb-1 font-semibold text-base md:text-lg">Tu número de contacto</label>
             <input
               type="tel"
               name="phone"
