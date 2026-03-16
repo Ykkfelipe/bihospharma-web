@@ -169,10 +169,11 @@ export default function PQRSFormCard() {
   // Primero valida los campos, luego hace la petición al servidor.
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Evita que la página se recargue al enviar
+    const form = event.currentTarget;
 
     // FormData lee todos los campos del formulario de una sola vez
     // sin necesidad de referencias individuales a cada <input>.
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(form);
 
     // Construimos el objeto que se va a enviar al servidor.
     // .trim() elimina espacios en blanco al inicio y al final de cada campo.
@@ -240,7 +241,7 @@ export default function PQRSFormCard() {
       setStatus('success');
       setMessage('Tu PQRS fue enviada. Pronto nos comunicaremos contigo.');
       setSelectedType('');
-      event.currentTarget.reset();
+      form.reset();
     } catch (err) {
       console.error('Error enviando PQRS:', err);
       setStatus('error');

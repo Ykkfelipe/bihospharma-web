@@ -2,6 +2,8 @@
 
 import { useState, ChangeEvent, FormEvent } from "react";
 
+type SubmitStatus = "idle" | "submitting" | "success" | "error";
+
 export default function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
@@ -9,22 +11,46 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
+  const [status, setStatus] = useState<SubmitStatus>("idle");
+  const [feedbackMsg, setFeedbackMsg] = useState("");
 
-  // Add types for event parameters
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    // Clear feedback when user starts editing again
+    if (status !== "idle") {
+      setStatus("idle");
+      setFeedbackMsg("");
+    }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert("Mensaje enviado. Gracias por contactarnos.");
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    });
+    setStatus("submitting");
+    setFeedbackMsg("");
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.error ?? "No fue posible enviar el mensaje.");
+      }
+
+      setStatus("success");
+      setFeedbackMsg("¡Mensaje enviado! Nos comunicaremos contigo pronto.");
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      setStatus("error");
+      setFeedbackMsg(
+        err instanceof Error ? err.message : "No fue posible enviar el mensaje. Inténtalo nuevamente."
+      );
+    }
   };
 
   return (
@@ -85,10 +111,22 @@ export default function ContactPage() {
           </div>
           <button
             type="submit"
-            className="bg-[#1C2B4E] hover:bg-[#2A3D6C] text-white font-semibold px-6 py-3 rounded-lg transition text-base md:text-lg shadow-md"
+            disabled={status === "submitting"}
+            className="bg-[#1C2B4E] hover:bg-[#2A3D6C] text-white font-semibold px-6 py-3 rounded-lg transition text-base md:text-lg shadow-md disabled:opacity-70 disabled:cursor-wait"
           >
-            Enviar mensaje
+            {status === "submitting" ? "Enviando..." : "Enviar mensaje"}
           </button>
+
+          {status === "success" && (
+            <p role="status" aria-live="polite" className="text-green-700 font-medium text-sm mt-1">
+              {feedbackMsg}
+            </p>
+          )}
+          {status === "error" && (
+            <p role="alert" className="text-red-700 font-medium text-sm mt-1">
+              {feedbackMsg}
+            </p>
+          )}
 
           {/* Google Maps Section */}
           <div className="mt-16 bg-white py-12">
@@ -136,13 +174,13 @@ export default function ContactPage() {
                 <span className="block">www.bihospharma.com</span>
                 <div className="flex gap-4 mt-4">
                   <a href="https://www.instagram.com/bihospharma.ips/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram" className="rounded-full bg-white hover:bg-[#00ACFF] transition p-2 flex items-center justify-center">
-                    <svg width="20" height="20" fill="currentColor" className="text-[#1C2B4E]" viewBox="0 0 24 24"><path d="M7 2C4.239 2 2 4.239 2 7v10c0 2.761 2.239 5 5 5h10c2.761 0 5-2.239 5-5V7c0-2.761-2.239-5-5-5H7zm0 2h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zm5 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm4.5-.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>
+                    <svg width="20" height="20" fill="currentColor" className="text-[#1C2B4E]" viewBox="0 0 24 24"><path d="M7 2C4.239 2 2 4.239 2 7v10c0 2.761 2.239 5 5 5h10c2.761 0 5-2.239 5-5V7c0-2.761-2.239-5-5-5H7zm0 2h10a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3zm5 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm4.5-.5a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" /></svg>
                   </a>
                   <a href="https://www.linkedin.com/company/bihospharma-sas/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn" className="rounded-full bg-white hover:bg-[#00ACFF] transition p-2 flex items-center justify-center">
-                    <svg width="20" height="20" fill="currentColor" className="text-[#1C2B4E]" viewBox="0 0 24 24"><path d="M6.94 6.94A1.06 1.06 0 1 1 8 8a1.06 1.06 0 0 1-1.06-1.06ZM7 10h2v8H7v-8Zm3.5 0h2v1.17h.03c.3-.57 1.04-1.17 2.15-1.17 2.3 0 2.72 1.51 2.72 3.48V18h-2v-3.18c0-.76-.01-1.75-1.07-1.75s-1.23.84-1.23 1.7V18h-2v-8Z"/></svg>
+                    <svg width="20" height="20" fill="currentColor" className="text-[#1C2B4E]" viewBox="0 0 24 24"><path d="M6.94 6.94A1.06 1.06 0 1 1 8 8a1.06 1.06 0 0 1-1.06-1.06ZM7 10h2v8H7v-8Zm3.5 0h2v1.17h.03c.3-.57 1.04-1.17 2.15-1.17 2.3 0 2.72 1.51 2.72 3.48V18h-2v-3.18c0-.76-.01-1.75-1.07-1.75s-1.23.84-1.23 1.7V18h-2v-8Z" /></svg>
                   </a>
                   <a href="https://www.facebook.com/Bihospharma.ips/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" title="Facebook" className="rounded-full bg-white hover:bg-[#00ACFF] transition p-2 flex items-center justify-center">
-                    <svg width="20" height="20" fill="currentColor" className="text-[#1C2B4E]" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54v-2.89h2.54v-2.205c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.772-1.63 1.562v1.878h2.773l-.443 2.89h-2.33v6.987C18.343 21.128 22 16.991 22 12z"/></svg>
+                    <svg width="20" height="20" fill="currentColor" className="text-[#1C2B4E]" viewBox="0 0 24 24"><path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54v-2.89h2.54v-2.205c0-2.507 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.772-1.63 1.562v1.878h2.773l-.443 2.89h-2.33v6.987C18.343 21.128 22 16.991 22 12z" /></svg>
                   </a>
                 </div>
               </div>
