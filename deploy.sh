@@ -31,6 +31,17 @@ rsync -az \
 echo "→ Installing production deps on server…"
 ssh "$EC2_HOST" "cd ~/bihospharma-web && npm ci --omit=dev --prefer-offline --no-audit --legacy-peer-deps 2>/dev/null || npm install --omit=dev --prefer-offline --no-audit --legacy-peer-deps"
 
+# --- 3b. Generate Prisma client on server ---
+echo "→ Generating Prisma client on server…"
+ssh "$EC2_HOST" "
+  export NVM_DIR=\"\$HOME/.nvm\"
+  [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
+  cd ~/bihospharma-web
+  rm -f ~/package-lock.json ~/package.json 2>/dev/null || true
+  prisma generate --schema=./prisma/schema.prisma 2>/dev/null || npx --yes prisma generate --schema=./prisma/schema.prisma
+  echo 'Prisma client generated'
+"
+
 # --- 4. Restart PM2 ---
 echo "→ Restarting PM2…"
 ssh "$EC2_HOST" "
