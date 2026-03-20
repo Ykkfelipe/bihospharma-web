@@ -19,19 +19,25 @@ export default function LoginPage() {
         setLoading(true);
         setError("");
 
-        const result = await signIn("credentials", {
-            email,
-            password,
-            redirect: false,
-        });
+        try {
+            const result = await signIn("credentials", {
+                email,
+                password,
+                redirect: false,
+            });
 
-        setLoading(false);
+            setLoading(false);
 
-        if (result?.error) {
-            setError("Correo o contraseña incorrectos. Por favor verifica tus datos.");
-        } else {
-            router.push("/personal");
-            router.refresh();
+            if (result?.error) {
+                setError("Correo o contraseña incorrectos. Por favor verifica tus datos.");
+            } else if (result?.ok) {
+                router.push("/personal/admin");
+                router.refresh();
+            }
+        } catch (err) {
+            setLoading(false);
+            console.error(err);
+            setError("Ocurrió un error de red o de seguridad. Por favor recarga la página e intenta de nuevo.");
         }
     };
 

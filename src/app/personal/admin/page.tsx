@@ -61,8 +61,14 @@ export default function AdminPage() {
         fd.append("file", f);
         const up = await fetch("/api/upload", { method: "POST", body: fd });
         if (!up.ok) {
-            const err = await up.json();
-            throw new Error(err.error ?? "Error al subir el archivo.");
+            let errorMsg = "Error al subir el archivo (quizás es demasiado pesado).";
+            try {
+                const err = await up.json();
+                if (err.error) errorMsg = err.error;
+            } catch (e) {
+                // Ignore json parse error for HTML 413 responses
+            }
+            throw new Error(errorMsg);
         }
         const { fileUrl } = await up.json();
         return fileUrl;
