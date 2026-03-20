@@ -10,7 +10,8 @@
     "lint": "next lint",
     "postbuild": "next-sitemap",
     "extract:pdf": "node scripts/extract-pdf.js \"BORRADOR WEB BHP (1).pdf\"",
-    "prepare-deploy": "rm -rf deploy-ready && mkdir deploy-ready && cp -r public deploy-ready/ && cp -r .next deploy-ready/.next && cp package.json deploy-ready/ && cp server.js deploy-ready/ && zip -r bihospharma-deploy.zip deploy-ready"
+    "prepare-deploy": "rm -rf deploy-ready && mkdir deploy-ready && cp -r public deploy-ready/ && cp -r .next deploy-ready/.next && cp package.json deploy-ready/ && cp server.js deploy-ready/ && zip -r bihospharma-deploy.zip deploy-ready",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.5.0",
