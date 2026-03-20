@@ -38,7 +38,7 @@ ssh "$EC2_HOST" "
   [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
   cd ~/bihospharma-web
   rm -f ~/package-lock.json ~/package.json 2>/dev/null || true
-  prisma generate --schema=./prisma/schema.prisma 2>/dev/null || npx --yes prisma generate --schema=./prisma/schema.prisma
+  prisma generate --schema=./prisma/schema.prisma 2>/dev/null || npx --yes prisma@5.22.0 generate --schema=./prisma/schema.prisma
   echo 'Prisma client generated'
 "
 
