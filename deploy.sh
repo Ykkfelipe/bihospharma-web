@@ -13,11 +13,19 @@ cd "$LOCAL_APP_DIR"
 npm run build
 
 # --- 2. Sync built output + source to EC2 ---
+echo "→ Generating Prisma client locally..."
+npx prisma generate
+
 echo "→ Syncing to EC2…"
 rsync -az --delete \
   --exclude='.git' \
   --exclude='node_modules' \
+  --exclude='dev.db' \
   "$LOCAL_APP_DIR/" "$EC2_HOST:~/bihospharma-web/"
+
+# Sync the pre-generated Prisma client separately
+rsync -az \
+  "$LOCAL_APP_DIR/node_modules/.prisma/" "$EC2_HOST:~/bihospharma-web/node_modules/.prisma/"
 
 # --- 3. Install production deps on server (fast — no build) ---
 echo "→ Installing production deps on server…"
