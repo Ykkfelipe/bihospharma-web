@@ -7,9 +7,10 @@
 // y compatibilidad. Normalmente no hay que tocarlo a menos que
 // se agregue una nueva librería o cambie el hosting.
 // ============================================================
+import path from 'path';
 
 const nextConfig = {
-  outputFileTracingRoot: './',
+  outputFileTracingRoot: path.resolve('.'),
   // Optimización de imágenes:
   // Next.js detecta automáticamente qué formatos soporta el navegador
   // y sirve AVIF o WebP en vez de PNG/JPEG. AVIF es ~40% más liviano.
