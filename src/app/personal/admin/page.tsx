@@ -158,66 +158,66 @@ export default function AdminPage() {
         new Date(iso).toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric" });
 
     return (
-        <main className="min-h-screen bg-gray-50">
-            {/* Top Bar */}
-            <header className="bg-[#0a2540] shadow-lg">
-                <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Image src="/logos/bihos-logo.png" alt="Bihospharma" width={40} height={40} className="rounded-full bg-white p-0.5" />
+        <main className="min-h-screen bg-gray-50 pb-20">
+            {/* Top bar */}
+            <header className="bg-[#0a2540] shadow-lg sticky top-0 z-50">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <Image src="/logos/bihos-logo.png" alt="Bihospharma" width={36} height={36} className="rounded-full bg-white p-0.5 sm:w-[40px] sm:h-[40px]" />
                         <div>
-                            <p className="text-white font-bold text-sm leading-none">Panel de Administración</p>
-                            <p className="text-[#94a3b8] text-xs">Bihospharma IPS</p>
+                            <p className="text-white font-bold text-xs sm:text-sm leading-none">Panel de Administración</p>
+                            <p className="text-[#94a3b8] text-[10px] sm:text-xs">Bihospharma IPS</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <Link href="/personal" className="text-[#b6d9f7] hover:text-white text-xs transition">← Ver portal</Link>
-                        <button onClick={() => signOut({ callbackUrl: "/personal/login" })} className="text-[#94a3b8] hover:text-white text-xs transition">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <Link href="/personal" className="text-[#b6d9f7] hover:text-white text-[10px] sm:text-xs transition">← Ver portal</Link>
+                        <button onClick={() => signOut({ callbackUrl: "/personal/login" })} className="text-[#94a3b8] hover:text-white text-[10px] sm:text-xs transition">
                             Cerrar sesión
                         </button>
                     </div>
                 </div>
             </header>
 
-            <div className="max-w-5xl mx-auto px-6 py-10 grid lg:grid-cols-2 gap-10 items-start">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 grid lg:grid-cols-2 gap-6 sm:gap-10 items-start">
 
                 {/* ── CREATE FORM ── */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <h2 className="text-base font-bold text-[#0a2540] mb-5">Nueva publicación</h2>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                        <div className="flex gap-3">
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                             {(["announcement", "document"] as const).map((t) => (
                                 <button key={t} type="button" onClick={() => setType(t)}
-                                    className={`flex-1 py-2 rounded-lg text-sm font-semibold border transition ${type === t ? "bg-[#0f4c8a] text-white border-[#0f4c8a]" : "bg-white text-gray-500 border-gray-200 hover:border-[#0f4c8a]"}`}>
+                                    className={`flex-1 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold border transition ${type === t ? "bg-[#0f4c8a] text-white border-[#0f4c8a]" : "bg-white text-gray-500 border-gray-200 hover:border-[#0f4c8a]"}`}>
                                     {t === "announcement" ? "📢 Comunicado" : "📄 Documento"}
                                 </button>
                             ))}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">Título *</label>
+                            <label className="block text-[13px] sm:text-sm font-semibold text-gray-700 mb-1">Título *</label>
                             <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required
                                 placeholder="Ej: Reglamento Interno 2025"
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c8a]" />
+                                className="w-full border border-gray-300 rounded-lg px-3 py-2 sm:py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c8a]" />
                         </div>
 
                         {type === "announcement" && (
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1">Contenido</label>
+                                <label className="block text-[13px] sm:text-sm font-semibold text-gray-700 mb-1">Contenido</label>
                                 <textarea rows={4} value={bodyText} onChange={(e) => setBodyText(e.target.value)}
                                     placeholder="Escribe el comunicado aquí..."
-                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c8a] resize-none" />
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 sm:py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c8a] resize-none" />
                             </div>
                         )}
 
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">
+                            <label className="block text-[13px] sm:text-sm font-semibold text-gray-700 mb-1" htmlFor="fileUpload">
                                 Adjuntar PDF o Imagen {type === "document" ? "*" : "(opcional)"}
                             </label>
-                            <input ref={fileRef} type="file" accept={ACCEPTED}
+                            <input id="fileUpload" ref={fileRef} type="file" accept={ACCEPTED}
                                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                                 required={type === "document"}
-                                className="w-full text-sm text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#0f4c8a] file:text-white hover:file:bg-[#0a2540] cursor-pointer" />
-                            <p className="text-xs text-gray-400 mt-1">Formatos aceptados: PDF, JPG, PNG, GIF, WEBP</p>
+                                className="w-full text-xs sm:text-sm text-gray-500 file:mr-2 sm:file:mr-3 file:py-1.5 file:px-2 sm:file:px-3 file:rounded-lg file:border-0 file:text-[10px] sm:file:text-xs file:font-semibold file:bg-[#0f4c8a] file:text-white hover:file:bg-[#0a2540] cursor-pointer" />
+                            <p className="text-[10px] sm:text-xs text-gray-400 mt-1">Formatos aceptados: PDF, JPG, PNG, GIF, WEBP</p>
                         </div>
 
                         {feedback && (
