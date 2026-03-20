@@ -1,6 +1,8 @@
 import type { NextConfig } from 'next';
+import path from 'path';
 
 const nextConfig: NextConfig = {
+  outputFileTracingRoot: path.join(__dirname),
   images: {
     // Keep unoptimized while testing locally or if you plan to export statically.
     // If you will run a Node server (PM2/nginx), you can remove this later.
