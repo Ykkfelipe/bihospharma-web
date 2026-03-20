@@ -43,3 +43,11 @@ next-env.d.ts
 # Next.js build
 .next/
 deploy.tar.gz
+
+/src/generated/prisma
+
+# SQLite local database — never commit, managed on server separately
+dev.db
+
+# User-uploaded files — managed on server, not in git
+/public/uploads/

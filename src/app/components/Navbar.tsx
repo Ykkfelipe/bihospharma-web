@@ -81,6 +81,9 @@ export default function Navbar() {
             <Link href="/pqrs">
               <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">PQRS</span>
             </Link>
+            <Link href="/personal/login" prefetch={false}>
+              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Acceso Corporativo</span>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -142,6 +145,9 @@ export default function Navbar() {
           </Link>
           <Link href="/pqrs">
             <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">PQRS</span>
+          </Link>
+          <Link href="/personal/login" prefetch={false}>
+            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Acceso Corporativo</span>
           </Link>
         </div>
       )}
