@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, FormEvent } from "react";
+import { useState, useRef, FormEvent, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
@@ -23,6 +23,7 @@ function isImage(url: string | null) {
 }
 
 export default function AdminPage() {
+    const { data: session } = useSession();
     const [posts, setPosts] = useState<Post[]>([]);
     const [postsLoaded, setPostsLoaded] = useState(false);
 
@@ -52,7 +53,9 @@ export default function AdminPage() {
         setPostsLoaded(true);
     };
 
-    if (!postsLoaded) loadPosts();
+    useEffect(() => {
+        if (!postsLoaded) loadPosts();
+    }, [postsLoaded]);
 
     const uploadFile = async (f: File): Promise<string> => {
         const fd = new FormData();
