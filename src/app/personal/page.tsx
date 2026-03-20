@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
+import { PostAttachment } from "../components/PostAttachment";
 
 type Post = {
     id: string;
@@ -106,41 +107,12 @@ export default function PersonalPage() {
                                                     {post.body && (
                                                         <p className="text-gray-600 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">{post.body}</p>
                                                     )}
-                                                    {post.fileUrl && isImage(post.fileUrl) && (
-                                                        <div className="mt-4 rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50 flex justify-center w-full">
-                                                            <Image
-                                                                src={post.fileUrl}
-                                                                alt="Imagen adjunta"
-                                                                width={800}
-                                                                height={600}
-                                                                className="object-contain max-h-[400px] sm:max-h-[600px] w-full h-auto rounded-lg"
-                                                                unoptimized
-                                                            />
-                                                        </div>
-                                                    )}
-                                                    {post.fileUrl && !isImage(post.fileUrl) && (
-                                                        <div className="mt-4 rounded-xl overflow-hidden border border-gray-200 shadow-sm w-full">
-                                                            <div className="bg-gray-50 px-3 py-2 sm:px-4 sm:py-2 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                                                <span className="text-[10px] sm:text-xs font-semibold text-gray-500">📄 Documento adjunto</span>
-                                                                <a
-                                                                    href={post.fileUrl}
-                                                                    target="_blank"
-                                                                    rel="noopener noreferrer"
-                                                                    className="text-[10px] sm:text-xs text-[#0f4c8a] font-semibold hover:underline inline-flex items-center gap-1 bg-white border border-[#0f4c8a]/20 px-3 py-1 rounded-md sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 w-max"
-                                                                >
-                                                                    Abrir / Descargar ↗
-                                                                </a>
-                                                            </div>
-                                                            <iframe
-                                                                src={post.fileUrl}
-                                                                className="w-full hidden sm:block border-0"
-                                                                style={{ height: "500px" }}
-                                                                title="Documento adjunto"
-                                                            />
-                                                            <div className="sm:hidden p-4 text-center bg-gray-50 text-xs text-gray-500">
-                                                                Presiona &quot;Abrir / Descargar&quot; para ver el documento en tu dispositivo.
-                                                            </div>
-                                                        </div>
+                                                    {post.fileUrl && (
+                                                        <PostAttachment
+                                                            fileUrl={post.fileUrl}
+                                                            title={post.title}
+                                                            isImage={isImage}
+                                                        />
                                                     )}
                                                 </div>
                                                 <span className="text-[10px] sm:text-xs text-gray-400 whitespace-nowrap">{formatDate(post.createdAt)}</span>
@@ -166,41 +138,12 @@ export default function PersonalPage() {
                                                     <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">{formatDate(post.createdAt)}</p>
                                                 </div>
                                             </div>
-                                            {post.fileUrl && isImage(post.fileUrl) && (
-                                                <div className="rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50 flex justify-center w-full">
-                                                    <Image
-                                                        src={post.fileUrl}
-                                                        alt="Imagen adjunta"
-                                                        width={800}
-                                                        height={600}
-                                                        className="object-contain max-h-[400px] sm:max-h-[600px] w-full h-auto rounded-lg"
-                                                        unoptimized
-                                                    />
-                                                </div>
-                                            )}
-                                            {post.fileUrl && !isImage(post.fileUrl) && (
-                                                <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm w-full">
-                                                    <div className="bg-gray-50 px-3 py-2 sm:px-4 sm:py-2 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                                        <span className="text-[10px] sm:text-xs font-semibold text-gray-500">📄 Documento adjunto</span>
-                                                        <a
-                                                            href={post.fileUrl}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="text-[10px] sm:text-xs text-[#0f4c8a] font-semibold hover:underline inline-flex items-center gap-1 bg-white border border-[#0f4c8a]/20 px-3 py-1 rounded-md sm:border-0 sm:bg-transparent sm:px-0 sm:py-0 w-max"
-                                                        >
-                                                            Abrir / Descargar ↗
-                                                        </a>
-                                                    </div>
-                                                    <iframe
-                                                        src={post.fileUrl}
-                                                        className="w-full hidden sm:block border-0"
-                                                        style={{ height: "500px" }}
-                                                        title={post.title}
-                                                    />
-                                                    <div className="sm:hidden p-4 text-center bg-gray-50 text-xs text-gray-500">
-                                                        Presiona &quot;Abrir / Descargar&quot; para ver el documento en tu dispositivo.
-                                                    </div>
-                                                </div>
+                                            {post.fileUrl && (
+                                                <PostAttachment
+                                                    fileUrl={post.fileUrl}
+                                                    title={post.title}
+                                                    isImage={isImage}
+                                                />
                                             )}
                                         </div>
                                     ))}

@@ -9,12 +9,14 @@
 // ============================================================
 
 const nextConfig = {
+  outputFileTracingRoot: './',
   // Optimización de imágenes:
   // Next.js detecta automáticamente qué formatos soporta el navegador
   // y sirve AVIF o WebP en vez de PNG/JPEG. AVIF es ~40% más liviano.
   // Si en el futuro se agregan imágenes al sitio, esto las optimiza sin
   // necesidad de hacer nada adicional.
   images: {
+    unoptimized: true,
     formats: ['image/avif', 'image/webp'],
     // Anchos de pantalla para los que Next genera versiones de la imagen
     // (para el atributo srcset — sirve la imagen del tamaño justo)
