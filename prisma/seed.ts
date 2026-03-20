@@ -2,20 +2,16 @@
  * seed.ts — Crea usuarios en la base de datos del portal corporativo.
  *
  * Uso:
- *   npx tsx prisma/seed.ts
+ *   DATABASE_URL="file:./dev.db" npx tsx prisma/seed.ts
  *
  * Modifica el arreglo USERS para agregar empleados.
  * role: "admin" → puede publicar | role: "employee" → solo leer
  */
 
 import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import bcrypt from "bcryptjs";
 
-
-const url = process.env.DATABASE_URL ?? "file:./dev.db";
-const adapter = new PrismaBetterSqlite3({ url });
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient();
 
 const USERS = [
     {

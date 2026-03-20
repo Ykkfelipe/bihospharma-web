@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// This is your Prisma schema file
+// https://pris.ly/d/prisma-schema
 
 generator client {
   provider = "prisma-client-js"
@@ -7,14 +7,15 @@ generator client {
 
 datasource db {
   provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String @id @default(cuid())
-  email        String @unique
+  id           String   @id @default(cuid())
+  email        String   @unique
   passwordHash String
   name         String
-  role         String @default("employee") // "admin" | "employee"
+  role         String   @default("employee") // "admin" | "employee"
   createdAt    DateTime @default(now())
 }
 
@@ -22,7 +23,7 @@ model Post {
   id        String   @id @default(cuid())
   title     String
   body      String?  // Optional text content
-  fileUrl   String?  // Optional PDF file path
+  fileUrl   String?  // Optional file path
   type      String   @default("announcement") // "announcement" | "document"
   createdAt DateTime @default(now())
 }

@@ -1,21 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
-import Database from "better-sqlite3";
 import bcrypt from "bcryptjs";
-import path from "path";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
-
-function getPrisma() {
-    const dbPath = process.env.DATABASE_URL?.replace("file:", "") ?? "./dev.db";
-    const absoluteDbPath = path.isAbsolute(dbPath)
-        ? dbPath
-        : path.join(process.cwd(), dbPath);
-    const db = new Database(absoluteDbPath);
-    const adapter = new PrismaBetterSqlite3({ url: `file:${absoluteDbPath}` });
-    return new PrismaClient({ adapter });
-}
 
 export async function POST(req: NextRequest) {
     try {
@@ -35,8 +22,6 @@ export async function POST(req: NextRequest) {
         if (accessCode !== correctCode) {
             return NextResponse.json({ error: "Código de acceso incorrecto. Contacta al administrador si no lo tienes." }, { status: 403 });
         }
-
-        const prisma = getPrisma();
 
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({

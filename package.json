@@ -13,10 +13,8 @@
     "prepare-deploy": "rm -rf deploy-ready && mkdir deploy-ready && cp -r public deploy-ready/ && cp -r .next deploy-ready/.next && cp package.json deploy-ready/ && cp server.js deploy-ready/ && zip -r bihospharma-deploy.zip deploy-ready"
   },
   "dependencies": {
-    "@prisma/adapter-better-sqlite3": "^7.5.0",
-    "@prisma/client": "^7.5.0",
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^12.8.0",
     "canvas": "^3.1.2",
     "next": "15.5.2",
     "next-auth": "^5.0.0-beta.30",
@@ -45,7 +43,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "postcss": "^8.5.6",
-    "prisma": "7.5.0",
+    "prisma": "^5.22.0",
     "tailwindcss": "^4.1.11",
     "typescript": "5.9.2"
   }

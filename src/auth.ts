@@ -1,15 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { PrismaClient } from "@prisma/client";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import bcrypt from "bcryptjs";
 import { authConfig } from "@/auth.config";
-
-function getPrisma() {
-    const url = process.env.DATABASE_URL ?? "file:./dev.db";
-    const adapter = new PrismaBetterSqlite3({ url });
-    return new PrismaClient({ adapter });
-}
+import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig,
@@ -22,7 +15,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) return null;
 
-                const prisma = getPrisma();
                 try {
                     const user = await prisma.user.findUnique({
                         where: { email: credentials.email as string },
@@ -43,8 +35,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         name: user.name,
                         role: user.role,
                     };
-                } finally {
-                    await prisma.$disconnect();
+                } catch (e) {
+                    console.error("[auth] Error during login:", e);
+                    return null;
                 }
             },
         }),
