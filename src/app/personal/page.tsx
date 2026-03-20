@@ -138,7 +138,7 @@ export default function PersonalPage() {
                                                                 title="Documento adjunto"
                                                             />
                                                             <div className="sm:hidden p-4 text-center bg-gray-50 text-xs text-gray-500">
-                                                                Presiona "Abrir / Descargar" para ver el documento en tu dispositivo.
+                                                                Presiona &quot;Abrir / Descargar&quot; para ver el documento en tu dispositivo.
                                                             </div>
                                                         </div>
                                                     )}
@@ -198,7 +198,7 @@ export default function PersonalPage() {
                                                         title={post.title}
                                                     />
                                                     <div className="sm:hidden p-4 text-center bg-gray-50 text-xs text-gray-500">
-                                                        Presiona "Abrir / Descargar" para ver el documento en tu dispositivo.
+                                                        Presiona &quot;Abrir / Descargar&quot; para ver el documento en tu dispositivo.
                                                     </div>
                                                 </div>
                                             )}

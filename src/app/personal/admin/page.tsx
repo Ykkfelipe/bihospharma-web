@@ -23,8 +23,6 @@ function isImage(url: string | null) {
 }
 
 export default function AdminPage() {
-    const { data: session } = useSession();
-
     const [posts, setPosts] = useState<Post[]>([]);
     const [postsLoaded, setPostsLoaded] = useState(false);
 
@@ -65,7 +63,7 @@ export default function AdminPage() {
             try {
                 const err = await up.json();
                 if (err.error) errorMsg = err.error;
-            } catch (e) {
+            } catch {
                 // Ignore json parse error for HTML 413 responses
             }
             throw new Error(errorMsg);
