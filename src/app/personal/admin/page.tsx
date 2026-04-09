@@ -161,18 +161,18 @@ export default function AdminPage() {
     return (
         <main className="min-h-screen bg-gray-50 pb-20">
             {/* Top bar */}
-            <header className="bg-[#0a2540] shadow-lg sticky top-0 z-50">
+            <header className="portal-header" style={{ position: 'sticky', top: 0, zIndex: 50 }}>
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2 sm:gap-3">
-                        <Image src="/logos/bihos-logo.png" alt="Bihospharma" width={36} height={36} className="rounded-full bg-white p-0.5 sm:w-[40px] sm:h-[40px]" />
+                        <Image src="/logos/bihos-logo.png" alt="Bihospharma" width={32} height={32} style={{ borderRadius: '50%', background: '#fff', padding: 3 }} />
                         <div>
                             <p className="text-white font-bold text-xs sm:text-sm leading-none">Panel de Administración</p>
-                            <p className="text-[#94a3b8] text-[10px] sm:text-xs">Bihospharma IPS</p>
+                            <p style={{ color: '#64748b', fontSize: 10, margin: 0 }}>Bihospharma IPS</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3 sm:gap-4">
-                        <Link href="/personal" className="text-[#b6d9f7] hover:text-white text-[10px] sm:text-xs transition">← Ver portal</Link>
-                        <button onClick={() => signOut({ callbackUrl: "/personal/login" })} className="text-[#94a3b8] hover:text-white text-[10px] sm:text-xs transition">
+                        <Link href="/personal" style={{ color: '#94a3b8', fontSize: 11, textDecoration: 'none', transition: 'color 0.2s' }}>← Ver portal</Link>
+                        <button onClick={() => signOut({ callbackUrl: "/personal/login" })} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: 11, cursor: 'pointer', transition: 'color 0.2s' }}>
                             Cerrar sesión
                         </button>
                     </div>

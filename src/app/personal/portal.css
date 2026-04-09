@@ -1,0 +1,362 @@
+/* ══════════════════════════════════════════════════════
+   Bihospharma Corporate Portal – Premium Styles
+   ══════════════════════════════════════════════════════ */
+
+/* ── Keyframe Animations ────────────────────────────── */
+
+@keyframes portalFadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes portalFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes portalFloat1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(30px, -50px) scale(1.05); }
+  66%      { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+@keyframes portalFloat2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(-40px, 30px) scale(1.1); }
+  66%      { transform: translate(25px, -35px) scale(0.9); }
+}
+
+@keyframes portalFloat3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(35px, 25px) scale(1.08); }
+}
+
+@keyframes portalShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes portalSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes portalPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
+}
+
+/* ── Utility Classes ────────────────────────────────── */
+
+.portal-animate-in {
+  animation: portalFadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.portal-animate-in-delay {
+  animation: portalFadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+
+.portal-fade-in {
+  animation: portalFadeIn 0.4s ease both;
+}
+
+/* ── Auth Pages Background ──────────────────────────── */
+
+.portal-auth-bg {
+  background: linear-gradient(135deg, #0a2540 0%, #0f4c8a 50%, #1d6fbf 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-auth-bg::before,
+.portal-auth-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.portal-auth-bg::before {
+  width: 400px;
+  height: 400px;
+  background: #4fc3f7;
+  top: -100px;
+  right: -100px;
+  animation: portalFloat1 20s ease-in-out infinite;
+}
+
+.portal-auth-bg::after {
+  width: 350px;
+  height: 350px;
+  background: #81d4fa;
+  bottom: -80px;
+  left: -80px;
+  animation: portalFloat2 25s ease-in-out infinite;
+}
+
+.portal-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.1;
+  pointer-events: none;
+  background: #b3e5fc;
+  width: 250px;
+  height: 250px;
+  top: 40%;
+  left: 50%;
+  animation: portalFloat3 18s ease-in-out infinite;
+}
+
+/* ── Auth Card ──────────────────────────────────────── */
+
+.portal-auth-card {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+}
+
+/* ── Input Styles ───────────────────────────────────── */
+
+.portal-input {
+  width: 100%;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: #1a202c;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.portal-input:focus {
+  border-color: #0f4c8a;
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(15, 76, 138, 0.12);
+}
+
+.portal-input::placeholder {
+  color: #a0aec0;
+}
+
+/* ── Button Styles ──────────────────────────────────── */
+
+.portal-btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #0a2540 0%, #0f4c8a 100%);
+  color: #fff;
+  font-weight: 700;
+  padding: 14px 24px;
+  border-radius: 12px;
+  border: none;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(10, 37, 64, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+
+.portal-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(10, 37, 64, 0.45);
+}
+
+.portal-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.portal-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* ── Spinner ────────────────────────────────────────── */
+
+.portal-spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: portalSpin 0.6s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* ── Skeleton Loader ────────────────────────────────── */
+
+.portal-skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: portalShimmer 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* ── Header Glass Effect ────────────────────────────── */
+
+.portal-header {
+  background: linear-gradient(135deg, #0a2540 0%, #0d3a6e 100%);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* ── User Avatar ────────────────────────────────────── */
+
+.portal-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1d6fbf, #4fc3f7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(29, 111, 191, 0.3);
+}
+
+/* ── Welcome Banner ─────────────────────────────────── */
+
+.portal-welcome {
+  background: linear-gradient(135deg, #0a2540 0%, #0f4c8a 60%, #1d6fbf 100%);
+  border-radius: 20px;
+  padding: 32px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(10, 37, 64, 0.2);
+}
+
+.portal-welcome::before {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(79, 195, 247, 0.08);
+  top: -60px;
+  right: -40px;
+  filter: blur(40px);
+}
+
+.portal-welcome::after {
+  content: '';
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(129, 212, 250, 0.06);
+  bottom: -40px;
+  left: 20%;
+  filter: blur(30px);
+}
+
+/* ── Section Cards ──────────────────────────────────── */
+
+.portal-section-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.portal-section-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.portal-section-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #f5f5f5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(to right, #fafbfc, #fff);
+}
+
+.portal-section-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.portal-section-icon.pinned {
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  color: #2e7d32;
+}
+
+.portal-section-icon.announcement {
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  color: #1565c0;
+}
+
+.portal-section-icon.document {
+  background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+  color: #e65100;
+}
+
+/* ── Post Card ──────────────────────────────────────── */
+
+.portal-post-card {
+  background: #fff;
+  border-radius: 14px;
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.portal-post-card:hover {
+  border-color: #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* ── Error/Alert Boxes ──────────────────────────────── */
+
+.portal-alert-error {
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.portal-alert-success {
+  padding: 12px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+/* ── Footer ─────────────────────────────────────────── */
+
+.portal-footer {
+  text-align: center;
+  padding: 24px 16px;
+  color: #94a3b8;
+  font-size: 11px;
+  border-top: 1px solid #f0f0f0;
+  margin-top: auto;
+}

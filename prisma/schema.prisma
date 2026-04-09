@@ -11,21 +11,47 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String     @id @default(cuid())
+  email        String     @unique
   passwordHash String
   name         String
-  role         String   @default("employee") // "admin" | "employee"
-  createdAt    DateTime @default(now())
+  role         String     @default("employee") // "admin" | "employee"
+  createdAt    DateTime   @default(now())
+  reactions    Reaction[]
+  comments     Comment[]
 }
 
 model Post {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   title     String
   body      String?  // Optional text content
   fileUrl   String?  // Optional file path
   type      String   @default("announcement") // "announcement" | "document"
   createdAt DateTime @default(now())
+  reactions Reaction[]
+  comments  Comment[]
+}
+
+model Reaction {
+  id        String   @id @default(cuid())
+  type      String   // "like" | "love" | "clap" | "idea" | "check"
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId, type])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  userId    String
+  postId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model PasswordResetToken {

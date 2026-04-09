@@ -36,77 +36,115 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <main className="min-h-screen flex items-center justify-center p-4" style={{ background: "linear-gradient(135deg, #0a2540 0%, #0f4c8a 60%, #1d6fbf 100%)" }}>
-            <div className="w-full max-w-md">
-                <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
+        <main className="portal-auth-bg min-h-screen flex items-center justify-center p-4">
+            <div className="portal-orb" />
+
+            <div className="w-full max-w-md portal-animate-in" style={{ position: 'relative', zIndex: 1 }}>
+                <div className="portal-auth-card">
                     {/* Header */}
-                    <div className="bg-gradient-to-r from-[#0a2540] to-[#0f4c8a] px-6 sm:px-8 py-6 sm:py-8 text-center">
-                        <Image
-                            src="/logos/bihos-logo.png"
-                            alt="Bihospharma"
-                            width={70}
-                            height={70}
-                            className="mx-auto rounded-full bg-white p-1.5 mb-4"
-                        />
-                        <p className="text-blue-200 text-[10px] sm:text-xs font-semibold uppercase tracking-widest mb-1">Bihospharma IPS</p>
-                        <h1 className="text-white text-xl sm:text-2xl font-bold">Recuperar Contraseña</h1>
+                    <div style={{
+                        background: 'linear-gradient(135deg, #0a2540 0%, #0f4c8a 100%)',
+                        padding: '32px',
+                        textAlign: 'center',
+                        position: 'relative',
+                        overflow: 'hidden',
+                    }}>
+                        <div style={{
+                            position: 'absolute', width: 120, height: 120, borderRadius: '50%',
+                            background: 'rgba(79, 195, 247, 0.06)', top: -30, right: -20,
+                        }} />
+
+                        <div style={{
+                            width: 80, height: 80, borderRadius: '50%', background: '#fff',
+                            margin: '0 auto 16px', padding: 12, display: 'flex',
+                            alignItems: 'center', justifyContent: 'center',
+                            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+                        }}>
+                            <Image
+                                src="/logos/bihos-logo.png"
+                                alt="Bihospharma"
+                                width={48}
+                                height={48}
+                                style={{ objectFit: 'contain', maxWidth: '100%', maxHeight: '100%' }}
+                            />
+                        </div>
+                        <p style={{ color: '#7dd3fc', fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 4 }}>
+                            Bihospharma IPS
+                        </p>
+                        <h1 style={{ color: '#fff', fontSize: 22, fontWeight: 800, margin: 0 }}>
+                            Recuperar Contraseña
+                        </h1>
                     </div>
 
                     {/* Content */}
-                    <div className="px-6 sm:px-8 py-6 sm:py-8">
+                    <div className="portal-animate-in-delay" style={{ padding: '28px 32px 32px' }}>
                         {sent ? (
-                            <div className="text-center py-4">
-                                <div className="text-4xl mb-4">📧</div>
-                                <h2 className="text-lg font-bold text-[#0a2540] mb-2">¡Correo enviado!</h2>
-                                <p className="text-sm text-gray-600 leading-relaxed mb-6">
+                            <div style={{ textAlign: 'center', padding: '16px 0' }}>
+                                <div style={{
+                                    width: 64, height: 64, borderRadius: '50%',
+                                    background: 'linear-gradient(135deg, #e8f5e9, #c8e6c9)',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    margin: '0 auto 16px', fontSize: 28,
+                                }}>
+                                    ✓
+                                </div>
+                                <h2 style={{ fontSize: 18, fontWeight: 700, color: '#0a2540', marginBottom: 8 }}>¡Correo enviado!</h2>
+                                <p style={{ fontSize: 13, color: '#6b7280', lineHeight: 1.6, marginBottom: 24 }}>
                                     Si el correo está registrado, recibirás un enlace para restablecer tu contraseña. Revisa tu bandeja de entrada y la carpeta de spam.
                                 </p>
                                 <Link
                                     href="/personal/login"
-                                    className="text-[#0f4c8a] font-bold text-sm hover:underline"
+                                    style={{ color: '#0f4c8a', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}
                                 >
                                     ← Volver a Iniciar sesión
                                 </Link>
                             </div>
                         ) : (
                             <>
-                                <p className="text-sm text-gray-600 mb-5">
+                                <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 20, lineHeight: 1.5 }}>
                                     Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.
                                 </p>
-                                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                     <div>
-                                        <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">
+                                        <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>
                                             Correo electrónico
                                         </label>
-                                        <input
-                                            type="email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            required
-                                            autoComplete="email"
-                                            className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#0f4c8a]/50 focus:border-[#0f4c8a] transition-all bg-gray-50 focus:bg-white"
-                                            placeholder="usuario@bihospharma.com"
-                                        />
+                                        <div style={{ position: 'relative' }}>
+                                            <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 16 }}>
+                                                ✉
+                                            </span>
+                                            <input
+                                                type="email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                required
+                                                autoComplete="email"
+                                                className="portal-input"
+                                                style={{ paddingLeft: 40 }}
+                                                placeholder="usuario@bihospharma.com"
+                                            />
+                                        </div>
                                     </div>
 
                                     {error && (
-                                        <div className="p-3 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
-                                            <span className="text-red-500 mt-0.5 text-sm">⚠️</span>
-                                            <p className="text-red-600 text-xs sm:text-sm font-medium leading-tight">{error}</p>
+                                        <div className="portal-alert-error">
+                                            <span style={{ flexShrink: 0, marginTop: 1 }}>⚠️</span>
+                                            <p style={{ color: '#dc2626', fontSize: 13, fontWeight: 500, lineHeight: 1.4, margin: 0 }}>{error}</p>
                                         </div>
                                     )}
 
-                                    <button
-                                        type="submit"
-                                        disabled={loading}
-                                        className="w-full bg-gradient-to-r from-[#0a2540] to-[#0f4c8a] hover:opacity-90 text-white font-bold py-3 sm:py-3.5 rounded-xl transition-all shadow-lg text-xs sm:text-sm uppercase tracking-wide disabled:opacity-70 disabled:cursor-wait"
-                                    >
-                                        {loading ? "Enviando..." : "Enviar enlace de recuperación"}
+                                    <button type="submit" disabled={loading} className="portal-btn-primary">
+                                        {loading ? (
+                                            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <span className="portal-spinner" />
+                                                Enviando...
+                                            </span>
+                                        ) : "Enviar enlace de recuperación"}
                                     </button>
                                 </form>
 
-                                <div className="mt-5 pt-5 border-t border-gray-100 text-center">
-                                    <Link href="/personal/login" className="text-[#0f4c8a] font-bold text-sm hover:underline">
+                                <div style={{ marginTop: 20, paddingTop: 20, borderTop: '1px solid #f1f5f9', textAlign: 'center' }}>
+                                    <Link href="/personal/login" style={{ color: '#0f4c8a', fontWeight: 700, fontSize: 13, textDecoration: 'none' }}>
                                         ← Volver a Iniciar sesión
                                     </Link>
                                 </div>
@@ -114,6 +152,10 @@ export default function ForgotPasswordPage() {
                         )}
                     </div>
                 </div>
+
+                <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 11, marginTop: 24 }}>
+                    © {new Date().getFullYear()} Bihospharma IPS S.A.S · Todos los derechos reservados
+                </p>
             </div>
         </main>
     );

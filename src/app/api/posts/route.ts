@@ -12,11 +12,49 @@ export async function GET() {
             return NextResponse.json({ error: "No autorizado." }, { status: 401 });
         }
 
+        const user = session.user?.email
+            ? await prisma.user.findUnique({ where: { email: session.user.email } })
+            : null;
+
         const posts = await prisma.post.findMany({
             orderBy: { createdAt: "desc" },
+            include: {
+                reactions: { select: { type: true, userId: true } },
+                comments: {
+                    include: { user: { select: { id: true, name: true } } },
+                    orderBy: { createdAt: "asc" },
+                },
+            },
         });
 
-        return NextResponse.json(posts);
+        // Transform for client: add reaction counts + user's own reactions
+        const result = posts.map((post) => {
+            const reactionCounts: Record<string, number> = {};
+            const userReactions: string[] = [];
+            for (const r of post.reactions) {
+                reactionCounts[r.type] = (reactionCounts[r.type] || 0) + 1;
+                if (user && r.userId === user.id) userReactions.push(r.type);
+            }
+            return {
+                id: post.id,
+                title: post.title,
+                body: post.body,
+                fileUrl: post.fileUrl,
+                type: post.type,
+                createdAt: post.createdAt,
+                reactionCounts,
+                userReactions,
+                commentCount: post.comments.length,
+                comments: post.comments.map((c) => ({
+                    id: c.id,
+                    body: c.body,
+                    createdAt: c.createdAt,
+                    user: c.user,
+                })),
+            };
+        });
+
+        return NextResponse.json(result);
     } catch (err) {
         console.error("[GET /api/posts] Error:", err);
         return NextResponse.json({ error: "Error interno al cargar publicaciones." }, { status: 500 });
