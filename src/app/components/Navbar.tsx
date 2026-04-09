@@ -58,12 +58,15 @@ export default function Navbar() {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
-              <Link href="/estados-financieros-2024">
+              <Link href="/estados-financieros-2025">
                 <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">
                   Gestión y Sostenibilidad
                 </span>
               </Link>
               <div className={`absolute left-0 mt-2 w-56 bg-white shadow-lg rounded z-10 ${dropdownOpen ? 'flex' : 'hidden'} flex-col`}>
+                <Link href="/estados-financieros-2025">
+                  <span className="block px-4 py-2 text-sm hover:bg-gray-100 text-[#1C2B4E]">Estados Financieros 2025</span>
+                </Link>
                 <Link href="/estados-financieros-2024">
                   <span className="block px-4 py-2 text-sm hover:bg-gray-100 text-[#1C2B4E]">Estados Financieros 2024</span>
                 </Link>
@@ -128,6 +131,9 @@ export default function Navbar() {
             </span>
             {showSustainabilityMenu && (
               <>
+                <Link href="/estados-financieros-2025">
+                  <span onClick={() => setIsOpen(false)} className="block px-6 py-2 hover:underline">Estados Financieros 2025</span>
+                </Link>
                 <Link href="/estados-financieros-2024">
                   <span onClick={() => setIsOpen(false)} className="block px-6 py-2 hover:underline">Estados Financieros 2024</span>
                 </Link>
