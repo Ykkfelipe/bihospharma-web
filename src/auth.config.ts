@@ -42,7 +42,10 @@ export const authConfig: NextAuthConfig = {
             return session;
         },
     },
-    session: { strategy: "jwt" },
+    session: { 
+        strategy: "jwt",
+        maxAge: 180 * 24 * 60 * 60, // 180 days
+    },
     trustHost: true,
     debug: false,
 };
