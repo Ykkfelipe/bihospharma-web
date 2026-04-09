@@ -21,6 +21,7 @@ rsync -az --delete \
   --exclude='.git' \
   --exclude='node_modules' \
   --exclude='dev.db' \
+  --exclude='.env.local' \
   --exclude='public/uploads' \
   "$LOCAL_APP_DIR/" "$EC2_HOST:~/bihospharma-web/"
 
