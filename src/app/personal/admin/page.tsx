@@ -28,7 +28,7 @@ export default function AdminPage() {
     const [postsLoaded, setPostsLoaded] = useState(false);
 
     // ── Create form ──────────────────────────────────────────────
-    const [type, setType] = useState<"announcement" | "document">("announcement");
+    const [type, setType] = useState<"announcement" | "document" | "pinned">("announcement");
     const [title, setTitle] = useState("");
     const [bodyText, setBodyText] = useState("");
     const [file, setFile] = useState<File | null>(null);
@@ -40,7 +40,7 @@ export default function AdminPage() {
     const [editId, setEditId] = useState<string | null>(null);
     const [editTitle, setEditTitle] = useState("");
     const [editBody, setEditBody] = useState("");
-    const [editType, setEditType] = useState<"announcement" | "document">("announcement");
+    const [editType, setEditType] = useState<"announcement" | "document" | "pinned">("announcement");
     const [editFile, setEditFile] = useState<File | null>(null);
     const [editFileUrl, setEditFileUrl] = useState<string | null>(null);
     const [editSaving, setEditSaving] = useState(false);
@@ -113,7 +113,7 @@ export default function AdminPage() {
         setEditId(p.id);
         setEditTitle(p.title);
         setEditBody(p.body ?? "");
-        setEditType(p.type as "announcement" | "document");
+        setEditType(p.type as "announcement" | "document" | "pinned");
         setEditFileUrl(p.fileUrl);
         setEditFile(null);
         if (editFileRef.current) editFileRef.current.value = "";
@@ -186,10 +186,9 @@ export default function AdminPage() {
                     <h2 className="text-base font-bold text-[#0a2540] mb-5">Nueva publicación</h2>
                     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                            {(["announcement", "document"] as const).map((t) => (
-                                <button key={t} type="button" onClick={() => setType(t)}
-                                    className={`flex-1 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold border transition ${type === t ? "bg-[#0f4c8a] text-white border-[#0f4c8a]" : "bg-white text-gray-500 border-gray-200 hover:border-[#0f4c8a]"}`}>
-                                    {t === "announcement" ? "📢 Comunicado" : "📄 Documento"}
+                            {(["announcement", "document", "pinned"] as const).map((t) => (
+                                <button key={t} type="button" onClick={() => setType(t)} className={`px-4 py-2 text-sm rounded-lg font-semibold transition-all ${type === t ? 'bg-[#0f4c8a] text-white shadow' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'}`}>
+                                    {t === "announcement" ? "📢 Comunicado" : t === "document" ? "📄 Documento" : "📌 Doc. Institucional"}
                                 </button>
                             ))}
                         </div>
@@ -201,7 +200,7 @@ export default function AdminPage() {
                                 className="w-full border border-gray-300 rounded-lg px-3 py-2 sm:py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c8a]" />
                         </div>
 
-                        {type === "announcement" && (
+                        {(type === "announcement" || type === "pinned") && (
                             <div>
                                 <label className="block text-[13px] sm:text-sm font-semibold text-gray-700 mb-1">Contenido</label>
                                 <textarea rows={4} value={bodyText} onChange={(e) => setBodyText(e.target.value)}
@@ -249,16 +248,15 @@ export default function AdminPage() {
                                             <p className="text-xs font-bold text-[#0f4c8a] mb-3 uppercase tracking-wide">Editando publicación</p>
                                             <form onSubmit={handleEditSave} className="flex flex-col gap-3">
                                                 <div className="flex gap-2">
-                                                    {(["announcement", "document"] as const).map((t) => (
-                                                        <button key={t} type="button" onClick={() => setEditType(t)}
-                                                            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold border transition ${editType === t ? "bg-[#0f4c8a] text-white border-[#0f4c8a]" : "bg-white text-gray-500 border-gray-200"}`}>
-                                                            {t === "announcement" ? "📢 Comunicado" : "📄 Documento"}
+                                                    {(["announcement", "document", "pinned"] as const).map((t) => (
+                                                        <button key={t} type="button" onClick={() => setEditType(t)} className={`px-3 py-1.5 text-xs rounded-lg font-semibold transition-all ${editType === t ? 'bg-[#0f4c8a] text-white shadow' : 'bg-white text-gray-600 border border-gray-200'}`}>
+                                                            {t === "announcement" ? "📢 Comunicado" : t === "document" ? "📄 Documento" : "📌 Doc. Institucional"}
                                                         </button>
                                                     ))}
                                                 </div>
                                                 <input type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} required
                                                     placeholder="Título" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c8a]" />
-                                                {editType === "announcement" && (
+                                                {(editType === "announcement" || editType === "pinned") && (
                                                     <textarea rows={3} value={editBody} onChange={(e) => setEditBody(e.target.value)}
                                                         placeholder="Contenido..."
                                                         className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0f4c8a] resize-none" />

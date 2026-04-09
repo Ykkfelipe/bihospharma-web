@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
                 title: title.trim(),
                 body: bodyText?.trim() || null,
                 fileUrl: fileUrl?.trim() || null,
-                type: type === "document" ? "document" : "announcement",
+                type: type === "document" ? "document" : type === "pinned" ? "pinned" : "announcement",
             },
         });
 

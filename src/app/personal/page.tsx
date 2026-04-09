@@ -363,6 +363,7 @@ export default function PersonalPage() {
 
     const announcements = posts.filter((p) => p.type === "announcement");
     const documents = posts.filter((p) => p.type === "document");
+    const pinned = posts.filter((p) => p.type === "pinned");
 
     const todayStr = new Date().toLocaleDateString("es-CO", {
         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
@@ -445,30 +446,61 @@ export default function PersonalPage() {
                     <div className="portal-animate-in-delay" style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
 
                         {/* ── Pinned Institutional Documents ─────── */}
-                        <section>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
-                                <div className="portal-section-icon pinned">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <path d="M12 2L12 22M12 2L8 6M12 2L16 6" />
-                                    </svg>
+                        {pinned.length > 0 && (
+                            <section>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                                    <div className="portal-section-icon pinned">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M12 2L12 22M12 2L8 6M12 2L16 6" />
+                                        </svg>
+                                    </div>
+                                    <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0a2540', margin: 0 }}>
+                                        Documentos Institucionales
+                                    </h2>
                                 </div>
-                                <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0a2540', margin: 0 }}>
-                                    Documentos Institucionales
-                                </h2>
-                            </div>
-                            <div className="portal-section-card">
-                                <div className="portal-section-header">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" strokeWidth="2">
-                                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-                                        <polyline points="14 2 14 8 20 8" />
-                                    </svg>
-                                    <h3 style={{ fontSize: 14, fontWeight: 600, color: '#0a2540', margin: 0 }}>Política Integral SG</h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                                    {pinned.map((post) => (
+                                        <div key={post.id} className="portal-post-card">
+                                            <div className="portal-section-header">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2e7d32" strokeWidth="2">
+                                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                                    <polyline points="14 2 14 8 20 8" />
+                                                </svg>
+                                                <h3 style={{ fontSize: 14, fontWeight: 600, color: '#0a2540', margin: 0 }}>{post.title}</h3>
+                                            </div>
+                                            <div style={{ padding: '0 20px 16px' }}>
+                                                {post.body && (
+                                                    <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap', margin: '12px 0' }}>
+                                                        {post.body}
+                                                    </p>
+                                                )}
+                                                {post.fileUrl && post.fileUrl.endsWith('.pdf') ? (
+                                                    <PdfIframe file={post.fileUrl} title={post.title} />
+                                                ) : post.fileUrl ? (
+                                                    <PostAttachment fileUrl={post.fileUrl} title={post.title} isImage={isImage} />
+                                                ) : null}
+
+                                                {/* Reactions */}
+                                                <div style={{ marginTop: 16 }}>
+                                                    <ReactionsBar
+                                                        postId={post.id}
+                                                        reactionCounts={post.reactionCounts}
+                                                        userReactions={post.userReactions}
+                                                    />
+                                                </div>
+
+                                                {/* Comments */}
+                                                <CommentsSection
+                                                    postId={post.id}
+                                                    comments={post.comments}
+                                                    commentCount={post.commentCount}
+                                                />
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <div style={{ padding: 0 }}>
-                                    <PdfIframe file="/SGC-POL-01-POLITICA-INTEGRAL-SG-v2.pdf" title="Política Integral SG" />
-                                </div>
-                            </div>
-                        </section>
+                            </section>
+                        )}
 
                         {/* ── Announcements ─────────────────────── */}
                         {announcements.length > 0 && (
