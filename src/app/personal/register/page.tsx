@@ -68,7 +68,7 @@ export default function RegisterPage() {
                         />
                         <p className="text-blue-200 text-xs font-semibold uppercase tracking-widest mb-1">Bihospharma IPS</p>
                         <h1 className="text-white text-xl font-bold">Crear Cuenta Corporativa</h1>
-                        <p className="text-blue-200 text-xs mt-2 px-4">Ingresa el código proporcionado por RRHH para activar tu cuenta.</p>
+                        <p className="text-blue-200 text-xs mt-2 px-4">Ingresa el código proporcionado por Recursos Humanos para activar tu cuenta.</p>
                     </div>
 
                     {/* Form */}
@@ -127,7 +127,7 @@ export default function RegisterPage() {
                                     onChange={(e) => setAccessCode(e.target.value)}
                                     required
                                     className="w-full border border-blue-200 rounded-xl px-4 py-3 text-sm font-mono text-blue-900 focus:outline-none focus:ring-2 focus:ring-[#0f4c8a]/50 focus:border-[#0f4c8a] transition-all bg-blue-50/50 uppercase placeholder-blue-300"
-                                    placeholder="EJEMPLO: BIHOS2026"
+                                    placeholder="Ingresa tu código"
                                 />
                             </div>
 

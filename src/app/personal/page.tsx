@@ -95,27 +95,32 @@ export default function PersonalPage() {
                         {/* Announcements */}
                         {announcements.length > 0 && (
                             <section>
-                                <h2 className="text-base sm:text-lg font-bold text-[#0a2540] mb-3 sm:mb-4 flex items-center gap-2">
+                                <h2 className="text-base sm:text-lg font-bold text-[#0a2540] mb-4 flex items-center gap-2">
                                     <span className="text-xl sm:text-2xl">📢</span> Comunicados
                                 </h2>
-                                <div className="space-y-4">
+                                <div className="space-y-6">
                                     {announcements.map((post) => (
-                                        <div key={post.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 break-words">
-                                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4">
-                                                <div className="flex-1 min-w-0 w-full">
-                                                    <h3 className="font-bold text-[#0a2540] text-sm sm:text-base mb-2">{post.title}</h3>
-                                                    {post.body && (
-                                                        <p className="text-gray-600 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">{post.body}</p>
-                                                    )}
-                                                    {post.fileUrl && (
-                                                        <PostAttachment
-                                                            fileUrl={post.fileUrl}
-                                                            title={post.title}
-                                                            isImage={isImage}
-                                                        />
-                                                    )}
-                                                </div>
+                                        <div key={post.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden break-words">
+                                            {/* Header Section */}
+                                            <div className="bg-gray-50/80 px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                                <h3 className="font-bold text-[#0a2540] text-sm sm:text-base">{post.title}</h3>
                                                 <span className="text-[10px] sm:text-xs text-gray-400 whitespace-nowrap">{formatDate(post.createdAt)}</span>
+                                            </div>
+
+                                            {/* Content Section */}
+                                            <div className="p-4 sm:p-6">
+                                                {post.body && (
+                                                    <div className="mb-4 last:mb-0">
+                                                        <p className="text-gray-600 text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">{post.body}</p>
+                                                    </div>
+                                                )}
+                                                {post.fileUrl && (
+                                                    <PostAttachment
+                                                        fileUrl={post.fileUrl}
+                                                        title={post.title}
+                                                        isImage={isImage}
+                                                    />
+                                                )}
                                             </div>
                                         </div>
                                     ))}
@@ -126,25 +131,28 @@ export default function PersonalPage() {
                         {/* Documents */}
                         {documents.length > 0 && (
                             <section>
-                                <h2 className="text-base sm:text-lg font-bold text-[#0a2540] mb-3 sm:mb-4 flex items-center gap-2">
+                                <h2 className="text-base sm:text-lg font-bold text-[#0a2540] mb-4 flex items-center gap-2">
                                     <span className="text-xl sm:text-2xl">📁</span> Documentos y Reglamentación
                                 </h2>
-                                <div className="space-y-4">
+                                <div className="space-y-6">
                                     {documents.map((post) => (
-                                        <div key={post.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 break-words">
-                                            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 sm:gap-4 mb-3">
-                                                <div className="flex-1 min-w-0 w-full">
-                                                    <h3 className="font-bold text-[#0a2540] text-sm sm:text-base">{post.title}</h3>
-                                                    <p className="text-[10px] sm:text-xs text-gray-400 mt-0.5">{formatDate(post.createdAt)}</p>
-                                                </div>
+                                        <div key={post.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden break-words">
+                                            {/* Header Section */}
+                                            <div className="bg-gray-50/80 px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                                <h3 className="font-bold text-[#0a2540] text-sm sm:text-base">{post.title}</h3>
+                                                <span className="text-[10px] sm:text-xs text-gray-400 whitespace-nowrap">{formatDate(post.createdAt)}</span>
                                             </div>
-                                            {post.fileUrl && (
-                                                <PostAttachment
-                                                    fileUrl={post.fileUrl}
-                                                    title={post.title}
-                                                    isImage={isImage}
-                                                />
-                                            )}
+
+                                            {/* Content Section */}
+                                            <div className="p-4 sm:p-6">
+                                                {post.fileUrl && (
+                                                    <PostAttachment
+                                                        fileUrl={post.fileUrl}
+                                                        title={post.title}
+                                                        isImage={isImage}
+                                                    />
+                                                )}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>

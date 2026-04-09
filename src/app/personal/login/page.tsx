@@ -7,7 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function LoginPage() {
-    const router = useRouter();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -21,6 +20,16 @@ export default function LoginPage() {
         setError("");
 
         try {
+            // Check for account lockout before attempting sign in
+            const lockCheck = await fetch(`/api/auth/check-lock?email=${encodeURIComponent(email)}`);
+            const lockData = await lockCheck.json();
+
+            if (lockData.locked) {
+                setError(lockData.message);
+                setLoading(false);
+                return;
+            }
+
             const result = await signIn("credentials", {
                 email,
                 password,
@@ -30,10 +39,16 @@ export default function LoginPage() {
             setLoading(false);
 
             if (result?.error) {
-                setError("Correo o contraseña incorrectos. Por favor verifica tus datos.");
+                // If it's a generic sign-in error, show the default message.
+                // Otherwise, show the specific error (like the account lockout message).
+                if (result.error === "CredentialsSignin" || result.error === "Credentials") {
+                    setError("Correo o contraseña incorrectos. Por favor verifica tus datos.");
+                } else {
+                    setError(result.error);
+                }
             } else if (result?.ok) {
-                router.push("/personal");
-                router.refresh();
+                // Use a hard navigation to guarantee the middleware sees the new auth cookie
+                window.location.href = "/personal";
             }
         } catch (err) {
             setLoading(false);
@@ -127,7 +142,12 @@ export default function LoginPage() {
                             </button>
                         </form>
 
-                        <div className="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-gray-100 text-center">
+                        <div className="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-gray-100 text-center space-y-3">
+                            <p>
+                                <Link href="/personal/forgot-password" className="text-[#0f4c8a] text-xs sm:text-sm hover:underline">
+                                    ¿Olvidaste tu contraseña?
+                                </Link>
+                            </p>
                             <p className="text-xs sm:text-sm text-gray-500">
                                 ¿No tienes cuenta?{" "}
                                 <Link href="/personal/register" className="text-[#0f4c8a] font-bold hover:underline">

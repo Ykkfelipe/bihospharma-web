@@ -16,8 +16,10 @@ export const authConfig: NextAuthConfig = {
             const isOnPersonal = nextUrl.pathname.startsWith("/personal");
             const isOnLogin = nextUrl.pathname === "/personal/login";
             const isOnRegister = nextUrl.pathname === "/personal/register";
+            const isOnForgotPassword = nextUrl.pathname === "/personal/forgot-password";
+            const isOnResetPassword = nextUrl.pathname === "/personal/reset-password";
 
-            if (isOnLogin || isOnRegister) return true; // always allow login and register pages
+            if (isOnLogin || isOnRegister || isOnForgotPassword || isOnResetPassword) return true;
             if (isOnPersonal && !isLoggedIn) return false; // redirect to login
             if (nextUrl.pathname.startsWith("/personal/admin")) {
                 const role = (auth?.user as { role?: string })?.role;
@@ -42,6 +44,6 @@ export const authConfig: NextAuthConfig = {
     },
     session: { strategy: "jwt" },
     trustHost: true,
-    debug: true,
+    debug: false,
 };
 

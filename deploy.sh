@@ -4,7 +4,7 @@
 set -euo pipefail
 
 EC2_HOST="bihos"
-EC2_APP_DIR="$HOME/bihospharma-web"
+EC2_APP_DIR="/home/ec2-user/bihospharma-web"
 LOCAL_APP_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # --- 1. Build locally ---
@@ -21,6 +21,7 @@ rsync -az --delete \
   --exclude='.git' \
   --exclude='node_modules' \
   --exclude='dev.db' \
+  --exclude='public/uploads' \
   "$LOCAL_APP_DIR/" "$EC2_HOST:~/bihospharma-web/"
 
 # Sync the pre-generated Prisma client separately
@@ -48,7 +49,14 @@ ssh "$EC2_HOST" "
   export NVM_DIR=\"\$HOME/.nvm\"
   [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
   cd $EC2_APP_DIR
-  pm2 restart bihos --update-env || pm2 start npm --name bihos -- start -- -p 3000
+  
+  # Stop and delete old process, kill any orphan node processes on port 3000
+  pm2 delete bihos 2>/dev/null || true
+  sudo fuser -k 3000/tcp 2>/dev/null || true
+  sleep 1
+  
+  # Start using ecosystem config for proper graceful shutdown support
+  pm2 start ecosystem.config.js
   pm2 save
 "
 

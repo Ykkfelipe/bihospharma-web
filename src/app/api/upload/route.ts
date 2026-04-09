@@ -21,16 +21,24 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "No se recibió ningún archivo." }, { status: 400 });
         }
 
+        // Limit to 50MB
+        if (file.size > 50 * 1024 * 1024) {
+            return NextResponse.json({ error: "El archivo es demasiado grande (máximo 50MB)." }, { status: 400 });
+        }
+
         const allowedTypes = [
             "application/pdf",
             "image/jpeg",
             "image/png",
             "image/gif",
-            "image/webp"
+            "image/webp",
+            "video/mp4",
+            "video/webm",
+            "video/quicktime"
         ];
 
         if (!allowedTypes.includes(file.type)) {
-            return NextResponse.json({ error: "Solo se permiten archivos PDF o imágenes (JPG, PNG, GIF, WEBP)." }, { status: 400 });
+            return NextResponse.json({ error: "Solo se permiten PDF, imágenes o videos (MP4, WebM)." }, { status: 400 });
         }
 
         const bytes = await file.arrayBuffer();

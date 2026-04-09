@@ -23,7 +23,7 @@ function isImage(url: string | null) {
 }
 
 export default function AdminPage() {
-    const { data: session } = useSession();
+    const [stats, setStats] = useState({ users: 0, uploads: 0, announcements: 0 });
     const [posts, setPosts] = useState<Post[]>([]);
     const [postsLoaded, setPostsLoaded] = useState(false);
 
