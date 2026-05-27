@@ -19,6 +19,19 @@ model User {
   createdAt    DateTime   @default(now())
   reactions    Reaction[]
   comments     Comment[]
+  shifts       Shift[]
+}
+
+model Shift {
+  id        String    @id @default(cuid())
+  userId    String
+  date      String    // "YYYY-MM-DD" for easy daily lookup
+  checkIn   DateTime
+  checkOut  DateTime?
+  notes     String?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
 }
 
 model Post {

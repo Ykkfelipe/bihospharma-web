@@ -339,6 +339,140 @@ const getInitials = (name?: string | null) => {
     return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 };
 
+/* ── Attendance Widget ─────────────────────────────────── */
+
+function AttendanceWidget({ role }: { role: string | undefined }) {
+    const [shift, setShift] = useState<{ checkIn: string; checkOut: string | null } | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [checkingOut, setCheckingOut] = useState(false);
+    const [checkingIn, setCheckingIn] = useState(false);
+    const [elapsed, setElapsed] = useState("");
+
+    const fetchShift = async () => {
+        try {
+            const res = await fetch("/api/attendance");
+            const data = await res.json();
+            if (data.shift) setShift(data.shift);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const autoCheckIn = async () => {
+        try {
+            const res = await fetch("/api/attendance", { method: "POST" });
+            const data = await res.json();
+            if (data.shift) setShift(data.shift);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const manualCheckIn = async () => {
+        setCheckingIn(true);
+        await autoCheckIn();
+        setCheckingIn(false);
+    };
+
+    useEffect(() => {
+        if (role === "admin") {
+            fetchShift();
+        } else {
+            autoCheckIn();
+        }
+    }, [role]);
+
+    useEffect(() => {
+        if (!shift || !shift.checkIn || shift.checkOut) return;
+        const interval = setInterval(() => {
+            const now = new Date().getTime();
+            const start = new Date(shift.checkIn).getTime();
+            const diff = Math.max(0, now - start);
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            setElapsed(`${hours}h ${mins}m`);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [shift]);
+
+    const handleCheckOut = async () => {
+        if (!confirm("¿Seguro que quieres registrar tu salida?")) return;
+        setCheckingOut(true);
+        try {
+            const res = await fetch("/api/attendance/check-out", { method: "POST" });
+            const data = await res.json();
+            if (res.ok) setShift(data);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setCheckingOut(false);
+        }
+    };
+
+    const formatTime = (iso: string) =>
+        new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+
+    if (loading) return null;
+
+    return (
+        <div className="portal-attendance-card" style={{ marginBottom: 32 }}>
+            <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                    <div className="portal-section-icon" style={{ background: "#e0e7ff", color: "#4f46e5" }}>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                    </div>
+                    <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0a2540", margin: 0 }}>Mi Asistencia</h2>
+                    {shift && !shift.checkOut && <div className="portal-attendance-pulse" title="Turno activo" />}
+                </div>
+                
+                {!shift ? (
+                    <p style={{ color: "#64748b", fontSize: 13, margin: 0 }}>
+                        {role === "admin" ? "No has registrado tu entrada hoy." : "Cargando tu turno..."}
+                    </p>
+                ) : (
+                    <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
+                        <div>
+                            <p style={{ fontSize: 11, color: "#94a3b8", textTransform: "uppercase", fontWeight: 600, margin: "0 0 4px" }}>Entrada</p>
+                            <p style={{ fontSize: 15, fontWeight: 700, color: "#0f4c8a", margin: 0 }}>{formatTime(shift.checkIn)}</p>
+                        </div>
+                        {shift.checkOut ? (
+                            <div>
+                                <p style={{ fontSize: 11, color: "#94a3b8", textTransform: "uppercase", fontWeight: 600, margin: "0 0 4px" }}>Salida</p>
+                                <p style={{ fontSize: 15, fontWeight: 700, color: "#ef4444", margin: 0 }}>{formatTime(shift.checkOut)}</p>
+                            </div>
+                        ) : (
+                            <div>
+                                <p style={{ fontSize: 11, color: "#94a3b8", textTransform: "uppercase", fontWeight: 600, margin: "0 0 4px" }}>Tiempo Activo</p>
+                                <p style={{ fontSize: 15, fontWeight: 700, color: "#10b981", margin: 0 }}>{elapsed || "0h 0m"}</p>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            <div style={{ display: "flex", gap: 12 }}>
+                {!shift && role === "admin" && (
+                    <button className="portal-btn-checkin" onClick={manualCheckIn} disabled={checkingIn}>
+                        {checkingIn ? "Registrando..." : "Registrar Entrada"}
+                    </button>
+                )}
+                {shift && !shift.checkOut && (
+                    <button className="portal-btn-checkout" onClick={handleCheckOut} disabled={checkingOut}>
+                        {checkingOut ? "Registrando..." : "Registrar Salida"}
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+}
+
 /* ══════════════════════════════════════════════════════════
    Main Component
    ══════════════════════════════════════════════════════════ */
@@ -444,6 +578,8 @@ export default function PersonalPage() {
                     </div>
                 ) : (
                     <div className="portal-animate-in-delay" style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+                        {/* ── Mi Asistencia Widget ───────────────── */}
+                        <AttendanceWidget role={role} />
 
                         {/* ── Pinned Institutional Documents ─────── */}
                         {pinned.length > 0 && (

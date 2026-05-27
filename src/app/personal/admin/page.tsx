@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, FormEvent, useEffect } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -23,7 +23,6 @@ function isImage(url: string | null) {
 }
 
 export default function AdminPage() {
-    const [stats, setStats] = useState({ users: 0, uploads: 0, announcements: 0 });
     const [posts, setPosts] = useState<Post[]>([]);
     const [postsLoaded, setPostsLoaded] = useState(false);
 
@@ -171,6 +170,9 @@ export default function AdminPage() {
                         </div>
                     </div>
                     <div className="flex items-center gap-3 sm:gap-4">
+                        <Link href="/personal/admin/attendance" style={{ color: '#0f4c8a', fontSize: 12, fontWeight: 600, textDecoration: 'none', background: '#e0e7ff', padding: '6px 12px', borderRadius: 8 }}>
+                            Ver Asistencia
+                        </Link>
                         <Link href="/personal" style={{ color: '#94a3b8', fontSize: 11, textDecoration: 'none', transition: 'color 0.2s' }}>← Ver portal</Link>
                         <button onClick={() => signOut({ callbackUrl: "/personal/login" })} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: 11, cursor: 'pointer', transition: 'color 0.2s' }}>
                             Cerrar sesión
