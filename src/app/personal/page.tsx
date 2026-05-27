@@ -606,16 +606,47 @@ export default function PersonalPage() {
                                                 <h3 style={{ fontSize: 14, fontWeight: 600, color: '#0a2540', margin: 0 }}>{post.title}</h3>
                                             </div>
                                             <div style={{ padding: '0 20px 16px' }}>
-                                                {post.body && (
-                                                    <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap', margin: '12px 0' }}>
-                                                        {post.body}
-                                                    </p>
-                                                )}
                                                 {post.fileUrl && post.fileUrl.endsWith('.pdf') ? (
-                                                    <PdfIframe file={post.fileUrl} title={post.title} />
-                                                ) : post.fileUrl ? (
-                                                    <PostAttachment fileUrl={post.fileUrl} title={post.title} isImage={isImage} />
-                                                ) : null}
+                                                    /* PDF: show body as a clickable link instead of embedding the viewer */
+                                                    <a
+                                                        href={post.fileUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        style={{
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            gap: 8,
+                                                            color: '#1a73e8',
+                                                            fontSize: 13,
+                                                            lineHeight: 1.7,
+                                                            margin: '12px 0',
+                                                            textDecoration: 'none',
+                                                            cursor: 'pointer',
+                                                            transition: 'color 0.2s',
+                                                        }}
+                                                        onMouseEnter={(e) => (e.currentTarget.style.color = '#0d47a1')}
+                                                        onMouseLeave={(e) => (e.currentTarget.style.color = '#1a73e8')}
+                                                    >
+                                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0 }}>
+                                                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                                            <polyline points="14 2 14 8 20 8" />
+                                                        </svg>
+                                                        <span style={{ textDecoration: 'underline' }}>
+                                                            {post.body || 'Ver documento'}
+                                                        </span>
+                                                    </a>
+                                                ) : (
+                                                    <>
+                                                        {post.body && (
+                                                            <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap', margin: '12px 0' }}>
+                                                                {post.body}
+                                                            </p>
+                                                        )}
+                                                        {post.fileUrl ? (
+                                                            <PostAttachment fileUrl={post.fileUrl} title={post.title} isImage={isImage} />
+                                                        ) : null}
+                                                    </>
+                                                )}
 
                                                 {/* Reactions */}
                                                 <div style={{ marginTop: 16 }}>
