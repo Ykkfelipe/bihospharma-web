@@ -16,5 +16,13 @@ module.exports = {
     max_restarts: 5,
     min_uptime: '10s',
     autorestart: true
+  }, {
+    name: 'bihos-cron',
+    script: 'scripts/cron.js',
+    cwd: '/home/ec2-user/bihospharma-web',
+    cron_restart: '0 0 * * *',
+    autorestart: false,
+    instances: 1,
+    exec_mode: 'fork'
   }]
 };

@@ -10,6 +10,8 @@ type Shift = {
     date: string;
     checkIn: string;
     checkOut: string | null;
+    isLate?: boolean;
+    ipAddress?: string | null;
     user: { id: string; name: string; email: string };
 };
 
@@ -19,9 +21,10 @@ export default function AttendanceReportPage() {
     const [loading, setLoading] = useState(true);
     const [filterDate, setFilterDate] = useState("");
 
+    const todayStr = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+
     useEffect(() => {
-        const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
-        setFilterDate(today);
+        setFilterDate(todayStr);
 
         fetch("/api/attendance/history")
             .then(res => res.json())
@@ -101,8 +104,21 @@ export default function AttendanceReportPage() {
                                         <tr key={shift.id} className="border-b last:border-0 hover:bg-gray-50">
                                             <td className="px-4 py-3 font-medium text-gray-900">{shift.user.name} <br /><span className="text-xs text-gray-500 font-normal">{shift.user.email}</span></td>
                                             <td className="px-4 py-3 text-gray-500">{shift.date}</td>
-                                            <td className="px-4 py-3 text-[#10b981] font-medium">{formatTime(shift.checkIn)}</td>
-                                            <td className="px-4 py-3 text-[#ef4444] font-medium">{shift.checkOut ? formatTime(shift.checkOut) : "Sin salida"}</td>
+                                            <td className="px-4 py-3 text-[#10b981] font-medium">
+                                                <div className="flex items-center gap-2">
+                                                    <span>{formatTime(shift.checkIn)}</span>
+                                                    {shift.isLate && <span className="px-2 py-0.5 text-[10px] font-bold bg-red-100 text-red-600 rounded-full">Tarde</span>}
+                                                </div>
+                                            </td>
+                                            <td className="px-4 py-3 font-medium">
+                                                {shift.checkOut ? (
+                                                    <span className="text-[#ef4444]">{formatTime(shift.checkOut)}</span>
+                                                ) : shift.date < todayStr ? (
+                                                    <span className="px-2 py-0.5 text-[10px] font-bold bg-yellow-100 text-yellow-700 rounded-full">Falta Salida</span>
+                                                ) : (
+                                                    <span className="text-gray-400 italic">En curso</span>
+                                                )}
+                                            </td>
                                             <td className="px-4 py-3 font-semibold text-gray-700">{calculateHours(shift.checkIn, shift.checkOut)}</td>
                                         </tr>
                                     ))}

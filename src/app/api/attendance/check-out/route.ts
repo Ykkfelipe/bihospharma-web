@@ -8,7 +8,7 @@ function todayCO(): string {
     return new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
 }
 
-export async function POST() {
+export async function POST(req: Request) {
     try {
         const session = await auth();
         if (!session?.user?.email) {
@@ -33,9 +33,16 @@ export async function POST() {
             return NextResponse.json({ error: "Ya registraste tu salida hoy." }, { status: 400 });
         }
 
+        const checkoutIpAddress = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || null;
+        const checkoutUserAgent = req.headers.get("user-agent") || null;
+
         const shift = await prisma.shift.update({
             where: { id: existing.id },
-            data: { checkOut: new Date() },
+            data: { 
+                checkOut: new Date(),
+                checkoutIpAddress,
+                checkoutUserAgent
+            },
         });
 
         return NextResponse.json(shift);

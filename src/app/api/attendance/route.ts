@@ -37,7 +37,7 @@ export async function GET() {
 // POST — Auto check-in (creates today's shift if none exists)
 // For employees: called automatically on portal load
 // For admins: called manually via "Registrar Entrada" button
-export async function POST() {
+export async function POST(req: Request) {
     try {
         const session = await auth();
         if (!session?.user?.email) {
@@ -60,12 +60,22 @@ export async function POST() {
             return NextResponse.json({ shift: existing, alreadyCheckedIn: true });
         }
 
+        // Check if late (Threshold: 8:00 AM Colombia time)
+        const nowCO = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Bogota" }));
+        const isLate = nowCO.getHours() > 8 || (nowCO.getHours() === 8 && nowCO.getMinutes() > 0);
+
+        const ipAddress = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || null;
+        const userAgent = req.headers.get("user-agent") || null;
+
         // Create new shift
         const shift = await prisma.shift.create({
             data: {
                 userId: user.id,
                 date: today,
                 checkIn: new Date(),
+                ipAddress,
+                userAgent,
+                isLate,
             },
         });
 

@@ -29,6 +29,11 @@ model Shift {
   checkIn   DateTime
   checkOut  DateTime?
   notes     String?
+  ipAddress         String?
+  userAgent         String?
+  checkoutIpAddress String?
+  checkoutUserAgent String?
+  isLate            Boolean   @default(false)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, date])
