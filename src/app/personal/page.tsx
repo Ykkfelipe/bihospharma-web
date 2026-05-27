@@ -341,7 +341,7 @@ const getInitials = (name?: string | null) => {
 
 /* ── Attendance Widget ─────────────────────────────────── */
 
-function AttendanceWidget({ role }: { role: string | undefined }) {
+function AttendanceWidget({ role, status }: { role: string | undefined; status: "loading" | "authenticated" | "unauthenticated" }) {
     const [shift, setShift] = useState<{ checkIn: string; checkOut: string | null } | null>(null);
     const [loading, setLoading] = useState(true);
     const [checkingOut, setCheckingOut] = useState(false);
@@ -379,12 +379,13 @@ function AttendanceWidget({ role }: { role: string | undefined }) {
     };
 
     useEffect(() => {
+        if (status !== "authenticated") return;
         if (role === "admin") {
             fetchShift();
         } else {
             autoCheckIn();
         }
-    }, [role]);
+    }, [role, status]);
 
     useEffect(() => {
         if (!shift || !shift.checkIn || shift.checkOut) return;
@@ -478,7 +479,7 @@ function AttendanceWidget({ role }: { role: string | undefined }) {
    ══════════════════════════════════════════════════════════ */
 
 export default function PersonalPage() {
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -579,7 +580,7 @@ export default function PersonalPage() {
                 ) : (
                     <div className="portal-animate-in-delay" style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
                         {/* ── Mi Asistencia Widget ───────────────── */}
-                        <AttendanceWidget role={role} />
+                        <AttendanceWidget role={role} status={status} />
 
                         {/* ── Pinned Institutional Documents ─────── */}
                         {pinned.length > 0 && (
