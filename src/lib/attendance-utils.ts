@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
  * Request deduplication cache to prevent accidental double submissions
  * In production, use Redis or similar for distributed cache
  */
-const requestCache = new Map<string, { timestamp: number; data: any }>();
+const requestCache = new Map<string, CacheEntry>();
 
 /** Cache TTL in milliseconds — 5 seconds to prevent double-submission */
 const CACHE_TTL = 5000;
