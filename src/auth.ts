@@ -69,9 +69,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         id: user.id,
                         email: user.email,
                         name: user.name,
-                        role: user.role,
+                        role: user.role === "admin" ? "admin" : "employee",
                     };
                 } catch (e) {
+                    if (e instanceof Error && e.message.includes("bloqueada")) {
+                        throw e;
+                    }
                     console.error("[auth] Error during login:", e);
                     return null;
                 }

@@ -45,6 +45,16 @@ ssh "$EC2_HOST" "
   echo 'Prisma client generated'
 "
 
+# --- 3c. Apply DB schema on server ---
+echo "→ Applying database migrations on server…"
+ssh "$EC2_HOST" "
+  export NVM_DIR=\"\$HOME/.nvm\"
+  [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
+  cd $EC2_APP_DIR
+  set -a && [ -f .env.production ] && . ./.env.production && set +a
+  npx prisma migrate deploy 2>/dev/null || npx prisma db push 2>/dev/null || true
+"
+
 # --- 4. Restart PM2 ---
 echo "→ Restarting PM2…"
 ssh "$EC2_HOST" "

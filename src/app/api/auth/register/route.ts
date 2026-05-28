@@ -19,7 +19,8 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Error de configuración del servidor." }, { status: 500 });
         }
 
-        if (accessCode !== correctCode) {
+        const normalizedCode = String(accessCode).trim();
+        if (normalizedCode !== correctCode.trim()) {
             return NextResponse.json({ error: "Código de acceso incorrecto. Contacta al administrador si no lo tienes." }, { status: 403 });
         }
 

@@ -13,6 +13,7 @@ export const authConfig: NextAuthConfig = {
     callbacks: {
         authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
+            const isOnAdminLegacy = nextUrl.pathname.startsWith("/admin");
             const isOnPersonal = nextUrl.pathname.startsWith("/personal");
             const isOnLogin = nextUrl.pathname === "/personal/login";
             const isOnRegister = nextUrl.pathname === "/personal/register";
@@ -20,6 +21,11 @@ export const authConfig: NextAuthConfig = {
             const isOnResetPassword = nextUrl.pathname === "/personal/reset-password";
 
             if (isOnLogin || isOnRegister || isOnForgotPassword || isOnResetPassword) return true;
+            if (isOnAdminLegacy) {
+                if (!isLoggedIn) return false;
+                const role = (auth?.user as { role?: string })?.role;
+                return role === "admin";
+            }
             if (isOnPersonal && !isLoggedIn) return false; // redirect to login
             if (nextUrl.pathname.startsWith("/personal/admin")) {
                 const role = (auth?.user as { role?: string })?.role;

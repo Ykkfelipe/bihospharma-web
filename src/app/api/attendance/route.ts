@@ -7,6 +7,7 @@ import {
     getCacheKey,
     getCachedResult,
     setCachedResult,
+    invalidateAttendanceCache,
     formatErrorResponse,
 } from "@/lib/attendance-utils";
 
@@ -64,25 +65,28 @@ export async function POST(req: Request) {
         }
 
         const today = todayCO();
-
-        // Deduplication: check if this request was just processed
-        const cacheKey = getCacheKey(user.id, "POST_CHECKIN", today);
-        const cachedResult = getCachedResult(cacheKey);
-        if (cachedResult) {
-            console.log(`[POST /api/attendance] Duplicate request prevented for ${user.email}`);
-            return NextResponse.json(cachedResult, { status: 201, headers: { "X-Deduped": "true" } });
+        const cacheKey = getCacheKey(user.id, "POST", today);
+        const cached = getCachedResult<{ shift: unknown; alreadyCheckedIn: boolean }>(cacheKey);
+        if (cached) {
+            return NextResponse.json(cached, { headers: { "X-Deduped": "true" } });
         }
 
+            // -------------------------------------------------
+            // Guard: ensure a shift for today does not already exist.
+            // The Prisma schema defines a unique composite index
+            // (`@@unique([userId, date])`), which creates the helper
+            // field `userId_date` for `findUnique`.
+            // -------------------------------------------------
         const ipAddress = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || null;
         const userAgent = req.headers.get("user-agent") || null;
 
-        // Use safe check-in with built-in retry logic
         const result = await safeCheckIn(user.id, today, ipAddress, userAgent);
 
-        // Cache successful result
+        invalidateAttendanceCache(user.id, today);
         setCachedResult(cacheKey, result);
 
-        return NextResponse.json(result, { status: 201 });
+        const status = result.alreadyCheckedIn ? 200 : 201;
+        return NextResponse.json(result, { status });
     } catch (err) {
         console.error("[POST /api/attendance] Error:", err);
         return formatErrorResponse(err, 500);

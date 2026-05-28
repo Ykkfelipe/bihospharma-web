@@ -6,6 +6,7 @@ import {
     getCacheKey,
     getCachedResult,
     setCachedResult,
+    invalidateAttendanceCache,
     formatErrorResponse,
 } from "@/lib/attendance-utils";
 
@@ -40,10 +41,10 @@ export async function POST(req: Request) {
         // Use safe check-out with built-in retry logic
         const shift = await safeCheckOut(user.id, today, checkoutIpAddress, checkoutUserAgent);
 
-        // Cache successful result
+        invalidateAttendanceCache(user.id, today);
         setCachedResult(cacheKey, shift);
 
-        return NextResponse.json(shift);
+        return NextResponse.json({ shift, success: true });
     } catch (err) {
         console.error("[POST /api/attendance/check-out] Error:", err);
         return formatErrorResponse(err, 500);

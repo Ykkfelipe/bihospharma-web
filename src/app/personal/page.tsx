@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { PostAttachment } from "../components/PostAttachment";
 import PdfIframe from "../components/clients/PdfIframe";
+import { PortalToast } from "./components/PortalToast";
 
 /* ── Types ─────────────────────────────────────────────── */
 
@@ -341,32 +342,25 @@ const getInitials = (name?: string | null) => {
 
 /* ── Attendance Widget ─────────────────────────────────── */
 
-function AttendanceWidget({ role, status }: { role: string | undefined; status: "loading" | "authenticated" | "unauthenticated" }) {
+function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "unauthenticated" }) {
     const [shift, setShift] = useState<{ checkIn: string; checkOut: string | null } | null>(null);
     const [loading, setLoading] = useState(true);
     const [checkingOut, setCheckingOut] = useState(false);
     const [checkingIn, setCheckingIn] = useState(false);
     const [elapsed, setElapsed] = useState("");
+    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" | "info" } | null>(null);
 
     const fetchShift = async () => {
         try {
-            const res = await fetch("/api/attendance");
+            const res = await fetch("/api/attendance", { cache: "no-store" });
             const data = await res.json();
-            if (data.shift) setShift(data.shift);
+            setShift(data.shift ?? null);
+            if (!res.ok && data.error) {
+                setToast({ msg: data.error, type: "error" });
+            }
         } catch (e) {
             console.error(e);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const autoCheckIn = async () => {
-        try {
-            const res = await fetch("/api/attendance", { method: "POST" });
-            const data = await res.json();
-            if (data.shift) setShift(data.shift);
-        } catch (e) {
-            console.error(e);
+            setToast({ msg: "No se pudo cargar tu asistencia. Recarga la página.", type: "error" });
         } finally {
             setLoading(false);
         }
@@ -374,18 +368,37 @@ function AttendanceWidget({ role, status }: { role: string | undefined; status: 
 
     const manualCheckIn = async () => {
         setCheckingIn(true);
-        await autoCheckIn();
-        setCheckingIn(false);
+        setToast(null);
+        try {
+            const res = await fetch("/api/attendance", { method: "POST" });
+            const data = await res.json();
+            if (data.shift) {
+                setShift(data.shift);
+                const t = new Date(data.shift.checkIn).toLocaleTimeString("es-CO", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                });
+                setToast({
+                    msg: data.alreadyCheckedIn
+                        ? `Ya tenías entrada registrada hoy (${t}).`
+                        : `Entrada registrada correctamente a las ${t}.`,
+                    type: "success",
+                });
+            } else if (!res.ok) {
+                setToast({ msg: data.error || "No se pudo registrar la entrada.", type: "error" });
+            }
+        } catch (e) {
+            console.error(e);
+            setToast({ msg: "Error de red al registrar entrada.", type: "error" });
+        } finally {
+            setCheckingIn(false);
+        }
     };
 
     useEffect(() => {
         if (status !== "authenticated") return;
-        if (role === "admin") {
-            fetchShift();
-        } else {
-            autoCheckIn();
-        }
-    }, [role, status]);
+        fetchShift();
+    }, [status]);
 
     useEffect(() => {
         if (!shift || !shift.checkIn || shift.checkOut) return;
@@ -403,12 +416,29 @@ function AttendanceWidget({ role, status }: { role: string | undefined; status: 
     const handleCheckOut = async () => {
         if (!confirm("¿Seguro que quieres registrar tu salida?")) return;
         setCheckingOut(true);
+        setToast(null);
         try {
             const res = await fetch("/api/attendance/check-out", { method: "POST" });
             const data = await res.json();
-            if (res.ok) setShift(data);
+            const updated = data.shift ?? data;
+            if (res.ok && updated?.checkIn) {
+                setShift(updated);
+                const t = updated.checkOut
+                    ? new Date(updated.checkOut).toLocaleTimeString("es-CO", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                      })
+                    : "";
+                setToast({
+                    msg: t ? `Salida registrada correctamente a las ${t}.` : "Salida registrada.",
+                    type: "success",
+                });
+            } else {
+                setToast({ msg: data.error || "No se pudo registrar la salida.", type: "error" });
+            }
         } catch (e) {
             console.error(e);
+            setToast({ msg: "Error de red al registrar salida.", type: "error" });
         } finally {
             setCheckingOut(false);
         }
@@ -435,7 +465,8 @@ function AttendanceWidget({ role, status }: { role: string | undefined; status: 
                 
                 {!shift ? (
                     <p style={{ color: "#64748b", fontSize: 13, margin: 0 }}>
-                        {role === "admin" ? "No has registrado tu entrada hoy." : "Cargando tu turno..."}
+                        Registra manualmente tu entrada al iniciar el turno y tu salida al terminar.
+                        Los registros quedan guardados para administración.
                     </p>
                 ) : (
                     <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
@@ -458,8 +489,8 @@ function AttendanceWidget({ role, status }: { role: string | undefined; status: 
                 )}
             </div>
 
-            <div style={{ display: "flex", gap: 12 }}>
-                {!shift && role === "admin" && (
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                {!shift && (
                     <button className="portal-btn-checkin" onClick={manualCheckIn} disabled={checkingIn}>
                         {checkingIn ? "Registrando..." : "Registrar Entrada"}
                     </button>
@@ -470,6 +501,7 @@ function AttendanceWidget({ role, status }: { role: string | undefined; status: 
                     </button>
                 )}
             </div>
+            {toast && <PortalToast message={toast.msg} type={toast.type} />}
         </div>
     );
 }
@@ -529,6 +561,15 @@ export default function PersonalPage() {
                         <span className="hidden sm:block" style={{ color: '#94a3b8', fontSize: 12 }}>
                             {userName}
                         </span>
+                        <Link
+                            href="/personal/shifts"
+                            style={{
+                                color: '#94a3b8', fontSize: 10, fontWeight: 600,
+                                textDecoration: 'none', padding: '6px 10px',
+                            }}
+                        >
+                            Mis turnos
+                        </Link>
                         {role === "admin" && (
                             <Link
                                 href="/personal/admin"
@@ -580,7 +621,7 @@ export default function PersonalPage() {
                 ) : (
                     <div className="portal-animate-in-delay" style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
                         {/* ── Mi Asistencia Widget ───────────────── */}
-                        <AttendanceWidget role={role} status={status} />
+                        <AttendanceWidget status={status} />
 
                         {/* ── Pinned Institutional Documents ─────── */}
                         {pinned.length > 0 && (
@@ -670,6 +711,14 @@ export default function PersonalPage() {
                             </section>
                         )}
 
+                        {posts.length === 0 && (
+                            <div className="portal-section-card" style={{ padding: 32, textAlign: 'center' }}>
+                                <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>
+                                    Aún no hay publicaciones en el tablero. Los administradores pueden publicar comunicados desde el panel de administración.
+                                </p>
+                            </div>
+                        )}
+
                         {/* ── Announcements ─────────────────────── */}
                         {announcements.length > 0 && (
                             <section>
@@ -679,7 +728,7 @@ export default function PersonalPage() {
                                             <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" />
                                         </svg>
                                     </div>
-                                    <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0a2540', margin: 0 }}>Comunicados</h2>
+                                    <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0a2540', margin: 0 }}>Tablero de Comunicaciones</h2>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                     {announcements.map((post) => (

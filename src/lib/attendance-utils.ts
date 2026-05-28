@@ -45,6 +45,13 @@ export function setCachedResult(cacheKey: string, data: unknown): void {
     requestCache.set(cacheKey, { timestamp: Date.now(), data });
 }
 
+/** Clear cached attendance for a user/day after check-in or check-out */
+export function invalidateAttendanceCache(userId: string, date: string): void {
+    for (const op of ["GET", "POST", "POST_CHECKOUT"]) {
+        requestCache.delete(getCacheKey(userId, op, date));
+    }
+}
+
 /**
  * Get today's date in Colombia timezone
  */
