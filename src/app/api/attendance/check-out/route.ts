@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
+import {
+    safeCheckOut,
+    todayCO,
+    getCacheKey,
+    getCachedResult,
+    setCachedResult,
+    formatErrorResponse,
+} from "@/lib/attendance-utils";
 
 export const dynamic = "force-dynamic";
-
-function todayCO(): string {
-    return new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
-}
 
 export async function POST(req: Request) {
     try {
@@ -15,39 +18,34 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "No autorizado." }, { status: 401 });
         }
 
+        const { prisma } = await import("@/lib/prisma");
         const user = await prisma.user.findUnique({ where: { email: session.user.email } });
         if (!user) {
             return NextResponse.json({ error: "Usuario no encontrado." }, { status: 404 });
         }
 
         const today = todayCO();
-        const existing = await prisma.shift.findUnique({
-            where: { userId_date: { userId: user.id, date: today } },
-        });
 
-        if (!existing) {
-            return NextResponse.json({ error: "No tienes una entrada registrada hoy." }, { status: 400 });
-        }
-
-        if (existing.checkOut) {
-            return NextResponse.json({ error: "Ya registraste tu salida hoy." }, { status: 400 });
+        // Deduplication: prevent double check-out
+        const cacheKey = getCacheKey(user.id, "POST_CHECKOUT", today);
+        const cachedResult = getCachedResult(cacheKey);
+        if (cachedResult) {
+            console.log(`[POST /api/attendance/check-out] Duplicate request prevented for ${user.email}`);
+            return NextResponse.json(cachedResult, { headers: { "X-Deduped": "true" } });
         }
 
         const checkoutIpAddress = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || null;
         const checkoutUserAgent = req.headers.get("user-agent") || null;
 
-        const shift = await prisma.shift.update({
-            where: { id: existing.id },
-            data: { 
-                checkOut: new Date(),
-                checkoutIpAddress,
-                checkoutUserAgent
-            },
-        });
+        // Use safe check-out with built-in retry logic
+        const shift = await safeCheckOut(user.id, today, checkoutIpAddress, checkoutUserAgent);
+
+        // Cache successful result
+        setCachedResult(cacheKey, shift);
 
         return NextResponse.json(shift);
     } catch (err) {
         console.error("[POST /api/attendance/check-out] Error:", err);
-        return NextResponse.json({ error: "Error interno." }, { status: 500 });
+        return formatErrorResponse(err, 500);
     }
 }

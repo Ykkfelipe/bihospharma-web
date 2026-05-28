@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import {
+    safeCheckIn,
+    todayCO,
+    getCacheKey,
+    getCachedResult,
+    setCachedResult,
+    formatErrorResponse,
+} from "@/lib/attendance-utils";
 
 export const dynamic = "force-dynamic";
 
-/** Get today's date as YYYY-MM-DD in Colombia timezone */
-function todayCO(): string {
-    return new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
-}
-
-// GET — Return today's shift for the authenticated user
+// GET — Return today's shift for the authenticated user (with caching)
 export async function GET() {
     try {
         const session = await auth();
@@ -23,20 +26,31 @@ export async function GET() {
         }
 
         const today = todayCO();
+        
+        // Check cache first for GET requests
+        const cacheKey = getCacheKey(user.id, "GET", today);
+        const cachedShift = getCachedResult(cacheKey);
+        if (cachedShift) {
+            return NextResponse.json({ shift: cachedShift, today, role: user.role, fromCache: true });
+        }
+
         const shift = await prisma.shift.findUnique({
             where: { userId_date: { userId: user.id, date: today } },
         });
 
+        // Cache the result
+        if (shift) {
+            setCachedResult(cacheKey, shift);
+        }
+
         return NextResponse.json({ shift, today, role: user.role });
     } catch (err) {
         console.error("[GET /api/attendance] Error:", err);
-        return NextResponse.json({ error: "Error interno." }, { status: 500 });
+        return formatErrorResponse(err);
     }
 }
 
-// POST — Auto check-in (creates today's shift if none exists)
-// For employees: called automatically on portal load
-// For admins: called manually via "Registrar Entrada" button
+// POST — Auto check-in with retry logic and deduplication
 export async function POST(req: Request) {
     try {
         const session = await auth();
@@ -51,37 +65,26 @@ export async function POST(req: Request) {
 
         const today = todayCO();
 
-        // Check if already checked in today
-        const existing = await prisma.shift.findUnique({
-            where: { userId_date: { userId: user.id, date: today } },
-        });
-
-        if (existing) {
-            return NextResponse.json({ shift: existing, alreadyCheckedIn: true });
+        // Deduplication: check if this request was just processed
+        const cacheKey = getCacheKey(user.id, "POST_CHECKIN", today);
+        const cachedResult = getCachedResult(cacheKey);
+        if (cachedResult) {
+            console.log(`[POST /api/attendance] Duplicate request prevented for ${user.email}`);
+            return NextResponse.json(cachedResult, { status: 201, headers: { "X-Deduped": "true" } });
         }
-
-        // Check if late (Threshold: 8:00 AM Colombia time)
-        const nowCO = new Date(new Date().toLocaleString("en-US", { timeZone: "America/Bogota" }));
-        const isLate = nowCO.getHours() > 8 || (nowCO.getHours() === 8 && nowCO.getMinutes() > 0);
 
         const ipAddress = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || null;
         const userAgent = req.headers.get("user-agent") || null;
 
-        // Create new shift
-        const shift = await prisma.shift.create({
-            data: {
-                userId: user.id,
-                date: today,
-                checkIn: new Date(),
-                ipAddress,
-                userAgent,
-                isLate,
-            },
-        });
+        // Use safe check-in with built-in retry logic
+        const result = await safeCheckIn(user.id, today, ipAddress, userAgent);
 
-        return NextResponse.json({ shift, alreadyCheckedIn: false }, { status: 201 });
+        // Cache successful result
+        setCachedResult(cacheKey, result);
+
+        return NextResponse.json(result, { status: 201 });
     } catch (err) {
         console.error("[POST /api/attendance] Error:", err);
-        return NextResponse.json({ error: "Error interno." }, { status: 500 });
+        return formatErrorResponse(err, 500);
     }
 }

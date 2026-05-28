@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { getAttendanceHistory, formatErrorResponse } from "@/lib/attendance-utils";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request) {
     try {
         const session = await auth();
         if (!session?.user?.email) {
@@ -16,21 +17,35 @@ export async function GET() {
             return NextResponse.json({ error: "Usuario no encontrado." }, { status: 404 });
         }
 
+        // Parse pagination parameters from query string
+        const url = new URL(req.url);
+        const limit = Math.min(parseInt(url.searchParams.get("limit") || "100"), 500); // Max 500
+        const offset = parseInt(url.searchParams.get("offset") || "0");
+
         if (user.role === "admin") {
-            const shifts = await prisma.shift.findMany({
-                orderBy: [{ date: "desc" }, { checkIn: "desc" }],
-                include: { user: { select: { id: true, name: true, email: true } } },
+            // Admin: fetch all records
+            const shifts = await getAttendanceHistory(null, limit, offset);
+            
+            // Get total count for pagination info
+            const total = await prisma.shift.count();
+            
+            return NextResponse.json({
+                data: shifts,
+                pagination: { limit, offset, total },
             });
-            return NextResponse.json(shifts);
         } else {
-            const shifts = await prisma.shift.findMany({
-                where: { userId: user.id },
-                orderBy: { date: "desc" },
+            // Employee: fetch only their records
+            const shifts = await getAttendanceHistory(user.id, limit, offset);
+            
+            const total = await prisma.shift.count({ where: { userId: user.id } });
+            
+            return NextResponse.json({
+                data: shifts,
+                pagination: { limit, offset, total },
             });
-            return NextResponse.json(shifts);
         }
     } catch (err) {
         console.error("[GET /api/attendance/history] Error:", err);
-        return NextResponse.json({ error: "Error interno." }, { status: 500 });
+        return formatErrorResponse(err);
     }
 }
