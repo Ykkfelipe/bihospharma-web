@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import {
+    ATTENDANCE_CHANGED_EVENT,
+    signOutWithAttendance,
+} from "./lib/attendance-client";
 import Link from "next/link";
 import Image from "next/image";
 import { PostAttachment } from "../components/PostAttachment";
@@ -398,6 +402,10 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
     useEffect(() => {
         if (status !== "authenticated") return;
         fetchShift();
+
+        const onAttendanceChange = () => fetchShift();
+        window.addEventListener(ATTENDANCE_CHANGED_EVENT, onAttendanceChange);
+        return () => window.removeEventListener(ATTENDANCE_CHANGED_EVENT, onAttendanceChange);
     }, [status]);
 
     useEffect(() => {
@@ -465,8 +473,8 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
                 
                 {!shift ? (
                     <p style={{ color: "#64748b", fontSize: 13, margin: 0 }}>
-                        Registra manualmente tu entrada al iniciar el turno y tu salida al terminar.
-                        Los registros quedan guardados para administración.
+                        La entrada se registra automáticamente al ingresar al portal.
+                        La salida se registra al cerrar sesión (o usa el botón manual).
                     </p>
                 ) : (
                     <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
@@ -584,7 +592,7 @@ export default function PersonalPage() {
                             </Link>
                         )}
                         <button
-                            onClick={() => signOut({ callbackUrl: "/personal/login" })}
+                            onClick={() => signOutWithAttendance("/personal/login")}
                             style={{
                                 background: 'none', border: 'none', color: '#64748b',
                                 fontSize: 11, cursor: 'pointer', transition: 'color 0.2s',

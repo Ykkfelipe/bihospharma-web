@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, FormEvent, useEffect } from "react";
-import { signOut } from "next-auth/react";
+import { signOutWithAttendance } from "../lib/attendance-client";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -174,7 +174,7 @@ export default function AdminPage() {
                             Ver Asistencia
                         </Link>
                         <Link href="/personal" style={{ color: '#94a3b8', fontSize: 11, textDecoration: 'none', transition: 'color 0.2s' }}>← Ver portal</Link>
-                        <button onClick={() => signOut({ callbackUrl: "/personal/login" })} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: 11, cursor: 'pointer', transition: 'color 0.2s' }}>
+                        <button onClick={() => signOutWithAttendance("/personal/login")} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: 11, cursor: 'pointer', transition: 'color 0.2s' }}>
                             Cerrar sesión
                         </button>
                     </div>

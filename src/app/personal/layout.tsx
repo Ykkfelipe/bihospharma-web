@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import { ReactNode } from "react";
+import { PortalAttendanceGuard } from "./components/PortalAttendanceGuard";
 import "./portal.css";
 
 export default async function PersonalLayout({ children }: { children: ReactNode }) {
@@ -8,6 +9,7 @@ export default async function PersonalLayout({ children }: { children: ReactNode
 
     return (
         <SessionProvider session={session}>
+            <PortalAttendanceGuard />
             {children}
         </SessionProvider>
     );

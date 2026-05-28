@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { PortalToast } from "../components/PortalToast";
+import { ATTENDANCE_CHANGED_EVENT } from "../lib/attendance-client";
 
 type Shift = {
     id: string;
@@ -39,7 +40,11 @@ export default function EmployeeShiftsPage() {
     };
 
     useEffect(() => {
-        if (status === "authenticated") loadData();
+        if (status !== "authenticated") return;
+        loadData();
+        const refresh = () => loadData();
+        window.addEventListener(ATTENDANCE_CHANGED_EVENT, refresh);
+        return () => window.removeEventListener(ATTENDANCE_CHANGED_EVENT, refresh);
     }, [status]);
 
     const startShift = async () => {
