@@ -17,12 +17,13 @@ echo "→ Generating Prisma client locally..."
 npx prisma generate
 
 echo "→ Syncing to EC2…"
-rsync -az --delete \
+rsync -az \
   --exclude='.git' \
   --exclude='node_modules' \
   --exclude='dev.db' \
   --exclude='.env.local' \
   --exclude='public/uploads' \
+  --exclude='remediation-log' \
   "$LOCAL_APP_DIR/" "$EC2_HOST:~/bihospharma-web/"
 
 # Sync the pre-generated Prisma client separately
