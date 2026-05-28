@@ -10,6 +10,11 @@ const requestCache = new Map<string, { timestamp: number; data: any }>();
 /** Cache TTL in milliseconds — 5 seconds to prevent double-submission */
 const CACHE_TTL = 5000;
 
+interface CacheEntry {
+    timestamp: number;
+    data: unknown;
+}
+
 /** Clean up old cache entries */
 setInterval(() => {
     const now = Date.now();
@@ -33,10 +38,10 @@ export function getCachedResult<T>(cacheKey: string): T | null {
         return null;
     }
     
-    return cached.data;
+    return cached.data as T;
 }
 
-export function setCachedResult(cacheKey: string, data: any): void {
+export function setCachedResult(cacheKey: string, data: unknown): void {
     requestCache.set(cacheKey, { timestamp: Date.now(), data });
 }
 
@@ -128,25 +133,25 @@ export async function safeCheckOut(
 /**
  * Format error response with proper status codes
  */
-export function formatErrorResponse(error: any, fallbackStatus: number = 500) {
-    const message = error?.message || "Error interno del servidor";
+export function formatErrorResponse(error: unknown, fallbackStatus: number = 500) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     
-    if (message.includes("No tienes una entrada registrada hoy")) {
-        return NextResponse.json({ error: message }, { status: 400 });
+    if (errorMessage.includes("No tienes una entrada registrada hoy")) {
+        return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
     
-    if (message.includes("Ya registraste tu salida")) {
-        return NextResponse.json({ error: message }, { status: 400 });
+    if (errorMessage.includes("Ya registraste tu salida")) {
+        return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
     
-    if (message.includes("SQLITE_BUSY") || message.includes("database is locked")) {
+    if (errorMessage.includes("SQLITE_BUSY") || errorMessage.includes("database is locked")) {
         return NextResponse.json(
             { error: "Servidor muy ocupado. Por favor, intenta de nuevo.", retryable: true },
             { status: 503 }
         );
     }
     
-    return NextResponse.json({ error: message }, { status: fallbackStatus });
+    return NextResponse.json({ error: errorMessage }, { status: fallbackStatus });
 }
 
 /**

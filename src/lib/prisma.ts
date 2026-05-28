@@ -3,13 +3,6 @@ import { PrismaClient } from "@prisma/client";
 // Prevent hot-reload from creating multiple instances in dev
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-// Calculate connection timeout based on environment
-const connectionTimeout = process.env.DATABASE_CONNECTION_TIMEOUT 
-  ? parseInt(process.env.DATABASE_CONNECTION_TIMEOUT) 
-  : process.env.NODE_ENV === "production" 
-    ? 30000  // 30 seconds for production
-    : 10000; // 10 seconds for development
-
 export const prisma =
     globalForPrisma.prisma ??
     new PrismaClient({
