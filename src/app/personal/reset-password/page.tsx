@@ -4,7 +4,7 @@ import { useState, FormEvent, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { PortalPublicNav } from "../components/PortalPublicNav";
+import { PortalAuthPage } from "../components/PortalPublicNav";
 
 function ResetPasswordForm() {
     const searchParams = useSearchParams();
@@ -143,10 +143,8 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
     return (
-        <>
-            <PortalPublicNav />
-            <main className="portal-auth-bg portal-auth-shell">
-                <div className="w-full max-w-md" style={{ position: "relative", zIndex: 1 }}>
+        <PortalAuthPage>
+                <div className="w-full max-w-md">
                 <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
                     {/* Header */}
                     <div className="bg-gradient-to-r from-[#0a2540] to-[#0f4c8a] px-6 sm:px-8 py-6 sm:py-8 text-center">
@@ -168,8 +166,7 @@ export default function ResetPasswordPage() {
                         </Suspense>
                     </div>
                 </div>
-            </div>
-        </main>
-        </>
+                </div>
+        </PortalAuthPage>
     );
 }

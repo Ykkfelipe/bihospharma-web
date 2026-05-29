@@ -96,7 +96,7 @@ export default function EmployeeShiftsPage() {
 
     return (
         <main className="min-h-screen bg-gray-50 pb-16">
-            <header className="portal-header" style={{ position: "sticky", top: 0, zIndex: 50 }}>
+            <header className="portal-header">
                 <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Image

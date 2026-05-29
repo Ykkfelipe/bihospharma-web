@@ -160,7 +160,7 @@ export default function AdminPage() {
     return (
         <main className="min-h-screen bg-gray-50 pb-20">
             {/* Top bar */}
-            <header className="portal-header" style={{ position: 'sticky', top: 0, zIndex: 50 }}>
+            <header className="portal-header">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2 sm:gap-3">
                         <Image src="/logos/bihos-logo.png" alt="Bihospharma" width={32} height={32} style={{ borderRadius: '50%', background: '#fff', padding: 3 }} />

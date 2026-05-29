@@ -143,7 +143,7 @@ export default function AttendanceReportPage() {
 
     return (
         <main className="min-h-screen bg-gray-50 pb-20">
-            <header className="portal-header" style={{ position: "sticky", top: 0, zIndex: 50 }}>
+            <header className="portal-header">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2 sm:gap-3">
                         <Image

@@ -4,13 +4,9 @@ import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { autoCheckInIfNeeded } from "../lib/attendance-client";
+import { PORTAL_AUTH_PATHS } from "@/lib/portalRoutes";
 
-const PUBLIC_AUTH_PATHS = [
-    "/personal/login",
-    "/personal/register",
-    "/personal/forgot-password",
-    "/personal/reset-password",
-];
+const PUBLIC_AUTH_PATHS = [...PORTAL_AUTH_PATHS];
 
 export function PortalAttendanceGuard() {
     const { status } = useSession();

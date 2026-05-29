@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { MailIcon, LockIcon, AlertIcon } from "../components/PortalFieldIcons";
-import { PortalPublicNav } from "../components/PortalPublicNav";
+import { PortalAuthPage } from "../components/PortalPublicNav";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -54,12 +54,8 @@ export default function LoginPage() {
     };
 
     return (
-        <>
-            <PortalPublicNav />
-            <main className="portal-auth-bg portal-auth-shell">
-                <div className="portal-orb" />
-
-                <div className="w-full max-w-md portal-animate-in" style={{ position: 'relative', zIndex: 1 }}>
+        <PortalAuthPage>
+                <div className="w-full max-w-md portal-animate-in">
                 <div className="portal-auth-card">
                     {/* Header */}
                     <div style={{
@@ -210,8 +206,7 @@ export default function LoginPage() {
                 <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 11, marginTop: 24 }}>
                     © {new Date().getFullYear()} Bihospharma IPS S.A.S · Todos los derechos reservados
                 </p>
-            </div>
-        </main>
-        </>
+                </div>
+        </PortalAuthPage>
     );
 }

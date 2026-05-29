@@ -6,6 +6,7 @@ import {
   isAllowedChatOrigin,
   validateChatMessage,
 } from '@/lib/chatGuardrails';
+import { buildChatServicesBlock, CHAT_KNOWLEDGE_NOTE } from '@/lib/chatKnowledge';
 import { CONTACT } from '@/lib/contactInfo';
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
@@ -27,13 +28,17 @@ CONTEXTO DEL SITIO (donde está el usuario ahora):
 - Blog (/blog): artículos de salud.
 
 DATOS DE LA IPS:
-- Servicios: medicina general, medicina laboral (SST), medicina interna, enfermería, nutrición, reumatología, psicología, trabajo social, fisioterapia.
 - Correo: ${CONTACT.email}
 - WhatsApp y llamadas (citas): ${MOBILE}
 - PBX: 3103158806 Opción 1
 - Yopal: Tranversal 18 #7-05 Piso 5, Edificio Mont Black
 - Bogotá: Cra 25 No 4A-14
 - Horario: Lun-Vie 7am-12pm y 2pm-5pm; Sáb 7am-1pm
+
+SERVICIOS DETALLADOS (usa esto al preguntar por una especialidad):
+${buildChatServicesBlock()}
+
+${CHAT_KNOWLEDGE_NOTE}
 
 CITAS Y CONTACTO (prioridad):
 - Para agendar cita: indica WhatsApp o llamada al ${MOBILE}. Puedes mencionar el botón de WhatsApp en Inicio o en la sección de servicios.

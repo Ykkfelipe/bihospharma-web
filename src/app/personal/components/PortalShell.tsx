@@ -34,7 +34,7 @@ export function PortalShell({
                 background: fullHeight ? "#0a2540" : "#f5f7fa",
             }}
         >
-            <header className="portal-header" style={{ flexShrink: 0, zIndex: 50 }}>
+            <header className="portal-header" style={{ flexShrink: 0 }}>
                 <div
                     style={{
                         maxWidth: fullHeight ? "100%" : 960,

@@ -72,7 +72,8 @@ ssh "$EC2_HOST" "
 echo "→ Verifying server .env.production…"
 ssh "$EC2_HOST" "cd ~/bihospharma-web && touch .env.production && chmod 600 .env.production && \
   sed -i 's|^DATABASE_URL=file:./prisma/prod.db|DATABASE_URL=file:./prod.db|' .env.production && \
-  sed -i 's|^AUTH_URL=https://bihospharma.com/api/auth|AUTH_URL=https://bihospharma.com|' .env.production"
+  sed -i 's|^AUTH_URL=https://bihospharma.com/api/auth|AUTH_URL=https://bihospharma.com|' .env.production && \
+  if [ -f dev.db ] && [ ! -s prisma/prod.db ] 2>/dev/null; then cp dev.db prisma/prod.db; fi"
 
 # --- 3e. Sync missing chat secrets to server .env.production (never committed to git) ---
 if [ -f .env.local ]; then

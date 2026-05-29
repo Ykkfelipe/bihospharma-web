@@ -4,6 +4,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { isPortalAppPath, isPortalAuthPath } from "@/lib/portalRoutes";
 
 const NAV_LINKS = [
   { href: "/", label: "Inicio" },
@@ -27,6 +29,11 @@ const linkClass =
   "rounded-md px-2 py-1 text-[#1C2B4E] transition hover:bg-blue-50 hover:text-[#48a4dc] hover:underline";
 
 export default function Navbar() {
+  const pathname = usePathname() ?? "";
+  const onPortalApp = isPortalAppPath(pathname) && !isPortalAuthPath(pathname);
+  const portalHref = onPortalApp ? "/personal" : "/personal/login";
+  const portalLabel = onPortalApp ? "Mi portal" : "Acceso Corporativo";
+
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showSustainabilityMenu, setShowSustainabilityMenu] = useState(false);
@@ -127,8 +134,8 @@ export default function Navbar() {
             <Link href="/pqrs" className={linkClass} title={PQRS_TITLE}>
               {PQRS_LABEL}
             </Link>
-            <Link href="/personal/login" prefetch={false} className={linkClass}>
-              Acceso Corporativo
+            <Link href={portalHref} prefetch={false} className={linkClass}>
+              {portalLabel}
             </Link>
           </div>
 
@@ -192,12 +199,12 @@ export default function Navbar() {
               {PQRS_LABEL}
             </Link>
             <Link
-              href="/personal/login"
+              href={portalHref}
               prefetch={false}
               onClick={closeMobile}
               className="block min-h-[44px] rounded-lg px-3 py-2.5 text-[#1C2B4E] hover:bg-blue-50"
             >
-              Acceso Corporativo
+              {portalLabel}
             </Link>
           </div>
         </div>

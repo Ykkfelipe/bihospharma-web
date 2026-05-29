@@ -297,9 +297,23 @@
 /* ── Header Glass Effect ────────────────────────────── */
 
 .portal-header {
-  background: linear-gradient(135deg, #0a2540 0%, #0d3a6e 100%);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: linear-gradient(135deg, #0a2540 0%, #0f4c8a 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* When marketing navbar is shown above the portal (logged-in pages) */
+.portal-with-site-nav .portal-header {
+  top: 6rem;
+}
+
+@media (min-width: 768px) {
+  .portal-with-site-nav .portal-header {
+    top: 7rem;
+  }
 }
 
 /* ── User Avatar ────────────────────────────────────── */

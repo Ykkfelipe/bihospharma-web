@@ -547,7 +547,7 @@ export default function PersonalPage() {
     return (
         <main style={{ minHeight: '100vh', background: '#f5f7fa', paddingBottom: 40 }}>
             {/* ── Premium Header ───────────────────────────────── */}
-            <header className="portal-header" style={{ position: 'sticky', top: 0, zIndex: 50 }}>
+            <header className="portal-header">
                 <div style={{ maxWidth: 960, margin: '0 auto', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <Image
