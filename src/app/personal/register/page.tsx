@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { MailIcon, LockIcon, UserIcon, KeyIcon, AlertIcon } from "../components/PortalFieldIcons";
+import { PortalPublicNav } from "../components/PortalPublicNav";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -67,8 +68,10 @@ export default function RegisterPage() {
     };
 
     return (
-        <main className="portal-auth-bg min-h-screen flex items-center justify-center py-10 px-4">
+        <main className="portal-auth-bg min-h-screen flex flex-col items-center justify-center py-10 px-4">
             <div className="portal-orb" />
+
+            <PortalPublicNav />
 
             <div className="w-full max-w-lg portal-animate-in" style={{ position: 'relative', zIndex: 1 }}>
                 <div className="portal-auth-card">

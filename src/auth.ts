@@ -75,6 +75,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     if (e instanceof Error && e.message.includes("bloqueada")) {
                         throw e;
                     }
+                    if (
+                        e instanceof Error &&
+                        (e.message.includes("Unable to open the database") ||
+                            e.message.includes("PrismaClientInitializationError"))
+                    ) {
+                        console.error("[auth] Database unavailable:", e);
+                        throw new Error(
+                            "El portal no está disponible en este momento. Intenta de nuevo en unos minutos o contacta a soporte."
+                        );
+                    }
                     console.error("[auth] Error during login:", e);
                     return null;
                 }

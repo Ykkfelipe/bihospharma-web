@@ -68,7 +68,13 @@ ssh "$EC2_HOST" "
   npx prisma migrate deploy 2>/dev/null || npx prisma db push 2>/dev/null || true
 "
 
-# --- 3d. Sync missing chat secrets to server .env.production (never committed to git) ---
+# --- 3d. Fix common production env mistakes (paths, auth URL) ---
+echo "→ Verifying server .env.production…"
+ssh "$EC2_HOST" "cd ~/bihospharma-web && touch .env.production && chmod 600 .env.production && \
+  sed -i 's|^DATABASE_URL=file:./prisma/prod.db|DATABASE_URL=file:./prod.db|' .env.production && \
+  sed -i 's|^AUTH_URL=https://bihospharma.com/api/auth|AUTH_URL=https://bihospharma.com|' .env.production"
+
+# --- 3e. Sync missing chat secrets to server .env.production (never committed to git) ---
 if [ -f .env.local ]; then
   echo "→ Ensuring server .env.production has chat vars (if missing)…"
   ssh "$EC2_HOST" "touch ~/bihospharma-web/.env.production && chmod 600 ~/bihospharma-web/.env.production"

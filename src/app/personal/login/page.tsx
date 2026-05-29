@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { MailIcon, LockIcon, AlertIcon } from "../components/PortalFieldIcons";
+import { PortalPublicNav } from "../components/PortalPublicNav";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -53,9 +54,11 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="portal-auth-bg min-h-screen flex items-center justify-center p-4">
+        <main className="portal-auth-bg min-h-screen flex flex-col items-center justify-center p-4 py-8">
             {/* Floating orb */}
             <div className="portal-orb" />
+
+            <PortalPublicNav />
 
             <div className="w-full max-w-md portal-animate-in" style={{ position: 'relative', zIndex: 1 }}>
                 <div className="portal-auth-card">

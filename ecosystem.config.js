@@ -1,19 +1,27 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env.production') });
+
+const sharedEnv = {
+  NODE_ENV: 'production',
+  NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'https://bihospharma.com',
+  AUTH_URL: process.env.AUTH_URL || 'https://bihospharma.com',
+  NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET,
+  AUTH_SECRET: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
+  DATABASE_URL: process.env.DATABASE_URL || 'file:./prod.db',
+  PORTAL_ACCESS_CODE: process.env.PORTAL_ACCESS_CODE,
+  GROQ_API_KEY: process.env.GROQ_API_KEY,
+  NEXT_PUBLIC_ENABLE_CHAT: process.env.NEXT_PUBLIC_ENABLE_CHAT,
+  NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || 'https://bihospharma.com',
+  DATABASE_CONNECTION_TIMEOUT: process.env.DATABASE_CONNECTION_TIMEOUT || '30000',
+  REQUEST_TIMEOUT_MS: process.env.REQUEST_TIMEOUT_MS || '30000',
+};
+
 module.exports = {
   apps: [{
     name: 'bihos',
     script: 'server.js',
     cwd: '/home/ec2-user/bihospharma-web',
-    env: {
-      NODE_ENV: 'production',
-      NEXTAUTH_URL: 'https://bihospharma.com',
-      AUTH_URL: 'https://bihospharma.com/api/auth',
-      NEXTAUTH_SECRET: 'b156f4bf04976b13aacc15524fd7127a30932c87df70d0a4de0ae5b72c2d2515',
-      AUTH_SECRET: 'b156f4bf04976b13aacc15524fd7127a30932c87df70d0a4de0ae5b72c2d2515',
-      // Database retry configuration
-      DATABASE_CONNECTION_TIMEOUT: '30000',
-      // Enable request timeout recovery
-      REQUEST_TIMEOUT_MS: '30000'
-    },
+    env: sharedEnv,
     
     // Graceful restart configuration
     wait_ready: true,
@@ -52,6 +60,7 @@ module.exports = {
     name: 'bihos-cron',
     script: 'scripts/cron.js',
     cwd: '/home/ec2-user/bihospharma-web',
+    env: sharedEnv,
     cron_restart: '0 0 * * *',
     autorestart: false,
     instances: 1,

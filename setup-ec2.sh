@@ -21,7 +21,7 @@ PORT=3000
 
 # Authentication
 NEXTAUTH_URL=https://bihospharma.com
-AUTH_URL=https://bihospharma.com/api/auth
+AUTH_URL=https://bihospharma.com
 NEXTAUTH_SECRET=b156f4bf04976b13aacc15524fd7127a30932c87df70d0a4de0ae5b72c2d2515
 AUTH_SECRET=b156f4bf04976b13aacc15524fd7127a30932c87df70d0a4de0ae5b72c2d2515
 

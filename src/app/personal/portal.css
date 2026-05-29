@@ -109,6 +109,62 @@
   animation: portalFloat3 18s ease-in-out infinite;
 }
 
+/* ── Public site nav on auth pages ─────────────────── */
+
+.portal-public-nav {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto 16px;
+  padding: 0 4px;
+}
+
+.portal-public-nav-back {
+  align-self: flex-start;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: background 0.2s;
+}
+
+.portal-public-nav-back:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.portal-public-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.portal-public-nav-link {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: background 0.2s;
+}
+
+.portal-public-nav-link:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
 /* ── Auth Card ──────────────────────────────────────── */
 
 .portal-auth-card {
