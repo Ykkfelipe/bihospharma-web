@@ -7,6 +7,8 @@
 - **Acceso**: solo usuarios registrados; registro con código `PORTAL_ACCESS_CODE` (por defecto en desarrollo: `BIHOS2026!`).
 - **Tablero de comunicaciones**: publicaciones, reacciones y comentarios (`/personal`). Los administradores publican en `/personal/admin`.
 - **Asistencia**: entrada/salida de turno por empleado; reporte admin en `/personal/admin/attendance`.
+- **Reloj rápido**: `/personal/reloj` — entrada/salida manual (celulares de la empresa).
+- **Control admin**: `/personal/admin/attendance` — estado del equipo, quién está en turno, exportar CSV.
 
 ## Configuración local
 

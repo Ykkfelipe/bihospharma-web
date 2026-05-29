@@ -570,6 +570,15 @@ export default function PersonalPage() {
                             {userName}
                         </span>
                         <Link
+                            href="/personal/reloj"
+                            style={{
+                                color: '#94a3b8', fontSize: 10, fontWeight: 600,
+                                textDecoration: 'none', padding: '6px 10px',
+                            }}
+                        >
+                            Reloj
+                        </Link>
+                        <Link
                             href="/personal/shifts"
                             style={{
                                 color: '#94a3b8', fontSize: 10, fontWeight: 600,

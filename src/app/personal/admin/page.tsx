@@ -171,7 +171,7 @@ export default function AdminPage() {
                     </div>
                     <div className="flex items-center gap-3 sm:gap-4">
                         <Link href="/personal/admin/attendance" style={{ color: '#0f4c8a', fontSize: 12, fontWeight: 600, textDecoration: 'none', background: '#e0e7ff', padding: '6px 12px', borderRadius: 8 }}>
-                            Ver Asistencia
+                            Control de asistencia
                         </Link>
                         <Link href="/personal" style={{ color: '#94a3b8', fontSize: 11, textDecoration: 'none', transition: 'color 0.2s' }}>← Ver portal</Link>
                         <button onClick={() => signOutWithAttendance("/personal/login")} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: 11, cursor: 'pointer', transition: 'color 0.2s' }}>
