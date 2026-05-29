@@ -46,7 +46,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={dmSans.variable}>
-      <body className="flex min-h-screen flex-col bg-white font-sans text-gray-800 antialiased">
+      <body className="flex min-h-screen flex-col overflow-x-hidden bg-white font-sans text-gray-800 antialiased">
         <OrganizationJsonLd />
         <SiteChrome>{children}</SiteChrome>
       </body>
