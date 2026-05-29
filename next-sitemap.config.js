@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://bihopharma.com',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://bihospharma.com',
   generateRobotsTxt: true,
   changefreq: 'weekly',
   priority: 0.7,

@@ -4,6 +4,7 @@ import { useState, FormEvent } from "react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { MailIcon, LockIcon, AlertIcon } from "../components/PortalFieldIcons";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -110,8 +111,8 @@ export default function LoginPage() {
                                     Correo electrónico
                                 </label>
                                 <div style={{ position: 'relative' }}>
-                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 16 }}>
-                                        ✉
+                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', display: 'flex' }}>
+                                        <MailIcon />
                                     </span>
                                     <input
                                         type="email"
@@ -131,8 +132,8 @@ export default function LoginPage() {
                                     Contraseña
                                 </label>
                                 <div style={{ position: 'relative' }}>
-                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 16 }}>
-                                        🔒
+                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', display: 'flex' }}>
+                                        <LockIcon />
                                     </span>
                                     <input
                                         type={showPassword ? "text" : "password"}
@@ -170,7 +171,9 @@ export default function LoginPage() {
 
                             {error && (
                                 <div className="portal-alert-error">
-                                    <span style={{ flexShrink: 0, marginTop: 1 }}>⚠️</span>
+                                    <span style={{ flexShrink: 0, marginTop: 1, color: '#dc2626', display: 'flex' }}>
+                                        <AlertIcon />
+                                    </span>
                                     <p style={{ color: '#dc2626', fontSize: 13, fontWeight: 500, lineHeight: 1.4, margin: 0 }}>{error}</p>
                                 </div>
                             )}

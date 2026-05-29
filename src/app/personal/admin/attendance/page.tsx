@@ -174,12 +174,6 @@ export default function AttendanceReportPage() {
             </header>
 
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
-                <p className="text-sm text-gray-600 m-0 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3">
-                    El portal registra <strong>entrada al ingresar</strong>, <strong>salida al cerrar sesión o
-                    Terminar turno</strong>, y accesos al portal. No rastrea tiempo dentro de Version8 u otras
-                    apps externas.
-                </p>
-
                 <div className="flex flex-wrap gap-2 items-center">
                     <input
                         type="date"

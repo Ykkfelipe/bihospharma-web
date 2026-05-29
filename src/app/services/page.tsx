@@ -1,186 +1,70 @@
-"use client";
-
-import { useEffect, useState } from 'react';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import PageHero from '../components/PageHero';
+import SiteContactSection from '@/app/components/SiteContactSection';
+import { SERVICE_CARDS } from './servicesData';
+
+export const metadata: Metadata = {
+  title: 'Servicios',
+  description:
+    'Consulta externa, medicina general, laboral, psicología, nutrición, fisioterapia y más. Conoce los servicios de Bihospharma IPS.',
+  openGraph: {
+    title: 'Servicios | Bihospharma',
+    description:
+      'Consulta externa y programas de atención en salud en Yopal y Bogotá.',
+  },
+};
 
 export default function ServicesPage() {
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-    if (typeof window !== "undefined") {
-      document.documentElement.style.scrollBehavior = 'smooth';
-    }
-  }, []);
-
-  if (!isClient) return null;
-
   return (
     <>
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '60vh',
-          backgroundImage: 'url("/images/servicios-banner.png")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <h1
-          style={{
-            color: 'white',
-            fontSize: '4rem',
-            fontWeight: 'bold',
-            textShadow: '0 2px 6px rgba(0,0,0,0.7)',
-            zIndex: 1,
-          }}
-        >
-          SERVICIOS
-        </h1>
-      </div>
-      {/* Add other page content below */}
-      <section style={{ backgroundColor: '#48a4dc', padding: '4rem 2rem' }}>
-        <h2 style={{ textAlign: 'center', color: 'white', fontSize: '2.5rem', marginBottom: '2rem' }}>Consulta Externa</h2>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-            gap: '2rem',
-            maxWidth: '1000px',
-            margin: '0 auto',
-          }}
-        >
-          {[
-            { title: 'MEDICINA GENERAL', img: 'medicina-general.png', slug: '/services/medicina-general' },
-            { title: 'MEDICINA LABORAL\nEXÁMENES OCUPACIONALES', img: 'medicina-laboral.png', slug: '/services/medicina-laboral' },
-            { title: 'MEDICINA INTERNA', img: 'medicina-interna.png', slug: '/services/medicina-interna' },
-            { title: 'ENFERMERÍA', img: 'enfermeria.png', slug: '/services/enfermeria' },
-            { title: 'NUTRICIÓN', img: 'nutricion.png', slug: '/services/nutricion' },
-            { title: 'REUMATOLOGÍA', img: 'reumatologia.png', slug: '/services/reumatologia' },
-            { title: 'PSICOLOGÍA', img: 'psicologia.png', slug: '/services/psicologia' },
-            { title: 'TRABAJO SOCIAL', img: 'trabajo-social.png', slug: '/services/trabajo-social' },
-            { title: 'FISIOTERAPIA', img: 'fisioterapia.png', slug: '/services/fisioterapia' },
-          ].map(({ title, img, slug }, i) => {
-            const CardContent = (
-              <div
-                style={{
-                  backgroundImage: `url(/images/${img})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  height: '180px',
-                  borderRadius: '10px',
-                  position: 'relative',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: '1rem',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-                }}
-              >
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  backgroundColor: 'rgba(0, 0, 0, 0.35)',
-                  borderRadius: '10px',
-                }} />
-                <div style={{ zIndex: 1, whiteSpace: 'pre-wrap', textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>{title}</div>
-                <div style={{ zIndex: 1 }}>
-                  {slug ? (
-                    <Link
-                      href={slug}
-                      style={{
-                        marginTop: '0.5rem',
-                        padding: '6px 14px',
-                        backgroundColor: '#48a4dc',
-                        border: 'none',
-                        borderRadius: '20px',
-                        color: 'white',
-                        fontWeight: 600,
-                        fontSize: '0.8rem',
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                      }}
-                    >
-                      VER MÁS
-                    </Link>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const el = document.getElementById('medicina-general-info');
-                        if (el) {
-                          el.scrollIntoView({ behavior: 'smooth' });
-                        }
-                      }}
-                      style={{
-                        marginTop: '0.5rem',
-                        padding: '6px 14px',
-                        backgroundColor: '#48a4dc',
-                        border: 'none',
-                        borderRadius: '20px',
-                        color: 'white',
-                        fontWeight: 600,
-                        fontSize: '0.8rem',
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
-                      }}
-                    >
-                      VER MÁS
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
+      <PageHero
+        src="/images/servicios-banner.png"
+        alt="Servicios de salud Bihospharma"
+        title="SERVICIOS"
+        heightClass="h-[45vh] min-h-[240px] sm:min-h-[300px] md:min-h-[360px]"
+      />
 
-            return <div key={i}>{CardContent}</div>;
-          })}
+      <section className="bg-[#48a4dc] px-4 py-10 sm:px-6 sm:py-14">
+        <h2 className="mb-8 text-center text-2xl font-bold text-white sm:text-3xl md:text-4xl">
+          Consulta Externa
+        </h2>
+        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {SERVICE_CARDS.map(({ title, lines, image, slug }) => (
+            <Link
+              key={slug}
+              href={slug}
+              className="group relative block h-44 overflow-hidden rounded-xl shadow-md transition-transform hover:scale-[1.02] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:h-48"
+            >
+              <Image
+                src={`/images/${image}`}
+                alt={title}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                quality={80}
+                className="object-cover transition-transform group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+              <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2 px-3 text-center text-white">
+                <span className="text-sm font-bold leading-tight drop-shadow sm:text-base">
+                  {title}
+                  {lines?.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                </span>
+                <span className="rounded-full bg-[#48a4dc] px-4 py-1.5 text-xs font-semibold shadow sm:text-sm">
+                  VER MÁS
+                </span>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
-      <section style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', padding: '4rem 2rem', gap: '2rem' }}>
-        <div style={{ flex: '1 1 300px', backgroundColor: '#48a4dc', borderRadius: '20px', padding: '2rem', color: 'white', fontWeight: 500, lineHeight: '2rem' }}>
-          <p><a href="/services/medicina-general" style={{ color: 'white', textDecoration: 'underline' }}>Medicina General</a></p>
-          <p><a href="/services" style={{ color: 'white', textDecoration: 'underline' }}>Programas de atención</a></p>
-          <p><a href="/services/medicina-laboral" style={{ color: 'white', textDecoration: 'underline' }}>SST</a></p>
-          <p><span style={{ color: 'white' }}>Laboratorio Clínico</span></p>
-          <br />
-          <p><a href="/estados-financieros-2024" style={{ color: 'white', textDecoration: 'underline' }}>Estados financieros</a></p>
-          <p><a href="/contact" style={{ color: 'white', textDecoration: 'underline' }}>Trabaja con nosotros</a></p>
-          <p><a href="/pqrs" style={{ color: 'white', textDecoration: 'underline' }}>Escríbenos PQRFS</a></p>
-        </div>
-        <div style={{ flex: '1 1 300px' }}>
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 'bold', marginBottom: '1rem' }}>Contacto</h2>
-          <p>info@bihospharma.com<br />www.bihospharma.com</p>
-          <br />
-          <p><strong>TELÉFONO</strong><br />PBX 3103158806 Opc1 - 3232347791</p>
-          <br />
-          <p><strong>YOPAL (CASANARE)</strong><br />Tranversal 18 #7-05 Piso 5<br />Edificio Mont Black</p>
-          <br />
-          <p><strong>BOGOTÁ D.C</strong><br />Cra 25 No 4A-14</p>
-          <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-            <a href="https://www.instagram.com/bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-              <Image src="/logos/instagram.png" alt="Instagram" width={30} height={30} />
-            </a>
-            <a href="https://www.facebook.com/Bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-              <Image src="/logos/facebook.png" alt="Facebook" width={30} height={30} />
-            </a>
-            <a href="https://www.linkedin.com/company/bihospharma-sas/" target="_blank" rel="noopener noreferrer">
-              <Image src="/logos/linkedin.png" alt="LinkedIn" width={30} height={30} />
-            </a>
-            <a href="https://twitter.com/bihospharma" target="_blank" rel="noopener noreferrer">
-              <Image src="/logos/x.png" alt="X" width={30} height={30} />
-            </a>
-          </div>
-        </div>
-      </section>
+
+      <SiteContactSection />
     </>
   );
 }

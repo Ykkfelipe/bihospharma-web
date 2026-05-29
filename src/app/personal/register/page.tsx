@@ -5,6 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { MailIcon, LockIcon, UserIcon, KeyIcon, AlertIcon } from "../components/PortalFieldIcons";
 
 export default function RegisterPage() {
     const router = useRouter();
@@ -116,7 +117,9 @@ export default function RegisterPage() {
                                     Nombre completo
                                 </label>
                                 <div style={{ position: 'relative' }}>
-                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 15 }}>👤</span>
+                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', display: 'flex' }}>
+                                        <UserIcon />
+                                    </span>
                                     <input
                                         type="text" value={name} onChange={(e) => setName(e.target.value)}
                                         required className="portal-input" style={{ paddingLeft: 40 }}
@@ -130,7 +133,9 @@ export default function RegisterPage() {
                                     Correo electrónico
                                 </label>
                                 <div style={{ position: 'relative' }}>
-                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 15 }}>✉</span>
+                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', display: 'flex' }}>
+                                        <MailIcon />
+                                    </span>
                                     <input
                                         type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                                         required className="portal-input" style={{ paddingLeft: 40 }}
@@ -144,7 +149,9 @@ export default function RegisterPage() {
                                     Crea una contraseña
                                 </label>
                                 <div style={{ position: 'relative' }}>
-                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 15 }}>🔒</span>
+                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', display: 'flex' }}>
+                                        <LockIcon />
+                                    </span>
                                     <input
                                         type="password" value={password} onChange={(e) => setPassword(e.target.value)}
                                         required minLength={6} className="portal-input" style={{ paddingLeft: 40 }}
@@ -175,7 +182,9 @@ export default function RegisterPage() {
                                     Código de acceso corporativo *
                                 </label>
                                 <div style={{ position: 'relative' }}>
-                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#60a5fa', fontSize: 15 }}>🔑</span>
+                                    <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#60a5fa', display: 'flex' }}>
+                                        <KeyIcon />
+                                    </span>
                                     <input
                                         type="text" value={accessCode} onChange={(e) => setAccessCode(e.target.value)}
                                         required className="portal-input"
@@ -190,7 +199,9 @@ export default function RegisterPage() {
 
                             {error && (
                                 <div className="portal-alert-error">
-                                    <span style={{ flexShrink: 0, marginTop: 1 }}>⚠️</span>
+                                    <span style={{ flexShrink: 0, marginTop: 1, color: '#dc2626', display: 'flex' }}>
+                                        <AlertIcon />
+                                    </span>
                                     <p style={{ color: '#dc2626', fontSize: 13, fontWeight: 500, lineHeight: 1.4, margin: 0 }}>{error}</p>
                                 </div>
                             )}

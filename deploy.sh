@@ -10,7 +10,19 @@ LOCAL_APP_DIR="$(cd "$(dirname "$0")" && pwd)"
 # --- 1. Build locally ---
 echo "→ Building locally…"
 cd "$LOCAL_APP_DIR"
-AUTH_SECRET="b156f4bf04976b13aacc15524fd7127a30932c87df70d0a4de0ae5b72c2d2515" NEXTAUTH_SECRET="b156f4bf04976b13aacc15524fd7127a30932c87df70d0a4de0ae5b72c2d2515" NEXTAUTH_URL="https://bihospharma.com" npm run build
+set -a
+if [ -f .env.production ]; then
+  # shellcheck disable=SC1091
+  . ./.env.production
+elif [ -f .env.local ]; then
+  # shellcheck disable=SC1091
+  . ./.env.local
+fi
+export NEXTAUTH_URL="${NEXTAUTH_URL:-https://bihospharma.com}"
+export NEXT_PUBLIC_SITE_URL="${NEXT_PUBLIC_SITE_URL:-https://bihospharma.com}"
+export NEXT_PUBLIC_ENABLE_CHAT="${NEXT_PUBLIC_ENABLE_CHAT:-true}"
+set +a
+npm run build
 
 # --- 2. Sync built output + source to EC2 ---
 echo "→ Generating Prisma client locally..."
@@ -22,6 +34,7 @@ rsync -az \
   --exclude='node_modules' \
   --exclude='dev.db' \
   --exclude='.env.local' \
+  --exclude='.env.production' \
   --exclude='public/uploads' \
   --exclude='remediation-log' \
   "$LOCAL_APP_DIR/" "$EC2_HOST:~/bihospharma-web/"
@@ -55,6 +68,19 @@ ssh "$EC2_HOST" "
   npx prisma migrate deploy 2>/dev/null || npx prisma db push 2>/dev/null || true
 "
 
+# --- 3d. Sync missing chat secrets to server .env.production (never committed to git) ---
+if [ -f .env.local ]; then
+  echo "→ Ensuring server .env.production has chat vars (if missing)…"
+  ssh "$EC2_HOST" "touch ~/bihospharma-web/.env.production && chmod 600 ~/bihospharma-web/.env.production"
+  for key in GROQ_API_KEY NEXT_PUBLIC_ENABLE_CHAT NEXT_PUBLIC_SITE_URL; do
+    if grep -q "^${key}=" .env.local 2>/dev/null; then
+      if ! ssh "$EC2_HOST" "grep -q '^${key}=' ~/bihospharma-web/.env.production 2>/dev/null"; then
+        grep "^${key}=" .env.local | ssh "$EC2_HOST" "cat >> ~/bihospharma-web/.env.production"
+      fi
+    fi
+  done
+fi
+
 # --- 4. Restart PM2 ---
 echo "→ Restarting PM2…"
 ssh "$EC2_HOST" "
@@ -68,7 +94,8 @@ ssh "$EC2_HOST" "
   sleep 1
   
   # Start using ecosystem config for proper graceful shutdown support
-  pm2 start ecosystem.config.js
+  set -a && [ -f .env.production ] && . ./.env.production && set +a
+  pm2 start ecosystem.config.js --update-env
   pm2 save
 "
 

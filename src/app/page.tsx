@@ -10,20 +10,29 @@
 // Para editar el carrusel principal: src/app/components/HeroCarousel.tsx
 // ============================================================
 
+import type { Metadata } from 'next';
 import Image from 'next/image';
-import HeroCarousel from './components/HeroCarousel';
+import HeroFade from './components/HeroFade';
+import SocialLinks from '@/app/components/SocialLinks';
+import { CONTACT } from '@/lib/contactInfo';
+
+export const metadata: Metadata = {
+  title: 'Inicio',
+  description:
+    'Bihospharma IPS — soluciones integrales en salud. Consulta externa, programas de atención y servicios en Yopal y Bogotá.',
+};
 
 export default function Home() {
   return (
-    <main>
+    <>
 
       {/* ——— SECCIÓN 1: Carrusel de imágenes principal ———
           Ocupa todo el ancho de la pantalla en la parte superior.
           Para cambiar las imágenes o los textos del carrusel,
           editar el archivo: src/app/components/HeroCarousel.tsx
           Ahí hay un arreglo de "slides" con las rutas de imagen. */}
-      <section className="relative w-full">
-        <HeroCarousel showDots={true} showArrows={true} />
+      <section className="relative z-0 w-full">
+        <HeroFade />
       </section>
 
       {/* ——— SECCIÓN 2: Bloque de Servicios ———
@@ -230,83 +239,46 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ——— SECCIÓN 5: Contacto ———
-          Columna izquierda: información de contacto y redes sociales.
-          Columna derecha: imagen del mapa con un hotspot invisible de WhatsApp.
-          El hotspot es un <a> transparente encima del ícono de WhatsApp
-          que ya está dibujado dentro de la imagen map.png.
-          Para cambiar el número de WhatsApp: editar el href="https://wa.me/57XXXXXXXXXX"
-          Para cambiar la información de contacto: editar los <p> de abajo. */}
-      <section className="bg-white py-16 px-4">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
+      {/* ——— SECCIÓN 5: Contacto + mapa ——— */}
+      <section className="bg-white px-4 py-12 sm:py-16">
+        <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-2">
           <div>
-            <h2 className="text-4xl font-bold text-black mb-4">Contacto</h2>
-            <p className="text-black mb-2">info@bihospharma.com</p>
-            <p className="text-black mb-4">www.bihospharma.com</p>
-            <p className="text-black font-semibold">TELÉFONO</p>
-            <p className="text-black mb-4">PBX 3103158806 Opc1 - 3232347791</p>
-            <p className="text-black font-semibold">YOPAL (CASANARE)</p>
-            <p className="text-black">Transversal 18 #7-05 Piso 5</p>
-            <p className="text-black mb-4">Edificio Mont Black</p>
-            <p className="text-black font-semibold">BOGOTÁ D.C</p>
-            <p className="text-black mb-4">Cra 25 No 4A-14</p>
-            <p className="text-black font-semibold mb-2">SÍGUENOS:</p>
-            {/* Íconos de redes sociales — para agregar una red nueva,
-                copiar uno de estos <a> y cambiar el href y la imagen */}
-            <div className="flex space-x-4 mt-2">
-              <a href="https://www.instagram.com/bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-                <Image
-                  src="/logos/instagram.png"
-                  alt="Instagram"
-                  width={40}
-                  height={40}
-                  className="rounded-full bg-[#007bff] p-2"
-                />
-              </a>
-              <a href="https://www.facebook.com/Bihospharma.ips/" target="_blank" rel="noopener noreferrer">
-                <Image
-                  src="/logos/facebook.png"
-                  alt="Facebook"
-                  width={40}
-                  height={40}
-                  className="rounded-full bg-[#007bff] p-2"
-                />
-              </a>
-              <a href="https://www.linkedin.com/company/bihospharma-sas/" target="_blank" rel="noopener noreferrer">
-                <Image
-                  src="/logos/linkedin.png"
-                  alt="LinkedIn"
-                  width={40}
-                  height={40}
-                  className="rounded-full bg-[#007bff] p-2"
-                />
-              </a>
-              <a href="https://twitter.com/bihospharma" target="_blank" rel="noopener noreferrer">
-                <Image
-                  src="/logos/x.png"
-                  alt="X/Twitter"
-                  width={40}
-                  height={40}
-                  className="rounded-full bg-[#007bff] p-2"
-                />
-              </a>
-            </div>
+            <h2 className="mb-4 text-3xl font-bold text-[#1C2B4E] sm:text-4xl">Contacto</h2>
+            <p className="mb-1 text-gray-800">{CONTACT.email}</p>
+            <p className="mb-4 text-gray-800">{CONTACT.website}</p>
+            <p className="font-semibold text-gray-900">TELÉFONO</p>
+            <p className="mb-4 text-gray-800">{CONTACT.phone}</p>
+            {CONTACT.locations.map((loc) => (
+              <div key={loc.name} className="mb-4">
+                <p className="font-semibold text-gray-900">{loc.name}</p>
+                {loc.lines.map((line) => (
+                  <p key={line} className="text-gray-800">
+                    {line}
+                  </p>
+                ))}
+              </div>
+            ))}
+            <p className="mb-2 font-semibold text-gray-900">SÍGUENOS:</p>
+            <SocialLinks variant="light" iconSize={18} />
           </div>
-          <div className="flex items-end justify-end">
-            <div className="relative">
-              <Image src="/images/map.png" alt="Mapa" width={600} height={400} loading="lazy" sizes="(max-width: 768px) 100vw, 50vw" className="max-w-full rounded-lg" />
-              {/* Área de clic invisible encima del ícono de WhatsApp que
-                  ya aparece en la imagen del mapa. Al hacer clic abre el chat. */}
+          <div className="relative flex justify-center md:justify-end">
+            <div className="relative w-full max-w-lg">
+              <Image
+                src="/images/map.png"
+                alt="Mapa de ubicación"
+                width={600}
+                height={400}
+                loading="lazy"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                quality={80}
+                className="w-full rounded-lg"
+              />
               <a
-                href="https://wa.me/573203165870"
+                href={CONTACT.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Abrir WhatsApp"
-                className="absolute bottom-[22px] right-[18px] z-20 w-[58px] h-[58px] rounded-full"
-                style={{
-                  background: 'transparent',
-                  outline: 'none',
-                }}
+                className="absolute bottom-[22px] right-[18px] z-20 h-[58px] w-[58px] rounded-full"
               >
                 <span className="sr-only">Abrir chat de WhatsApp</span>
               </a>
@@ -314,6 +286,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </main>
+    </>
   );
 }

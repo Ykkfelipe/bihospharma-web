@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://bihopharma.com
+Host: https://bihospharma.com
 
 # Sitemaps
-Sitemap: https://bihopharma.com/sitemap.xml
+Sitemap: https://bihospharma.com/sitemap.xml

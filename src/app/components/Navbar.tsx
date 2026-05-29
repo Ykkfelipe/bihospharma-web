@@ -1,160 +1,205 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
+
+const NAV_LINKS = [
+  { href: "/", label: "Inicio" },
+  { href: "/about", label: "Nosotros" },
+  { href: "/services", label: "Nuestros Servicios" },
+  { href: "/blog", label: "Blog" },
+  { href: "/contact", label: "Contacto" },
+] as const;
+
+const FINANCIAL_LINKS = [
+  { href: "/estados-financieros-2025", label: "Estados Financieros 2025" },
+  { href: "/estados-financieros-2024", label: "Estados Financieros 2024" },
+  { href: "/estados-financieros-2023", label: "Estados Financieros 2023" },
+  { href: "/estados-financieros-2022", label: "Estados Financieros 2022" },
+] as const;
+
+const PQRS_LABEL = "PQRSF";
+const PQRS_TITLE = "Petición, Queja, Reclamo, Sugerencia o Felicitación";
+
+const linkClass =
+  "rounded-md px-2 py-1 text-[#1C2B4E] transition hover:bg-blue-50 hover:text-[#48a4dc] hover:underline";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showSustainabilityMenu, setShowSustainabilityMenu] = useState(false);
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0 });
+  const [mounted, setMounted] = useState(false);
 
-  // Dropdown timeout logic
+  const sustainabilityRef = useRef<HTMLDivElement>(null);
   const dropdownTimeout = useRef<NodeJS.Timeout | null>(null);
 
-  const handleMouseEnter = () => {
+  useEffect(() => setMounted(true), []);
+
+  const updateMenuPosition = () => {
+    const el = sustainabilityRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setMenuPos({ top: rect.bottom + 4, left: rect.left });
+  };
+
+  const openDropdown = () => {
     if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
+    updateMenuPosition();
     setDropdownOpen(true);
   };
 
   const handleMouseLeave = () => {
-    dropdownTimeout.current = setTimeout(() => {
-      setDropdownOpen(false);
-    }, 200); // delay to allow moving mouse to menu
+    dropdownTimeout.current = setTimeout(() => setDropdownOpen(false), 200);
   };
 
+  useLayoutEffect(() => {
+    if (!dropdownOpen) return;
+    updateMenuPosition();
+    const onUpdate = () => updateMenuPosition();
+    window.addEventListener("scroll", onUpdate, true);
+    window.addEventListener("resize", onUpdate);
+    return () => {
+      window.removeEventListener("scroll", onUpdate, true);
+      window.removeEventListener("resize", onUpdate);
+    };
+  }, [dropdownOpen]);
+
+  const closeMobile = () => setIsOpen(false);
+
+  const financialDropdown =
+    mounted &&
+    dropdownOpen &&
+    createPortal(
+      <div
+        className="fixed z-[9999] w-60 overflow-hidden rounded-lg border border-gray-200 bg-white py-1 shadow-2xl"
+        style={{ top: menuPos.top, left: menuPos.left }}
+        onMouseEnter={openDropdown}
+        onMouseLeave={handleMouseLeave}
+        role="menu"
+      >
+        {FINANCIAL_LINKS.map(({ href, label }) => (
+          <Link
+            key={href}
+            href={href}
+            role="menuitem"
+            className="block px-4 py-2.5 text-sm text-[#1C2B4E] hover:bg-blue-50"
+          >
+            {label}
+          </Link>
+        ))}
+      </div>,
+      document.body
+    );
+
   return (
-    <nav className="bg-white text-[#1C2B4E] shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-28">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+    <nav className="sticky top-0 z-50 border-b border-gray-100 bg-white shadow-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-24 items-center justify-between md:h-28">
+          <Link href="/" className="flex shrink-0 items-center">
             <Image
               src="/logos/bihos-logo.png"
               alt="Bihospharma Logo"
-              width={100}
-              height={100}
+              width={88}
+              height={88}
               priority
-              className="object-contain cursor-pointer"
+              className="h-16 w-16 object-contain md:h-[88px] md:w-[88px]"
             />
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-6 font-normal text-base">
-            <Link href="/">
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Inicio</span>
-            </Link>
-            <Link href="/about">
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Nosotros</span>
-            </Link>
-            <Link href="/services">
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Nuestros Servicios</span>
-            </Link>
-            <Link href="/blog">
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Blog</span>
-            </Link>
+          <div className="hidden items-center gap-1 md:flex lg:gap-2">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link key={href} href={href} className={linkClass}>
+                {label}
+              </Link>
+            ))}
             <div
-              className="relative group"
-              onMouseEnter={handleMouseEnter}
+              ref={sustainabilityRef}
+              onMouseEnter={openDropdown}
               onMouseLeave={handleMouseLeave}
             >
-              <Link href="/estados-financieros-2025">
-                <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">
-                  Gestión y Sostenibilidad
-                </span>
+              <Link href="/estados-financieros-2025" className={linkClass}>
+                Gestión y Sostenibilidad
               </Link>
-              <div className={`absolute left-0 mt-2 w-56 bg-white shadow-lg rounded z-10 ${dropdownOpen ? 'flex' : 'hidden'} flex-col`}>
-                <Link href="/estados-financieros-2025">
-                  <span className="block px-4 py-2 text-sm hover:bg-gray-100 text-[#1C2B4E]">Estados Financieros 2025</span>
-                </Link>
-                <Link href="/estados-financieros-2024">
-                  <span className="block px-4 py-2 text-sm hover:bg-gray-100 text-[#1C2B4E]">Estados Financieros 2024</span>
-                </Link>
-                <Link href="/estados-financieros-2023">
-                  <span className="block px-4 py-2 text-sm hover:bg-gray-100 text-[#1C2B4E]">Estados Financieros 2023</span>
-                </Link>
-                <Link href="/estados-financieros-2022">
-                  <span className="block px-4 py-2 text-sm hover:bg-gray-100 text-[#1C2B4E]">Estados Financieros 2022</span>
-                </Link>
-              </div>
             </div>
-            <Link href="/contact">
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Contacto</span>
+            <Link href="/pqrs" className={linkClass} title={PQRS_TITLE}>
+              {PQRS_LABEL}
             </Link>
-            <Link href="/pqrs">
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">PQRS</span>
-            </Link>
-            <Link href="/personal/login" prefetch={false}>
-              <span className="cursor-pointer hover:underline hover:text-[#1C2B4E]">Acceso Corporativo</span>
+            <Link href="/personal/login" prefetch={false} className={linkClass}>
+              Acceso Corporativo
             </Link>
           </div>
 
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-[#1C2B4E] hover:text-black focus:outline-none"
-            >
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                {isOpen ? (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                ) : (
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                )}
-              </svg>
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[#1C2B4E] hover:bg-gray-100 md:hidden"
+            aria-expanded={isOpen}
+            aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {financialDropdown}
+
       {isOpen && (
-        <div className="md:hidden px-4 pt-2 pb-4 space-y-2 font-medium uppercase text-[#1C2B4E]">
-          <Link href="/">
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Inicio</span>
-          </Link>
-          <Link href="/about">
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Nosotros</span>
-          </Link>
-          <Link href="/services">
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Nuestros Servicios</span>
-          </Link>
-          <Link href="/blog">
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Blog</span>
-          </Link>
-          <div>
-            <span
-              className="block px-3 py-2 cursor-pointer hover:underline hover:text-[#1C2B4E]"
+        <div className="border-t border-gray-100 bg-white px-4 pb-5 pt-2 md:hidden">
+          <div className="space-y-0.5">
+            {NAV_LINKS.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={closeMobile}
+                className="block min-h-[44px] rounded-lg px-3 py-2.5 text-[#1C2B4E] hover:bg-blue-50"
+              >
+                {label}
+              </Link>
+            ))}
+            <button
+              type="button"
               onClick={() => setShowSustainabilityMenu(!showSustainabilityMenu)}
+              className="block w-full min-h-[44px] rounded-lg px-3 py-2.5 text-left text-[#1C2B4E] hover:bg-blue-50"
             >
               Gestión y Sostenibilidad
-            </span>
-            {showSustainabilityMenu && (
-              <>
-                <Link href="/estados-financieros-2025">
-                  <span onClick={() => setIsOpen(false)} className="block px-6 py-2 hover:underline">Estados Financieros 2025</span>
+            </button>
+            {showSustainabilityMenu &&
+              FINANCIAL_LINKS.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={closeMobile}
+                  className="block min-h-[44px] rounded-lg py-2 pl-6 pr-3 text-sm text-gray-700 hover:bg-blue-50"
+                >
+                  {label}
                 </Link>
-                <Link href="/estados-financieros-2024">
-                  <span onClick={() => setIsOpen(false)} className="block px-6 py-2 hover:underline">Estados Financieros 2024</span>
-                </Link>
-                <Link href="/estados-financieros-2023">
-                  <span onClick={() => setIsOpen(false)} className="block px-6 py-2 hover:underline">Estados Financieros 2023</span>
-                </Link>
-                <Link href="/estados-financieros-2022">
-                  <span onClick={() => setIsOpen(false)} className="block px-6 py-2 hover:underline">Estados Financieros 2022</span>
-                </Link>
-              </>
-            )}
+              ))}
+            <Link
+              href="/pqrs"
+              onClick={closeMobile}
+              className="block min-h-[44px] rounded-lg px-3 py-2.5 text-[#1C2B4E] hover:bg-blue-50"
+              title={PQRS_TITLE}
+            >
+              {PQRS_LABEL}
+            </Link>
+            <Link
+              href="/personal/login"
+              prefetch={false}
+              onClick={closeMobile}
+              className="block min-h-[44px] rounded-lg px-3 py-2.5 text-[#1C2B4E] hover:bg-blue-50"
+            >
+              Acceso Corporativo
+            </Link>
           </div>
-          <Link href="/contact">
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Contacto</span>
-          </Link>
-          <Link href="/pqrs">
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">PQRS</span>
-          </Link>
-          <Link href="/personal/login" prefetch={false}>
-            <span onClick={() => setIsOpen(false)} className="block px-3 py-2 hover:underline">Acceso Corporativo</span>
-          </Link>
         </div>
       )}
     </nav>

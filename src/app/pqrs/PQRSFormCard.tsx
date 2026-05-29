@@ -19,6 +19,7 @@
 
 import Image from 'next/image';
 import { useState, useEffect, type FormEvent, type ReactNode } from 'react';
+import { CONTACT } from '@/lib/contactInfo';
 import {
   outerShell,
   formShell,
@@ -398,7 +399,7 @@ export default function PQRSFormCard() {
 
         {/* Barra de contacto al pie del formulario */}
         <div style={contactStyles}>
-          <InfoItem icon={<PhoneIcon />} text="Cel: +57 (320) 316 5870" compact={isCompact} />
+          <InfoItem icon={<PhoneIcon />} text={`Cel / WhatsApp: ${CONTACT.phoneMobile}`} compact={isCompact} />
           <InfoItem icon={<WebIcon />} text="www.bihospharma.com" compact={isCompact} />
           <InfoItem icon={<MailIcon />} text="info@bihospharma.com" compact={isCompact} />
           <InfoItem icon={<MapIcon />} text="Carrera 25 # 4A-14 Bogotá" compact={isCompact} />

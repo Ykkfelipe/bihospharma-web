@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function PQRSPage() {
   return (
-    <main style={{ display: 'flex', justifyContent: 'center', padding: '3rem 1rem', background: '#eef3f9' }}>
+    <main className="flex min-h-[60vh] justify-center bg-[#e8f4fc] px-4 py-10 sm:px-6 sm:py-14">
       <PQRSFormCard />
     </main>
   );
