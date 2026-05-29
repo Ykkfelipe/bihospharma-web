@@ -68,12 +68,12 @@ export default function RegisterPage() {
     };
 
     return (
-        <main className="portal-auth-bg min-h-screen flex flex-col items-center justify-center py-10 px-4">
-            <div className="portal-orb" />
-
+        <>
             <PortalPublicNav />
+            <main className="portal-auth-bg portal-auth-shell">
+                <div className="portal-orb" />
 
-            <div className="w-full max-w-lg portal-animate-in" style={{ position: 'relative', zIndex: 1 }}>
+                <div className="w-full max-w-lg portal-animate-in" style={{ position: 'relative', zIndex: 1 }}>
                 <div className="portal-auth-card">
                     {/* Header */}
                     <div style={{
@@ -235,5 +235,6 @@ export default function RegisterPage() {
                 </p>
             </div>
         </main>
+        </>
     );
 }

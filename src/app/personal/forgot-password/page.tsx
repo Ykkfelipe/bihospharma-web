@@ -38,12 +38,12 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <main className="portal-auth-bg min-h-screen flex flex-col items-center justify-center p-4 py-8">
-            <div className="portal-orb" />
-
+        <>
             <PortalPublicNav />
+            <main className="portal-auth-bg portal-auth-shell">
+                <div className="portal-orb" />
 
-            <div className="w-full max-w-md portal-animate-in" style={{ position: 'relative', zIndex: 1 }}>
+                <div className="w-full max-w-md portal-animate-in" style={{ position: 'relative', zIndex: 1 }}>
                 <div className="portal-auth-card">
                     {/* Header */}
                     <div style={{
@@ -164,5 +164,6 @@ export default function ForgotPasswordPage() {
                 </p>
             </div>
         </main>
+        </>
     );
 }

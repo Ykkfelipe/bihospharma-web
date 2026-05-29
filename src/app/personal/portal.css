@@ -111,58 +111,94 @@
 
 /* ── Public site nav on auth pages ─────────────────── */
 
-.portal-public-nav {
-  position: relative;
-  z-index: 2;
+.portal-auth-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: rgba(10, 37, 64, 0.72);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.portal-auth-topbar-inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 10px 16px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  width: 100%;
-  max-width: 28rem;
-  margin: 0 auto 16px;
-  padding: 0 4px;
+  justify-content: space-between;
+  gap: 12px;
 }
 
-.portal-public-nav-back {
-  align-self: flex-start;
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: background 0.2s;
-}
-
-.portal-public-nav-back:hover {
-  background: rgba(255, 255, 255, 0.18);
-}
-
-.portal-public-nav-links {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.portal-auth-topbar-brand {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-  width: 100%;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-.portal-public-nav-link {
-  color: rgba(255, 255, 255, 0.88);
+.portal-auth-topbar-brand:hover {
+  color: #bae6fd;
+}
+
+.portal-auth-topbar-logo {
+  border-radius: 50%;
+  background: #fff;
+  padding: 2px;
+  object-fit: contain;
+}
+
+.portal-auth-topbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.portal-auth-topbar-link {
+  color: rgba(255, 255, 255, 0.82);
   font-size: 12px;
   font-weight: 600;
   text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: background 0.2s;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.15s, color 0.15s;
 }
 
-.portal-public-nav-link:hover {
-  background: rgba(255, 255, 255, 0.16);
+.portal-auth-topbar-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.portal-auth-shell {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 88px 16px 32px;
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .portal-auth-topbar-inner {
+    padding: 12px 24px;
+  }
+
+  .portal-auth-topbar-brand {
+    font-size: 14px;
+  }
+
+  .portal-auth-topbar-link {
+    font-size: 13px;
+    padding: 7px 12px;
+  }
 }
 
 /* ── Auth Card ──────────────────────────────────────── */

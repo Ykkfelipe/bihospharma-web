@@ -143,9 +143,10 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
     return (
-        <main className="portal-auth-bg min-h-screen flex flex-col items-center justify-center p-4 py-8">
+        <>
             <PortalPublicNav />
-            <div className="w-full max-w-md" style={{ position: "relative", zIndex: 1 }}>
+            <main className="portal-auth-bg portal-auth-shell">
+                <div className="w-full max-w-md" style={{ position: "relative", zIndex: 1 }}>
                 <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
                     {/* Header */}
                     <div className="bg-gradient-to-r from-[#0a2540] to-[#0f4c8a] px-6 sm:px-8 py-6 sm:py-8 text-center">
@@ -169,5 +170,6 @@ export default function ResetPasswordPage() {
                 </div>
             </div>
         </main>
+        </>
     );
 }
