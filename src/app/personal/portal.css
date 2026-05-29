@@ -482,6 +482,13 @@
   gap: 20px;
 }
 
+.portal-attendance-card--stacked {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
 .portal-attendance-pulse {
   width: 10px;
   height: 10px;

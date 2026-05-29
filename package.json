@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev": "npm run chat:knowledge && next dev --turbopack",
+    "build": "npm run chat:knowledge && next build",
+    "chat:knowledge": "node scripts/build-chat-knowledge.mjs",
     "start": "NODE_ENV=production node server.js",
     "export": "next export",
     "lint": "next lint",

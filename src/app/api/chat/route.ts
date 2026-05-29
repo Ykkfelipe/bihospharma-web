@@ -6,7 +6,7 @@ import {
   isAllowedChatOrigin,
   validateChatMessage,
 } from '@/lib/chatGuardrails';
-import { buildChatServicesBlock, CHAT_KNOWLEDGE_NOTE } from '@/lib/chatKnowledge';
+import { buildChatServicesBlock, CHAT_KNOWLEDGE_NOTE, CHAT_MEDICAL_RULES } from '@/lib/chatKnowledge';
 import { CONTACT } from '@/lib/contactInfo';
 
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
@@ -39,6 +39,8 @@ SERVICIOS DETALLADOS (usa esto al preguntar por una especialidad):
 ${buildChatServicesBlock()}
 
 ${CHAT_KNOWLEDGE_NOTE}
+
+${CHAT_MEDICAL_RULES}
 
 CITAS Y CONTACTO (prioridad):
 - Para agendar cita: indica WhatsApp o llamada al ${MOBILE}. Puedes mencionar el botón de WhatsApp en Inicio o en la sección de servicios.

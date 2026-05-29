@@ -2,8 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
+import { PortalShell } from "../components/PortalShell";
 import { PortalToast } from "../components/PortalToast";
 import { ATTENDANCE_CHANGED_EVENT } from "../lib/attendance-client";
 
@@ -16,14 +15,20 @@ type Shift = {
 };
 
 export default function EmployeeShiftsPage() {
-    const { data: session, status } = useSession();
+    const { status } = useSession();
     const [shifts, setShifts] = useState<Shift[]>([]);
     const [loading, setLoading] = useState(true);
     const [todayShift, setTodayShift] = useState<Shift | null>(null);
     const [actionLoading, setActionLoading] = useState(false);
     const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
-    const todayStr = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+    const todayStr = new Date().toLocaleDateString("es-CO", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        timeZone: "America/Bogota",
+    });
 
     const loadData = async () => {
         const [historyRes, todayRes] = await Promise.all([
@@ -86,63 +91,67 @@ export default function EmployeeShiftsPage() {
     const formatTime = (iso: string) =>
         new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
 
+    const formatDate = (dateStr: string) => {
+        const [y, m, d] = dateStr.split("-").map(Number);
+        if (!y || !m || !d) return dateStr;
+        return new Date(y, m - 1, d).toLocaleDateString("es-CO", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+        });
+    };
+
     if (status === "loading" || loading) {
         return (
-            <main className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <p className="text-sm text-gray-500">Cargando...</p>
-            </main>
+            <PortalShell title="Mis turnos">
+                <p style={{ textAlign: "center", color: "#94a3b8", padding: 48 }}>Cargando…</p>
+            </PortalShell>
         );
     }
 
     return (
-        <main className="min-h-screen bg-gray-50 pb-16">
-            <header className="portal-header">
-                <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <Image
-                            src="/logos/bihos-logo.png"
-                            alt="Bihospharma"
-                            width={32}
-                            height={32}
-                            style={{ borderRadius: "50%", background: "#fff", padding: 3 }}
-                        />
-                        <p className="text-white font-bold text-sm m-0">Mis turnos</p>
-                    </div>
-                    <Link href="/personal" style={{ color: "#94a3b8", fontSize: 11, textDecoration: "none" }}>
-                        ← Portal
-                    </Link>
-                </div>
-            </header>
+        <PortalShell title="Mis turnos">
+            <div style={{ maxWidth: 720, margin: "0 auto", padding: "24px 16px 48px" }}>
+                <p style={{ textAlign: "center", color: "#64748b", fontSize: 13, margin: "0 0 20px" }}>
+                    {todayStr}
+                </p>
 
-            <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-                <div className="portal-attendance-card">
-                    <h2 className="text-base font-bold text-[#0a2540] m-0 mb-2">Turno de hoy</h2>
+                <div className="portal-attendance-card portal-attendance-card--stacked" style={{ marginBottom: 24 }}>
+                    <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0a2540", margin: 0 }}>Turno de hoy</h2>
                     {toast && <PortalToast message={toast.msg} type={toast.type} />}
                     {!todayShift ? (
                         <>
-                            <p className="text-sm text-gray-500 m-0 mb-4">
-                                Aún no has registrado entrada ({todayStr}).
+                            <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>
+                                Aún no has registrado entrada hoy.
                             </p>
                             <button
                                 type="button"
                                 className="portal-btn-checkin"
                                 onClick={startShift}
                                 disabled={actionLoading}
+                                style={{ alignSelf: "flex-start" }}
                             >
                                 {actionLoading ? "Registrando..." : "Registrar entrada"}
                             </button>
                         </>
                     ) : (
                         <>
-                            <div className="flex gap-6 mb-4">
+                            <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
                                 <div>
-                                    <p className="text-[10px] uppercase text-gray-400 font-semibold m-0">Entrada</p>
-                                    <p className="text-[#0f4c8a] font-bold m-0">{formatTime(todayShift.checkIn)}</p>
+                                    <p style={{ fontSize: 10, textTransform: "uppercase", color: "#94a3b8", fontWeight: 600, margin: 0 }}>
+                                        Entrada
+                                    </p>
+                                    <p style={{ fontSize: 20, fontWeight: 700, color: "#0f4c8a", margin: "4px 0 0" }}>
+                                        {formatTime(todayShift.checkIn)}
+                                    </p>
                                 </div>
                                 {todayShift.checkOut && (
                                     <div>
-                                        <p className="text-[10px] uppercase text-gray-400 font-semibold m-0">Salida</p>
-                                        <p className="text-[#ef4444] font-bold m-0">
+                                        <p style={{ fontSize: 10, textTransform: "uppercase", color: "#94a3b8", fontWeight: 600, margin: 0 }}>
+                                            Salida
+                                        </p>
+                                        <p style={{ fontSize: 20, fontWeight: 700, color: "#ef4444", margin: "4px 0 0" }}>
                                             {formatTime(todayShift.checkOut)}
                                         </p>
                                     </div>
@@ -154,6 +163,7 @@ export default function EmployeeShiftsPage() {
                                     className="portal-btn-checkout"
                                     onClick={endShift}
                                     disabled={actionLoading}
+                                    style={{ alignSelf: "flex-start" }}
                                 >
                                     {actionLoading ? "Registrando..." : "Registrar salida"}
                                 </button>
@@ -162,28 +172,34 @@ export default function EmployeeShiftsPage() {
                     )}
                 </div>
 
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                    <div className="px-5 py-4 border-b border-gray-100">
-                        <h2 className="text-sm font-bold text-[#0a2540] m-0">Historial reciente</h2>
+                <div className="portal-section-card">
+                    <div className="portal-section-header">
+                        <h2 style={{ fontSize: 14, fontWeight: 700, color: "#0a2540", margin: 0 }}>Historial reciente</h2>
                     </div>
                     {shifts.length === 0 ? (
-                        <p className="text-sm text-gray-500 text-center py-10 m-0">Sin registros aún.</p>
+                        <p style={{ fontSize: 14, color: "#64748b", textAlign: "center", padding: "40px 16px", margin: 0 }}>
+                            Sin registros aún.
+                        </p>
                     ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
-                                <thead className="bg-gray-50 text-xs uppercase text-gray-500">
-                                    <tr>
-                                        <th className="px-4 py-3 text-left">Fecha</th>
-                                        <th className="px-4 py-3 text-left">Entrada</th>
-                                        <th className="px-4 py-3 text-left">Salida</th>
+                        <div style={{ overflowX: "auto" }}>
+                            <table style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
+                                <thead>
+                                    <tr style={{ background: "#f8fafc", fontSize: 11, textTransform: "uppercase", color: "#64748b" }}>
+                                        <th style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600 }}>Fecha</th>
+                                        <th style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600 }}>Entrada</th>
+                                        <th style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600 }}>Salida</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {shifts.map((s) => (
-                                        <tr key={s.id} className="border-t border-gray-50">
-                                            <td className="px-4 py-3">{s.date}</td>
-                                            <td className="px-4 py-3 text-[#10b981]">{formatTime(s.checkIn)}</td>
-                                            <td className="px-4 py-3">
+                                        <tr key={s.id} style={{ borderTop: "1px solid #f1f5f9" }}>
+                                            <td style={{ padding: "12px 16px", color: "#334155", whiteSpace: "nowrap" }}>
+                                                {formatDate(s.date)}
+                                            </td>
+                                            <td style={{ padding: "12px 16px", color: "#10b981", fontWeight: 600 }}>
+                                                {formatTime(s.checkIn)}
+                                            </td>
+                                            <td style={{ padding: "12px 16px", color: "#64748b" }}>
                                                 {s.checkOut ? formatTime(s.checkOut) : "—"}
                                             </td>
                                         </tr>
@@ -194,6 +210,6 @@ export default function EmployeeShiftsPage() {
                     )}
                 </div>
             </div>
-        </main>
+        </PortalShell>
     );
 }

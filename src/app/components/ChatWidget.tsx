@@ -204,7 +204,8 @@ export default function ChatWidget() {
                 placeholder="Escribe tu pregunta…"
                 maxLength={500}
                 disabled={loading}
-                className="min-h-[42px] min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3 text-sm focus:border-[#48a4dc] focus:outline-none focus:ring-2 focus:ring-[#48a4dc]/30 disabled:opacity-60"
+                className="min-h-[42px] min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 placeholder:text-gray-500 focus:border-[#48a4dc] focus:outline-none focus:ring-2 focus:ring-[#48a4dc]/30 disabled:opacity-60"
+                style={{ WebkitTextFillColor: '#111827', color: '#111827' }}
                 aria-label="Mensaje"
               />
               <button
