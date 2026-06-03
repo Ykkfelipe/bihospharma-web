@@ -1,10 +1,13 @@
 name: Deploy to EC2
 
 on:
+  push:
+    branches: [ main ]
   workflow_dispatch:
-  # Optional: uncomment to auto-deploy on push (builds on GitHub runner, never on EC2)
-  # push:
-  #   branches: [ main ]
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -18,11 +21,14 @@ jobs:
           node-version: '20'
           cache: npm
 
-      - name: Build locally on CI and push to EC2
+      - name: Build on GitHub and push pre-built app to EC2
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          NEXTAUTH_URL: https://bihospharma.com
+          NEXT_PUBLIC_SITE_URL: https://bihospharma.com
+          NEXT_PUBLIC_ENABLE_CHAT: 'true'
         run: |
           chmod +x scripts/ci-deploy.sh scripts/push-built-to-server.sh
           bash scripts/ci-deploy.sh
