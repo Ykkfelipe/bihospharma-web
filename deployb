@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# deployb — same as deploy.sh (build on Mac, push to EC2).
+exec "$(cd "$(dirname "$0")" && pwd)/deploy.sh" "$@"

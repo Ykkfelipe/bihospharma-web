@@ -38,6 +38,7 @@ const sharedEnv = {
   NEXT_PUBLIC_SITE_URL: prodEnv.NEXT_PUBLIC_SITE_URL || 'https://bihospharma.com',
   DATABASE_CONNECTION_TIMEOUT: prodEnv.DATABASE_CONNECTION_TIMEOUT || '30000',
   REQUEST_TIMEOUT_MS: prodEnv.REQUEST_TIMEOUT_MS || '30000',
+  REBUILD_ON_FAILURE: prodEnv.REBUILD_ON_FAILURE || 'false',
 };
 
 module.exports = {
@@ -51,8 +52,10 @@ module.exports = {
     listen_timeout: 10000,
     kill_timeout: 8000,
     autorestart: true,
-    max_restarts: 10,
+    max_restarts: 50,
     min_uptime: '10s',
+    restart_delay: 4000,
+    exp_backoff_restart_delay: 1000,
     max_memory_restart: '500M',
     instances: 1,
     exec_mode: 'fork',
@@ -64,6 +67,21 @@ module.exports = {
     kill_timeout: 10000,
     shutdown_with_message: true,
     monitoring_interval: 1000,
+  }, {
+    name: 'bihos-watchdog',
+    script: 'scripts/watchdog-daemon.sh',
+    interpreter: 'bash',
+    cwd: '/home/ec2-user/bihospharma-web',
+    env: sharedEnv,
+    autorestart: true,
+    max_restarts: 100,
+    min_uptime: '5s',
+    instances: 1,
+    exec_mode: 'fork',
+    watch: false,
+    error_file: '/home/ec2-user/bihospharma-web/logs/watchdog-error.log',
+    out_file: '/home/ec2-user/bihospharma-web/logs/watchdog-output.log',
+    log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
   }, {
     name: 'bihos-cron',
     script: 'scripts/cron.js',

@@ -1,0 +1,40 @@
+name: Production health monitor
+
+on:
+  schedule:
+    # Every 5 minutes — restart the app if down (never rebuilds on EC2)
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check public site health
+        id: health
+        run: |
+          if curl -sf --max-time 20 https://bihospharma.com/_health >/dev/null; then
+            echo "healthy=true" >> "$GITHUB_OUTPUT"
+            echo "Site is healthy"
+          else
+            echo "healthy=false" >> "$GITHUB_OUTPUT"
+            echo "Site health check failed"
+          fi
+
+      - name: Restart app on EC2 (no server-side build)
+        if: steps.health.outputs.healthy == 'false'
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
+          script: |
+            cd ~/bihospharma-web
+            git fetch origin main
+            git reset --hard origin/main
+            chmod +x scripts/watchdog.sh scripts/watchdog-daemon.sh
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            REBUILD_ON_FAILURE=false bash scripts/watchdog.sh
+            pm2 status
