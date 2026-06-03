@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
-# Server-side deploy: pull latest code, build, migrate, restart PM2 + watchdog.
-# Used by GitHub Actions and manual SSH recovery.
+# EMERGENCY ONLY — builds on the server and can crash a small EC2 instance.
+# Normal deploys: run deployb from your Mac (builds locally, pushes to EC2).
+# Usage: ALLOW_SERVER_BUILD=true bash scripts/deploy-on-server.sh
 set -euo pipefail
+
+if [ "${ALLOW_SERVER_BUILD:-false}" != "true" ]; then
+  echo "❌ Server-side builds are disabled (they can crash EC2)."
+  echo "   Use deployb from your Mac instead:  ./deployb"
+  echo "   Emergency only: ALLOW_SERVER_BUILD=true bash scripts/deploy-on-server.sh"
+  exit 1
+fi
 
 APP_DIR="${APP_DIR:-/home/ec2-user/bihospharma-web}"
 BRANCH="${DEPLOY_BRANCH:-main}"
@@ -12,14 +20,12 @@ if [ -s "$NVM_DIR/nvm.sh" ]; then
   . "$NVM_DIR/nvm.sh"
 fi
 
-echo "→ Deploying on server from $APP_DIR (branch: $BRANCH)"
+echo "⚠ EMERGENCY server-side deploy from $APP_DIR (branch: $BRANCH)"
 cd "$APP_DIR"
 
 if [ -d .git ]; then
   git fetch origin "$BRANCH"
   git reset --hard "origin/$BRANCH"
-else
-  echo "⚠ No git repo at $APP_DIR — using existing files on disk"
 fi
 
 if [ -f .env.production ]; then
@@ -37,7 +43,7 @@ echo "→ Installing production dependencies"
 npm ci --omit=dev --prefer-offline --no-audit --legacy-peer-deps 2>/dev/null \
   || npm install --omit=dev --prefer-offline --no-audit --legacy-peer-deps
 
-echo "→ Building application"
+echo "→ Building application ON SERVER (emergency only)"
 npm run build
 
 echo "→ Generating Prisma client"
@@ -47,7 +53,6 @@ npx prisma generate --schema=./prisma/schema.prisma 2>/dev/null \
 echo "→ Applying database migrations"
 npx prisma migrate deploy 2>/dev/null || npx prisma db push 2>/dev/null || true
 
-echo "→ Fixing common .env.production paths"
 touch .env.production
 chmod 600 .env.production
 sed -i 's|^DATABASE_URL=file:./prisma/prod.db|DATABASE_URL=file:./prod.db|' .env.production || true
@@ -55,7 +60,6 @@ sed -i 's|^AUTH_URL=https://bihospharma.com/api/auth|AUTH_URL=https://bihospharm
 
 mkdir -p logs
 
-echo "→ Restarting PM2 processes"
 pm2 delete bihos 2>/dev/null || true
 sudo fuser -k 3000/tcp 2>/dev/null || true
 sleep 1
@@ -68,14 +72,13 @@ set +a
 pm2 start ecosystem.config.js --update-env
 pm2 save
 
-echo "→ Verifying health endpoint"
 for i in $(seq 1 15); do
   if curl -sf --max-time 5 http://127.0.0.1:3000/_health >/dev/null; then
-    echo "✓ Deploy complete — app is healthy"
+    echo "✓ Emergency deploy complete — app is healthy"
     exit 0
   fi
   sleep 2
 done
 
-echo "⚠ Deploy finished but health check did not pass — watchdog will keep trying"
+echo "⚠ Deploy finished but health check did not pass"
 exit 1

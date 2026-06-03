@@ -38,6 +38,7 @@ const sharedEnv = {
   NEXT_PUBLIC_SITE_URL: prodEnv.NEXT_PUBLIC_SITE_URL || 'https://bihospharma.com',
   DATABASE_CONNECTION_TIMEOUT: prodEnv.DATABASE_CONNECTION_TIMEOUT || '30000',
   REQUEST_TIMEOUT_MS: prodEnv.REQUEST_TIMEOUT_MS || '30000',
+  REBUILD_ON_FAILURE: prodEnv.REBUILD_ON_FAILURE || 'false',
 };
 
 module.exports = {
@@ -51,8 +52,10 @@ module.exports = {
     listen_timeout: 10000,
     kill_timeout: 8000,
     autorestart: true,
-    max_restarts: 10,
+    max_restarts: 50,
     min_uptime: '10s',
+    restart_delay: 4000,
+    exp_backoff_restart_delay: 1000,
     max_memory_restart: '500M',
     instances: 1,
     exec_mode: 'fork',

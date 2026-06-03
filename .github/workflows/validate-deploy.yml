@@ -4,9 +4,6 @@ on:
   pull_request:
     paths:
       - 'deploy.sh'
-      - 'scripts/deploy-on-server.sh'
-      - 'scripts/watchdog.sh'
-      - 'scripts/watchdog-daemon.sh'
       - 'DEPLOY.md'
       - '.github/workflows/**'
 
@@ -22,7 +19,14 @@ jobs:
           node-version: '20'
 
       - name: Validate deploy script syntax
-        run: bash -n deploy.sh
+        run: |
+          bash -n deploy.sh
+          bash -n deployb
+          bash -n scripts/push-built-to-server.sh
+          bash -n scripts/ci-deploy.sh
+          bash -n scripts/deploy-on-server.sh
+          bash -n scripts/watchdog.sh
+          bash -n scripts/watchdog-daemon.sh
 
       - name: Install and build
         run: |

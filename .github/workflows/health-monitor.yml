@@ -2,7 +2,7 @@ name: Production health monitor
 
 on:
   schedule:
-    # Every 5 minutes — auto-recover if the public site is down
+    # Every 5 minutes — restart the app if down (never rebuilds on EC2)
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
@@ -21,7 +21,7 @@ jobs:
             echo "Site health check failed"
           fi
 
-      - name: Recover on EC2
+      - name: Restart app on EC2 (no server-side build)
         if: steps.health.outputs.healthy == 'false'
         uses: appleboy/ssh-action@v1.1.0
         with:
@@ -33,8 +33,8 @@ jobs:
             cd ~/bihospharma-web
             git fetch origin main
             git reset --hard origin/main
-            chmod +x scripts/watchdog.sh scripts/watchdog-daemon.sh scripts/deploy-on-server.sh
+            chmod +x scripts/watchdog.sh scripts/watchdog-daemon.sh
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
-            bash scripts/watchdog.sh || bash scripts/deploy-on-server.sh
+            REBUILD_ON_FAILURE=false bash scripts/watchdog.sh
             pm2 status

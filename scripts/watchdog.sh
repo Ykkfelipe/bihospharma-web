@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Health watchdog: restart PM2 when the app is down, rebuild if restarts fail.
+# Health watchdog: restart PM2 when the app is down, restart only — no server-side build.
 # Safe to run from cron or the PM2 watchdog daemon (flock prevents overlap).
 set -euo pipefail
 
@@ -8,7 +8,7 @@ HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:3000/_health}"
 LOG_FILE="${LOG_FILE:-$APP_DIR/logs/watchdog.log}"
 LOCK_FILE="${LOCK_FILE:-/tmp/bihos-watchdog.lock}"
 MAX_RESTART_ATTEMPTS="${MAX_RESTART_ATTEMPTS:-3}"
-REBUILD_ON_FAILURE="${REBUILD_ON_FAILURE:-true}"
+REBUILD_ON_FAILURE="${REBUILD_ON_FAILURE:-false}"
 
 mkdir -p "$(dirname "$LOG_FILE")"
 
@@ -68,7 +68,12 @@ restart_app() {
 }
 
 rebuild_app() {
-  log "Restart attempts failed — running production rebuild"
+  log "Restart attempts failed — server-side rebuild is disabled by default (can crash EC2)"
+  log "Run deployb from your Mac to build locally and push to the server"
+  if [ "$REBUILD_ON_FAILURE" != "true" ]; then
+    return 1
+  fi
+  log "REBUILD_ON_FAILURE=true — running emergency rebuild on server"
   npm run build >>"$LOG_FILE" 2>&1
   npx prisma generate >>"$LOG_FILE" 2>&1
   npx prisma migrate deploy >>"$LOG_FILE" 2>&1 || npx prisma db push >>"$LOG_FILE" 2>&1 || true
@@ -106,5 +111,5 @@ if [ "$REBUILD_ON_FAILURE" = "true" ]; then
   fi
 fi
 
-log "CRITICAL: watchdog could not restore the app"
+log "CRITICAL: watchdog could not restore the app — run deployb from your Mac"
 exit 1
