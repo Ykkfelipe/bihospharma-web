@@ -104,6 +104,12 @@ ssh "$EC2_HOST" "
   set -a && [ -f .env.production ] && . ./.env.production && set +a
   pm2 start ecosystem.config.js --update-env
   pm2 save
+
+  # Ensure watchdog + cron are running (auto-recover if the app crashes)
+  pm2 restart bihos-watchdog --update-env 2>/dev/null || pm2 start ecosystem.config.js --only bihos-watchdog --update-env
+  pm2 save
 "
 
 echo "✓ Deploy complete."
+echo "  Watchdog monitors http://127.0.0.1:3000/_health every 60s and rebuilds if needed."
+echo "  Logs: ~/bihospharma-web/logs/watchdog.log"

@@ -17,4 +17,18 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
-            bash ~/deploy.sh
+            cd ~/bihospharma-web
+            git fetch origin main
+            git reset --hard origin/main
+            chmod +x scripts/deploy-on-server.sh scripts/watchdog.sh scripts/watchdog-daemon.sh
+            bash scripts/deploy-on-server.sh
+
+      - name: Verify production health
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            curl -sf --max-time 10 http://127.0.0.1:3000/_health
+            pm2 status

@@ -1,0 +1,40 @@
+name: Production health monitor
+
+on:
+  schedule:
+    # Every 5 minutes — auto-recover if the public site is down
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check public site health
+        id: health
+        run: |
+          if curl -sf --max-time 20 https://bihospharma.com/_health >/dev/null; then
+            echo "healthy=true" >> "$GITHUB_OUTPUT"
+            echo "Site is healthy"
+          else
+            echo "healthy=false" >> "$GITHUB_OUTPUT"
+            echo "Site health check failed"
+          fi
+
+      - name: Recover on EC2
+        if: steps.health.outputs.healthy == 'false'
+        uses: appleboy/ssh-action@v1.1.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script_stop: true
+          script: |
+            cd ~/bihospharma-web
+            git fetch origin main
+            git reset --hard origin/main
+            chmod +x scripts/watchdog.sh scripts/watchdog-daemon.sh scripts/deploy-on-server.sh
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+            bash scripts/watchdog.sh || bash scripts/deploy-on-server.sh
+            pm2 status

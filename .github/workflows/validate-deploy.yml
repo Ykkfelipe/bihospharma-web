@@ -4,6 +4,9 @@ on:
   pull_request:
     paths:
       - 'deploy.sh'
+      - 'scripts/deploy-on-server.sh'
+      - 'scripts/watchdog.sh'
+      - 'scripts/watchdog-daemon.sh'
       - 'DEPLOY.md'
       - '.github/workflows/**'
 
