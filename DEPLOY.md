@@ -82,7 +82,19 @@ Optional: `NEXTAUTH_URL` (defaults to `https://bihospharma.com` in the workflow)
 
 **Manual deploy from GitHub:** Actions → “Deploy to EC2” → Run workflow.
 
-**Do not use** the old `~/deploy.sh` on the server (git pull + build on EC2). It can leave PM2 in a crash loop. Use this workflow or `./deploy.sh` from your Mac instead.
+### If GitHub Actions fails with `ssh: connect to host … port 22: Connection timed out`
+
+Your EC2 security group probably allows SSH only from your home IP, not from GitHub’s runners. Pick one:
+
+1. **Self-hosted runner (recommended):** Install a [GitHub Actions runner](https://docs.github.com/en/actions/hosting-your-own-runners) on the EC2 instance. Point the workflow at `runs-on: self-hosted` so deploy runs locally with no inbound SSH from GitHub.
+2. **Open SSH to GitHub IPs:** In AWS → Security Group → inbound port 22, add [GitHub’s published IP ranges](https://api.github.com/meta) for `actions`. Ranges change; self-hosted is more stable.
+3. **Deploy from phone/any SSH client:** After pushing to `main`, SSH in and run:
+   ```bash
+   ssh bihos 'bash ~/bihospharma-web/scripts/deploy-pull-on-ec2.sh'
+   ```
+   This builds on the server (slower, uses more RAM than CI rsync).
+
+**Do not use** the old `~/deploy.sh` on the server (git pull + build + `pm2 restart` only). It left PM2 in **errored** state (502). Use CI rsync or `deploy-pull-on-ec2.sh` above.
 
 ## If the site shows 502
 
