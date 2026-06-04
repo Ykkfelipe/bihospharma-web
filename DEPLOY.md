@@ -64,6 +64,42 @@ If you'd like, I can:
 - Prepare a server-side `systemd` unit and Nginx config files in the repo for you to copy, or
 - Help run the upload and start steps on your EC2 instance if you add access details.
 
+## Deploy without your Mac (GitHub Actions)
+
+Pushes to `main` run `.github/workflows/deploy.yml`: build on GitHub, rsync to EC2, then `scripts/deploy-on-ec2.sh`.
+
+**Required GitHub repository secrets** (Settings → Secrets and variables → Actions):
+
+| Secret | Example |
+|--------|---------|
+| `EC2_HOST` | `54.82.38.23` or your EC2 hostname |
+| `EC2_USER` | `ec2-user` |
+| `EC2_SSH_KEY` | Full private key PEM (same as `~/.ssh/KeywebBihosNodejs.pem`) |
+| `NEXT_PUBLIC_SITE_URL` | `https://bihospharma.com` |
+| `NEXT_PUBLIC_ENABLE_CHAT` | `true` |
+
+Optional: `NEXTAUTH_URL` (defaults to `https://bihospharma.com` in the workflow).
+
+**Manual deploy from GitHub:** Actions → “Deploy to EC2” → Run workflow.
+
+**Do not use** the old `~/deploy.sh` on the server (git pull + build on EC2). It can leave PM2 in a crash loop. Use this workflow or `./deploy.sh` from your Mac instead.
+
+## If the site shows 502
+
+Nginx is up but Node is down. On EC2:
+
+```bash
+pm2 list                    # bihos should be "online"
+pm2 logs bihos --lines 40 --nostream
+bash ~/bihospharma-web/scripts/deploy-on-ec2.sh   # after a CI rsync, or:
+pm2 delete bihos; pm2 start ~/bihospharma-web/ecosystem.config.js --only bihos --update-env
+pm2 save
+```
+
+If `bihos` is **errored** with 10 restarts, run `pm2 delete bihos` then start again (restart alone may not recover).
+
+---
+
 Recommended workflow — commit & redeploy
 
 - Make the change in a branch or on `main`, run the build and tests locally, then push:

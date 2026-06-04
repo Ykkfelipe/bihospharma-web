@@ -17,6 +17,19 @@ let isShuttingDown = false;
 
 app.prepare().then(() => {
   const server = createServer(async (req, res) => {
+    if (req.url === '/_health' && req.method === 'GET') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(
+        JSON.stringify({
+          status: 'ok',
+          uptime: process.uptime(),
+          memory: process.memoryUsage(),
+          activeRequests,
+        })
+      );
+      return;
+    }
+
     // Reject new requests during shutdown
     if (isShuttingDown) {
       res.statusCode = 503;
@@ -27,9 +40,10 @@ app.prepare().then(() => {
 
     activeRequests++;
 
+    let timeoutId;
     try {
       // Set timeout for individual requests
-      const timeoutId = setTimeout(() => {
+      timeoutId = setTimeout(() => {
         if (!res.headersSent) {
           res.statusCode = 504;
           res.end('Gateway Timeout - Request took too long');
@@ -61,20 +75,6 @@ app.prepare().then(() => {
       }
     } finally {
       activeRequests--;
-    }
-  });
-
-  // Health check endpoint at /_health
-  server.on('request', (req, res) => {
-    if (req.url === '/_health' && req.method === 'GET') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({
-        status: 'ok',
-        uptime: process.uptime(),
-        memory: process.memoryUsage(),
-        activeRequests,
-      }));
-      return;
     }
   });
 

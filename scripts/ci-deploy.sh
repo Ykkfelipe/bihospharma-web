@@ -32,4 +32,4 @@ npm run build
 bash "$LOCAL_APP_DIR/scripts/push-built-to-server.sh"
 
 echo "→ Verifying health on EC2…"
-ssh $SSH_OPTS "$SSH_TARGET" "curl -sf --max-time 10 http://127.0.0.1:3000/_health && pm2 status"
+ssh $SSH_OPTS "$SSH_TARGET" "curl -sf --max-time 10 http://127.0.0.1:3000/_health | head -c 200; echo; pm2 status bihos"

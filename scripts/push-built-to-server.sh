@@ -82,13 +82,8 @@ remote "
   export NVM_DIR=\"\$HOME/.nvm\"
   [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
   cd $EC2_APP_DIR
-  pm2 delete bihos 2>/dev/null || true
-  sudo fuser -k 3000/tcp 2>/dev/null || true
-  sleep 1
-  set -a && [ -f .env.production ] && . ./.env.production && set +a
-  pm2 start ecosystem.config.js --update-env
-  pm2 restart bihos-watchdog --update-env 2>/dev/null || pm2 start ecosystem.config.js --only bihos-watchdog --update-env
-  pm2 save
+  chmod +x scripts/deploy-on-ec2.sh
+  SKIP_INSTALL=1 bash scripts/deploy-on-ec2.sh
 "
 
 echo "✓ Server updated with pre-built artifacts."
