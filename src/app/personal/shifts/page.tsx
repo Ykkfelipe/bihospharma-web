@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { PortalShell } from "../components/PortalShell";
 import { PortalToast } from "../components/PortalToast";
-import { ATTENDANCE_CHANGED_EVENT } from "../lib/attendance-client";
+import { ATTENDANCE_CHANGED_EVENT, registerCheckOutIfNeeded } from "../lib/attendance-client";
 
 type Shift = {
     id: string;
@@ -20,7 +20,7 @@ export default function EmployeeShiftsPage() {
     const [loading, setLoading] = useState(true);
     const [todayShift, setTodayShift] = useState<Shift | null>(null);
     const [actionLoading, setActionLoading] = useState(false);
-    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" | "info" } | null>(null);
 
     const todayStr = new Date().toLocaleDateString("es-CO", {
         weekday: "long",
@@ -32,8 +32,8 @@ export default function EmployeeShiftsPage() {
 
     const loadData = async () => {
         const [historyRes, todayRes] = await Promise.all([
-            fetch("/api/attendance/history?limit=60"),
-            fetch("/api/attendance"),
+            fetch("/api/attendance/history?limit=60", { cache: "no-store" }),
+            fetch("/api/attendance", { cache: "no-store" }),
         ]);
         const historyPayload = await historyRes.json();
         const rows = Array.isArray(historyPayload) ? historyPayload : historyPayload.data;
@@ -75,13 +75,16 @@ export default function EmployeeShiftsPage() {
         setActionLoading(true);
         setToast(null);
         try {
-            const res = await fetch("/api/attendance/check-out", { method: "POST" });
-            const data = await res.json();
-            if (res.ok) {
+            const result = await registerCheckOutIfNeeded();
+            if (result.ok && result.shift) {
+                setTodayShift(result.shift as Shift);
                 setToast({ msg: "Salida registrada y guardada en el sistema.", type: "success" });
                 await loadData();
+            } else if (result.skipped) {
+                setToast({ msg: "Ya tenías la salida registrada hoy.", type: "info" });
+                await loadData();
             } else {
-                setToast({ msg: data.error || "No se pudo registrar la salida.", type: "error" });
+                setToast({ msg: result.error || "No se pudo registrar la salida.", type: "error" });
             }
         } finally {
             setActionLoading(false);
@@ -165,7 +168,7 @@ export default function EmployeeShiftsPage() {
                                     disabled={actionLoading}
                                     style={{ alignSelf: "flex-start" }}
                                 >
-                                    {actionLoading ? "Registrando..." : "Registrar salida"}
+                                    {actionLoading ? "Registrando..." : "Terminar turno (registrar salida)"}
                                 </button>
                             )}
                         </>

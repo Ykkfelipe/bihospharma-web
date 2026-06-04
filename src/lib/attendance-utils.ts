@@ -127,6 +127,7 @@ export async function safeCheckOut(
             where: { id: existing.id },
             data: {
                 checkOut: new Date(),
+                status: "completed",
                 checkoutIpAddress: ipAddress,
                 checkoutUserAgent: userAgent,
             },

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { signOutWithAttendance } from "../lib/attendance-client";
+import { useState } from "react";
 
 const NAV = [
     { href: "/personal", label: "Inicio" },
@@ -24,6 +25,16 @@ export function PortalShell({
     const pathname = usePathname();
     const { data: session } = useSession();
     const role = session?.user?.role;
+    const [endingShift, setEndingShift] = useState(false);
+
+    const handleEndShift = async () => {
+        setEndingShift(true);
+        try {
+            await signOutWithAttendance("/personal/login");
+        } finally {
+            setEndingShift(false);
+        }
+    };
 
     return (
         <div
@@ -102,11 +113,12 @@ export function PortalShell({
 
                     <button
                         type="button"
-                        onClick={() => signOutWithAttendance("/personal/login")}
+                        onClick={handleEndShift}
+                        disabled={endingShift}
                         className="portal-btn-checkout"
-                        style={{ fontSize: 12, padding: "8px 16px" }}
+                        style={{ fontSize: 12, padding: "8px 16px", opacity: endingShift ? 0.7 : 1 }}
                     >
-                        Terminar turno
+                        {endingShift ? "Guardando…" : "Terminar turno"}
                     </button>
                 </div>
             </header>
