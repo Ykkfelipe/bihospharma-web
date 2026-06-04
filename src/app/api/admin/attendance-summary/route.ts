@@ -6,7 +6,11 @@ import { syncUserShiftSchedule } from "@/lib/shift-schedule-sync";
 import {
     computeShiftDurations,
     formatDurationMinutes,
+    formatEmployeeScheduleProfile,
+    formatScheduleLabel,
+    getNowInBogota,
     getScheduleForUser,
+    isPastScheduledStart,
     type ScheduleUser,
 } from "@/lib/work-schedule";
 
@@ -108,16 +112,40 @@ export async function GET(req: Request) {
 
     const loginsOnDate = recentLogins.filter((l) => loginDateCO(l.createdAt) === date);
 
+    const nowCO = getNowInBogota();
+    const isToday = date === todayCO();
+
     const roster = employees.map((emp) => {
         const shift = shiftByUser.get(emp.id);
-        let status: "sin_entrada" | "en_turno" | "turno_cerrado" = "sin_entrada";
-        if (shift) {
-            status = shift.checkOut ? "turno_cerrado" : "en_turno";
+        const schedule = getScheduleForUser(emp as ScheduleUser, date);
+        const scheduleToday = schedule ? formatScheduleLabel(schedule) : null;
+        const scheduleProfile = formatEmployeeScheduleProfile(emp as ScheduleUser);
+
+        let status: "sin_entrada" | "tarde_sin_entrada" | "en_turno" | "turno_cerrado" | "dia_libre" =
+            "sin_entrada";
+
+        if (!schedule) {
+            status = "dia_libre";
+        } else if (!shift) {
+            if (isToday && isPastScheduledStart(nowCO, date, schedule)) {
+                status = "tarde_sin_entrada";
+            } else {
+                status = "sin_entrada";
+            }
+        } else if (shift.checkOut) {
+            status = "turno_cerrado";
+        } else {
+            status = "en_turno";
         }
+
         const lastLogin = loginsOnDate.find((l) => l.email === emp.email);
         return {
             user: emp,
             status,
+            scheduleToday,
+            scheduleProfile,
+            expectedStart: schedule?.workStart ?? null,
+            expectedEnd: schedule?.workEnd ?? null,
             shift: shift
                 ? (() => {
                       const schedule = getScheduleForUser(shift.user as ScheduleUser, date);
@@ -145,9 +173,13 @@ export async function GET(req: Request) {
         date,
         totalEmployees: employees.length,
         sinEntrada: roster.filter((r) => r.status === "sin_entrada").length,
+        tardeSinEntrada: roster.filter((r) => r.status === "tarde_sin_entrada").length,
         enTurno: roster.filter((r) => r.status === "en_turno").length,
         turnoCerrado: roster.filter((r) => r.status === "turno_cerrado").length,
-        tarde: shifts.filter((s) => s.isLate).length,
+        tarde:
+            shifts.filter((s) => s.isLate).length +
+            roster.filter((r) => r.status === "tarde_sin_entrada").length,
+        diaLibre: roster.filter((r) => r.status === "dia_libre").length,
     };
 
     const shiftsWithDurations = shifts.map((shift) => {

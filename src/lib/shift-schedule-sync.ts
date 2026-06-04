@@ -5,6 +5,7 @@ import {
     isAfterLunch,
     isInLunchWindow,
     isLateCheckIn,
+    parseTimeOnDate,
     type ScheduleUser,
 } from "@/lib/work-schedule";
 
@@ -73,12 +74,16 @@ export async function scheduledCheckIn(
 
     const now = new Date();
     const isLate = isLateCheckIn(now, schedule);
+    const scheduledStart = parseTimeOnDate(date, schedule.workStart);
+    // Entrada automática: si llega antes de la hora programada, se registra a las 7:30
+    const checkIn =
+        now.getTime() < scheduledStart.getTime() ? scheduledStart : now;
 
     const shift = await prisma.shift.create({
         data: {
             userId,
             date,
-            checkIn: now,
+            checkIn,
             ipAddress,
             userAgent,
             isLate,

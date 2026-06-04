@@ -79,9 +79,26 @@ export function isAfterLunch(now: Date, dateStr: string, schedule: DaySchedule):
 
 export function formatScheduleLabel(schedule: DaySchedule): string {
     if (!schedule.hasLunchBreak) {
-        return `${schedule.workStart} – ${schedule.workEnd}`;
+        return `Sáb: ${schedule.workStart} – ${schedule.workEnd}`;
     }
-    return `${schedule.workStart}–${schedule.morningEnd} · almuerzo ${schedule.lunchStart}–${schedule.lunchEnd} · ${schedule.lunchEnd}–${schedule.workEnd}`;
+    return `Inicio ${schedule.workStart}–${schedule.morningEnd} · Almuerzo ${schedule.lunchStart}–${schedule.lunchEnd} · Tarde ${schedule.lunchEnd}–${schedule.workEnd}`;
+}
+
+/** Horario completo del empleado (para panel admin). */
+export function formatEmployeeScheduleProfile(user: ScheduleUser): string {
+    const base = `L-V: ${user.workStart}–${user.morningEnd} · Almuerzo ${user.lunchStart}–${user.lunchEnd} · ${user.lunchEnd}–${user.workEnd}`;
+    if (user.satWorkStart && user.satWorkEnd) {
+        return `${base} · Sábados: ${user.satWorkStart}–${user.satWorkEnd}`;
+    }
+    return base;
+}
+
+export function getNowInBogota(): Date {
+    return new Date(new Date().toLocaleString("en-US", { timeZone: "America/Bogota" }));
+}
+
+export function isPastScheduledStart(now: Date, dateStr: string, schedule: DaySchedule): boolean {
+    return now.getTime() >= parseTimeOnDate(dateStr, schedule.workStart).getTime();
 }
 
 export type ShiftForDuration = {
