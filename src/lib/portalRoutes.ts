@@ -13,3 +13,8 @@ export function isPortalAuthPath(pathname: string): boolean {
 export function isPortalAppPath(pathname: string): boolean {
   return pathname.startsWith('/personal') || pathname.startsWith('/admin');
 }
+
+/** Admin tools use portal chrome only (no marketing navbar). */
+export function isPortalAdminPath(pathname: string): boolean {
+  return pathname.startsWith('/personal/admin');
+}

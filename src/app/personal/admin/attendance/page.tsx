@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
+import { signOutWithAttendance } from "../../lib/attendance-client";
 
 type RosterStatus =
     | "sin_entrada"
@@ -187,7 +188,7 @@ export default function AttendanceReportPage() {
     return (
         <main className="min-h-screen bg-gray-50 pb-20">
             <header className="portal-header">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2 sm:gap-3">
                         <Image
                             src="/logos/bihos-logo.png"
@@ -200,23 +201,55 @@ export default function AttendanceReportPage() {
                             <p className="text-white font-bold text-xs sm:text-sm leading-none">
                                 Control de Asistencia
                             </p>
-                            <p style={{ color: "#64748b", fontSize: 10, margin: 0 }}>
-                                Entrada automática al abrir el portal · Salida manual
-                            </p>
+                            <p style={{ color: "#64748b", fontSize: 10, margin: 0 }}>Bihospharma IPS</p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <Link href="/personal/admin" style={{ color: "#94a3b8", fontSize: 11, textDecoration: "none" }}>
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <Link
+                            href="/personal/admin"
+                            style={{
+                                color: "#94a3b8",
+                                fontSize: 11,
+                                textDecoration: "none",
+                            }}
+                        >
                             Publicaciones
                         </Link>
-                        <Link href="/personal" style={{ color: "#94a3b8", fontSize: 11, textDecoration: "none" }}>
-                            Portal
+                        <Link
+                            href="/personal/admin/attendance"
+                            style={{
+                                color: "#0f4c8a",
+                                fontSize: 12,
+                                fontWeight: 600,
+                                textDecoration: "none",
+                                background: "#e0e7ff",
+                                padding: "6px 12px",
+                                borderRadius: 8,
+                            }}
+                        >
+                            Asistencia
                         </Link>
+                        <Link href="/personal" style={{ color: "#94a3b8", fontSize: 11, textDecoration: "none" }}>
+                            ← Ver portal
+                        </Link>
+                        <button
+                            type="button"
+                            onClick={() => signOutWithAttendance("/personal/login")}
+                            style={{
+                                background: "none",
+                                border: "none",
+                                color: "#64748b",
+                                fontSize: 11,
+                                cursor: "pointer",
+                            }}
+                        >
+                            Cerrar sesión
+                        </button>
                     </div>
                 </div>
             </header>
 
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
                 <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-sm text-gray-700">
                     <p className="m-0 mb-2 font-semibold text-[#0a2540]">Horario estándar (L–V)</p>
                     <p className="m-0">
@@ -298,13 +331,13 @@ export default function AttendanceReportPage() {
                         <p className="text-sm text-gray-500">No hay empleados registrados.</p>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left min-w-[900px]">
+                            <table className="w-full text-sm text-left min-w-[1100px]">
                                 <thead className="text-xs text-gray-500 uppercase bg-gray-50 border-b">
                                     <tr>
-                                        <th className="px-3 py-3">Empleado</th>
-                                        <th className="px-3 py-3">Estado</th>
-                                        <th className="px-3 py-3">Horario hoy</th>
-                                        <th className="px-3 py-3">Horario asignado</th>
+                                        <th className="px-3 py-3 min-w-[180px]">Empleado</th>
+                                        <th className="px-3 py-3 min-w-[120px]">Estado</th>
+                                        <th className="px-3 py-3 min-w-[200px]">Horario hoy</th>
+                                        <th className="px-3 py-3 min-w-[220px]">Horario asignado</th>
                                         <th className="px-3 py-3">Entrada</th>
                                         <th className="px-3 py-3">Salida</th>
                                         <th className="px-3 py-3">Trabajo</th>
@@ -333,10 +366,10 @@ export default function AttendanceReportPage() {
                                                     <span className="ml-1 text-[10px] text-amber-600">Almuerzo</span>
                                                 )}
                                             </td>
-                                            <td className="px-3 py-3 text-xs text-[#0f4c8a] max-w-[200px]">
+                                            <td className="px-3 py-3 text-xs text-[#0f4c8a] whitespace-normal leading-snug">
                                                 {row.scheduleToday ?? "—"}
                                             </td>
-                                            <td className="px-3 py-3 text-[10px] text-gray-500 max-w-[220px] leading-snug">
+                                            <td className="px-3 py-3 text-[10px] text-gray-500 whitespace-normal leading-snug">
                                                 {row.scheduleProfile}
                                             </td>
                                             <td className="px-3 py-3 text-[#10b981] whitespace-nowrap">

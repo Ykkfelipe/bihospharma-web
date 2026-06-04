@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import ChatWidget from './ChatWidget';
-import { isPortalAppPath, isPortalAuthPath } from '@/lib/portalRoutes';
+import { isPortalAdminPath, isPortalAppPath, isPortalAuthPath } from '@/lib/portalRoutes';
 
 const chatEnabled = process.env.NEXT_PUBLIC_ENABLE_CHAT === 'true';
 
@@ -13,7 +13,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   const portalAuth = isPortalAuthPath(pathname);
   const portalApp = isPortalAppPath(pathname) && !portalAuth;
 
-  if (portalAuth) {
+  if (portalAuth || isPortalAdminPath(pathname)) {
     return <>{children}</>;
   }
 

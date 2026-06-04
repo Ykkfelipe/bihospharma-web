@@ -51,7 +51,6 @@ async function main() {
         await prisma.user.upsert({
             where: { email: s.email },
             update: {
-                passwordHash,
                 name: s.name,
                 role,
                 workStart: "07:30",
