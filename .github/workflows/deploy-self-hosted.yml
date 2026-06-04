@@ -1,0 +1,43 @@
+# Deploy on the EC2 self-hosted runner (no inbound SSH from GitHub cloud).
+# One-time setup: see docs/SELF-HOSTED-RUNNER.md
+name: Deploy (self-hosted runner)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux, bihospharma]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Build and restart on this server
+        env:
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          NEXT_PUBLIC_ENABLE_CHAT: ${{ secrets.NEXT_PUBLIC_ENABLE_CHAT }}
+        run: |
+          export NEXTAUTH_URL="${NEXTAUTH_URL:-https://bihospharma.com}"
+          export NEXT_PUBLIC_SITE_URL="${NEXT_PUBLIC_SITE_URL:-https://bihospharma.com}"
+          export NEXT_PUBLIC_ENABLE_CHAT="${NEXT_PUBLIC_ENABLE_CHAT:-true}"
+          npm ci --prefer-offline --no-audit --legacy-peer-deps
+          npm run build
+          chmod +x scripts/deploy-on-ec2.sh
+          bash scripts/deploy-on-ec2.sh
+
+      - name: Verify site
+        run: |
+          curl -sfI http://127.0.0.1:3000/ | head -1 | grep -q 200
+          curl -sfI https://bihospharma.com | head -1 | grep -q 200
