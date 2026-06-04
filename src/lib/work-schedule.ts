@@ -123,7 +123,11 @@ export function formatDurationMinutes(minutes: number): string {
     return `${h}h ${m}m`;
 }
 
-/** Work = morning + afternoon blocks; break = lunch window (excluded from work). */
+/**
+ * Work = tiempo real entre entrada y salida, sin almuerzo.
+ * Almuerzo = solo el tramo de pausa registrado (lunchStartedAt / lunch_break), acotado al turno.
+ * Total = trabajo + almuerzo (tiempo en portal ese día).
+ */
 export function computeShiftDurations(
     shift: ShiftForDuration,
     schedule: DaySchedule | null,
@@ -132,65 +136,47 @@ export function computeShiftDurations(
     const checkIn = new Date(shift.checkIn);
     const endTime = shift.checkOut ? new Date(shift.checkOut) : now;
 
-    if (!schedule?.hasLunchBreak) {
-        const workMinutes = Math.max(0, Math.round((endTime.getTime() - checkIn.getTime()) / 60_000));
-        return { workMinutes, breakMinutes: 0, totalMinutes: workMinutes };
-    }
-
-    const schedLunchStart = parseTimeOnDate(shift.date, schedule.lunchStart);
-    const schedLunchEnd = parseTimeOnDate(shift.date, schedule.lunchEnd);
-    const schedMorningEnd = parseTimeOnDate(shift.date, schedule.morningEnd);
-
     if (endTime.getTime() <= checkIn.getTime()) {
         return { workMinutes: 0, breakMinutes: 0, totalMinutes: 0 };
     }
 
-    if (endTime.getTime() <= schedLunchStart.getTime()) {
-        const workMinutes = Math.max(0, Math.round((endTime.getTime() - checkIn.getTime()) / 60_000));
-        return { workMinutes, breakMinutes: 0, totalMinutes: workMinutes };
-    }
-
-    const lunchStart = shift.lunchStartedAt
-        ? new Date(shift.lunchStartedAt)
-        : schedLunchStart;
-
-    let lunchEnd: Date;
-    if (shift.lunchEndedAt) {
-        lunchEnd = new Date(shift.lunchEndedAt);
-    } else if (shift.status === "lunch_break") {
-        lunchEnd = endTime;
-    } else if (endTime.getTime() >= schedLunchEnd.getTime()) {
-        lunchEnd = schedLunchEnd;
-    } else {
-        lunchEnd = endTime;
-    }
-
-    const morningStop = Math.min(
-        schedMorningEnd.getTime(),
-        lunchStart.getTime(),
-        endTime.getTime()
+    const spanMinutes = Math.max(
+        0,
+        Math.round((endTime.getTime() - checkIn.getTime()) / 60_000)
     );
-    const morningMinutes =
-        morningStop > checkIn.getTime()
-            ? Math.max(0, Math.round((morningStop - checkIn.getTime()) / 60_000))
-            : 0;
 
-    const breakEnd = Math.min(lunchEnd.getTime(), endTime.getTime());
-    const breakMinutes =
-        breakEnd > lunchStart.getTime()
-            ? Math.max(0, Math.round((breakEnd - lunchStart.getTime()) / 60_000))
-            : 0;
+    if (!schedule?.hasLunchBreak) {
+        return { workMinutes: spanMinutes, breakMinutes: 0, totalMinutes: spanMinutes };
+    }
 
-    const afternoonStart = Math.max(schedLunchEnd.getTime(), lunchEnd.getTime());
-    const afternoonMinutes =
-        endTime.getTime() > afternoonStart
-            ? Math.max(0, Math.round((endTime.getTime() - afternoonStart) / 60_000))
-            : 0;
+    let lunchStart: Date | null = null;
+    let lunchEnd: Date | null = null;
 
-    const workMinutes = morningMinutes + afternoonMinutes;
+    if (shift.lunchStartedAt) {
+        lunchStart = new Date(shift.lunchStartedAt);
+        if (shift.lunchEndedAt) {
+            lunchEnd = new Date(shift.lunchEndedAt);
+        } else if (shift.status === "lunch_break") {
+            lunchEnd = endTime;
+        }
+    } else if (shift.status === "lunch_break") {
+        lunchStart = parseTimeOnDate(shift.date, schedule.lunchStart);
+        lunchEnd = endTime;
+    }
+
+    let breakMinutes = 0;
+    if (lunchStart && lunchEnd) {
+        const overlapStart = Math.max(checkIn.getTime(), lunchStart.getTime());
+        const overlapEnd = Math.min(endTime.getTime(), lunchEnd.getTime());
+        if (overlapEnd > overlapStart) {
+            breakMinutes = Math.max(0, Math.round((overlapEnd - overlapStart) / 60_000));
+        }
+    }
+
+    const workMinutes = Math.max(0, spanMinutes - breakMinutes);
     return {
         workMinutes,
         breakMinutes,
-        totalMinutes: workMinutes + breakMinutes,
+        totalMinutes: spanMinutes,
     };
 }

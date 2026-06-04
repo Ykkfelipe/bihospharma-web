@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { normalizePortalEmail } from "@/lib/portal-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -34,9 +35,19 @@ export async function POST(req: NextRequest) {
         // Hash new password and update user
         const passwordHash = await bcrypt.hash(password, 10);
 
+        const email = normalizePortalEmail(resetToken.email);
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) {
+            return NextResponse.json({ error: "El enlace es inválido o ya fue usado." }, { status: 400 });
+        }
+
         await prisma.user.update({
-            where: { email: resetToken.email },
+            where: { id: user.id },
             data: { passwordHash },
+        });
+
+        await prisma.loginLog.deleteMany({
+            where: { email, success: false },
         });
 
         // Delete the used token (and any other tokens for this email)

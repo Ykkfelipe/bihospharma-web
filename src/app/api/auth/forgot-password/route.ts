@@ -2,15 +2,26 @@ import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 import { transporter } from "@/lib/mailer";
+import { normalizePortalEmail } from "@/lib/portal-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
     try {
-        const { email } = await req.json();
+        const { email: rawEmail } = await req.json();
 
-        if (!email) {
+        if (!rawEmail || typeof rawEmail !== "string") {
             return NextResponse.json({ error: "El correo es obligatorio." }, { status: 400 });
+        }
+
+        const email = normalizePortalEmail(rawEmail);
+
+        if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+            console.error("[forgot-password] SMTP not configured on server.");
+            return NextResponse.json(
+                { error: "El envío de correos no está configurado. Contacte al administrador." },
+                { status: 503 }
+            );
         }
 
         // Always return success for security (don't reveal if email exists)

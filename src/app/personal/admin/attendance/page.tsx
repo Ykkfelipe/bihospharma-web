@@ -125,9 +125,9 @@ export default function AttendanceReportPage() {
             "Salida esperada",
             "Entrada",
             "Salida",
-            "Trabajo",
-            "Almuerzo",
-            "Total",
+            "Horas trabajo",
+            "Horas almuerzo",
+            "Tiempo en turno",
             "Tarde",
             "Último acceso portal",
         ];
@@ -250,18 +250,6 @@ export default function AttendanceReportPage() {
             </header>
 
             <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
-                <div className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-sm text-gray-700">
-                    <p className="m-0 mb-2 font-semibold text-[#0a2540]">Horario estándar (L–V)</p>
-                    <p className="m-0">
-                        Inicio <strong>7:30 a.m. – 1:00 p.m.</strong> · Almuerzo{" "}
-                        <strong>1:00 – 2:00 p.m.</strong> (pausa automática) · Tarde{" "}
-                        <strong>2:00 – 5:30 p.m.</strong>
-                    </p>
-                    <p className="m-0 mt-2 text-xs text-gray-600">
-                        <strong>María Angélica Arenas (Angie)</strong> — Sábados: 8:00 a.m. – 12:00 p.m.
-                    </p>
-                </div>
-
                 <div className="flex flex-wrap gap-2 items-center">
                     <input
                         type="date"
@@ -331,7 +319,7 @@ export default function AttendanceReportPage() {
                         <p className="text-sm text-gray-500">No hay empleados registrados.</p>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left min-w-[1100px]">
+                            <table className="w-full text-sm text-left min-w-[1200px]">
                                 <thead className="text-xs text-gray-500 uppercase bg-gray-50 border-b">
                                     <tr>
                                         <th className="px-3 py-3 min-w-[180px]">Empleado</th>
@@ -340,8 +328,9 @@ export default function AttendanceReportPage() {
                                         <th className="px-3 py-3 min-w-[220px]">Horario asignado</th>
                                         <th className="px-3 py-3">Entrada</th>
                                         <th className="px-3 py-3">Salida</th>
-                                        <th className="px-3 py-3">Trabajo</th>
-                                        <th className="px-3 py-3">Almuerzo</th>
+                                        <th className="px-3 py-3">Horas trabajo</th>
+                                        <th className="px-3 py-3">Horas almuerzo</th>
+                                        <th className="px-3 py-3">Tiempo en turno</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -399,6 +388,9 @@ export default function AttendanceReportPage() {
                                             </td>
                                             <td className="px-3 py-3 text-amber-700">
                                                 {row.shift?.breakHours ?? "—"}
+                                            </td>
+                                            <td className="px-3 py-3 text-gray-600">
+                                                {row.shift?.totalHours ?? "—"}
                                             </td>
                                         </tr>
                                     ))}

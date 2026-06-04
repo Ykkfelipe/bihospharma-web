@@ -3,6 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { authConfig } from "@/auth.config";
 import { prisma } from "@/lib/prisma";
+import { normalizePortalEmail } from "@/lib/portal-auth";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
     ...authConfig,
@@ -15,7 +16,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             async authorize(credentials, request) {
                 if (!credentials?.email || !credentials?.password) return null;
 
-                const email = credentials.email as string;
+                const email = normalizePortalEmail(credentials.email as string);
                 const ip = (request?.headers as Headers)?.get?.("x-forwarded-for") ?? "unknown";
                 const ua = (request?.headers as Headers)?.get?.("user-agent") ?? "unknown";
 
