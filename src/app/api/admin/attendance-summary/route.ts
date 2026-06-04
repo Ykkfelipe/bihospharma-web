@@ -155,6 +155,8 @@ export async function GET(req: Request) {
                           checkIn: shift.checkIn,
                           checkOut: shift.checkOut,
                           isLate: shift.isLate,
+                          lateReason: shift.lateReason,
+                          lateReasonAt: shift.lateReasonAt,
                           status: shift.status,
                           workHours: formatDurationMinutes(durations.workMinutes),
                           breakHours: formatDurationMinutes(durations.breakMinutes),

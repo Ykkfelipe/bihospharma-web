@@ -43,6 +43,8 @@ model Shift {
   checkoutIpAddress String?
   checkoutUserAgent String?
   isLate            Boolean   @default(false)
+  lateReason        String?
+  lateReasonAt      DateTime?
   status            String    @default("active") // active | lunch_break | completed
   lunchStartedAt    DateTime?
   lunchEndedAt      DateTime?
