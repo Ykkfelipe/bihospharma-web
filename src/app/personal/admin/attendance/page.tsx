@@ -11,13 +11,25 @@ type Shift = {
     checkIn: string;
     checkOut: string | null;
     isLate?: boolean;
+    status?: string;
+    workHours?: string;
+    breakHours?: string;
+    totalHours?: string;
     user: { id: string; name: string; email: string };
 };
 
 type RosterRow = {
     user: { id: string; name: string; email: string };
     status: "sin_entrada" | "en_turno" | "turno_cerrado";
-    shift: { checkIn: string; checkOut: string | null; isLate: boolean; status?: string } | null;
+    shift: {
+        checkIn: string;
+        checkOut: string | null;
+        isLate: boolean;
+        status?: string;
+        workHours?: string;
+        breakHours?: string;
+        totalHours?: string;
+    } | null;
     lastPortalLogin: string | null;
 };
 
@@ -90,25 +102,23 @@ export default function AttendanceReportPage() {
     const formatTime = (iso: string) =>
         new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
 
-    const calculateHours = (start: string, end: string | null) => {
-        if (!end) return "—";
-        const diff = new Date(end).getTime() - new Date(start).getTime();
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        return `${hours}h ${mins}m`;
-    };
+    const durationOrDash = (shift: Shift, field: "workHours" | "breakHours" | "totalHours") =>
+        shift[field] ?? "—";
 
     const exportCsv = () => {
         const date = filterDate || todayStr;
         const lines = [
-            "Empleado,Email,Estado,Entrada,Salida,Tarde,Último acceso portal",
+            "Empleado,Email,Estado,Entrada,Salida,Horas trabajo,Horas almuerzo,Total,Tarde,Último acceso portal",
             ...roster.map((r) => {
                 const st = STATUS_LABEL[r.status].label;
                 const entrada = r.shift ? formatTime(r.shift.checkIn) : "";
                 const salida = r.shift?.checkOut ? formatTime(r.shift.checkOut) : "";
+                const trabajo = r.shift?.workHours ?? "";
+                const almuerzo = r.shift?.breakHours ?? "";
+                const total = r.shift?.totalHours ?? "";
                 const tarde = r.shift?.isLate ? "Sí" : "No";
                 const login = r.lastPortalLogin ? formatTime(r.lastPortalLogin) : "";
-                return `"${r.user.name}","${r.user.email}","${st}","${entrada}","${salida}","${tarde}","${login}"`;
+                return `"${r.user.name}","${r.user.email}","${st}","${entrada}","${salida}","${trabajo}","${almuerzo}","${total}","${tarde}","${login}"`;
             }),
         ];
         const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
@@ -297,13 +307,20 @@ export default function AttendanceReportPage() {
                                         <th className="px-4 py-3">Empleado</th>
                                         <th className="px-4 py-3">Entrada</th>
                                         <th className="px-4 py-3">Salida</th>
-                                        <th className="px-4 py-3">Horas</th>
+                                        <th className="px-4 py-3">Horas trabajo</th>
+                                        <th className="px-4 py-3">Horas almuerzo</th>
+                                        <th className="px-4 py-3">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filteredShifts.map((shift) => (
                                         <tr key={shift.id} className="border-b hover:bg-gray-50">
-                                            <td className="px-4 py-3 font-medium">{shift.user.name}</td>
+                                            <td className="px-4 py-3 font-medium">
+                                                {shift.user.name}
+                                                {shift.status === "lunch_break" && (
+                                                    <span className="ml-2 text-[10px] text-amber-600">Almuerzo</span>
+                                                )}
+                                            </td>
                                             <td className="px-4 py-3 text-[#10b981]">
                                                 {formatTime(shift.checkIn)}
                                                 {shift.isLate && (
@@ -319,8 +336,14 @@ export default function AttendanceReportPage() {
                                                     <span className="text-gray-400 italic">En curso</span>
                                                 )}
                                             </td>
-                                            <td className="px-4 py-3">
-                                                {calculateHours(shift.checkIn, shift.checkOut)}
+                                            <td className="px-4 py-3 font-medium text-[#0f4c8a]">
+                                                {durationOrDash(shift, "workHours")}
+                                            </td>
+                                            <td className="px-4 py-3 text-amber-700">
+                                                {durationOrDash(shift, "breakHours")}
+                                            </td>
+                                            <td className="px-4 py-3 text-gray-700">
+                                                {durationOrDash(shift, "totalHours")}
                                             </td>
                                         </tr>
                                     ))}

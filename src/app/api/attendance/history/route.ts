@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { getAttendanceHistory, formatErrorResponse } from "@/lib/attendance-utils";
+import {
+    computeShiftDurations,
+    formatDurationMinutes,
+    getScheduleForUser,
+    type ScheduleUser,
+} from "@/lib/work-schedule";
 
 export const dynamic = "force-dynamic";
 
@@ -23,14 +29,46 @@ export async function GET(req: Request) {
         const offset = parseInt(url.searchParams.get("offset") || "0");
 
         if (user.role === "admin") {
-            // Admin: fetch all records
-            const shifts = await getAttendanceHistory(null, limit, offset);
-            
-            // Get total count for pagination info
+            const shifts = await prisma.shift.findMany({
+                orderBy: [{ date: "desc" }, { checkIn: "desc" }],
+                take: limit,
+                skip: offset,
+                include: {
+                    user: {
+                        select: {
+                            id: true,
+                            name: true,
+                            email: true,
+                            workStart: true,
+                            morningEnd: true,
+                            lunchStart: true,
+                            lunchEnd: true,
+                            workEnd: true,
+                            satWorkStart: true,
+                            satWorkEnd: true,
+                        },
+                    },
+                },
+            });
+
             const total = await prisma.shift.count();
-            
+
+            const data = shifts.map((shift) => {
+                const schedule = getScheduleForUser(shift.user as ScheduleUser, shift.date);
+                const durations = computeShiftDurations(shift, schedule);
+                return {
+                    ...shift,
+                    workHours: formatDurationMinutes(durations.workMinutes),
+                    breakHours: formatDurationMinutes(durations.breakMinutes),
+                    totalHours: formatDurationMinutes(durations.totalMinutes),
+                    workMinutes: durations.workMinutes,
+                    breakMinutes: durations.breakMinutes,
+                    totalMinutes: durations.totalMinutes,
+                };
+            });
+
             return NextResponse.json({
-                data: shifts,
+                data,
                 pagination: { limit, offset, total },
             });
         } else {

@@ -27,23 +27,17 @@ export async function GET() {
         }
 
         const today = todayCO();
-        
-        // Check cache first for GET requests
         const cacheKey = getCacheKey(user.id, "GET", today);
-        const cachedShift = getCachedResult(cacheKey);
-        if (cachedShift) {
-            return NextResponse.json({ shift: cachedShift, today, role: user.role, fromCache: true });
-        }
 
         const { syncUserShiftSchedule } = await import("@/lib/shift-schedule-sync");
         const { getScheduleForUser, formatScheduleLabel } = await import("@/lib/work-schedule");
 
-        const synced = await syncUserShiftSchedule(user.id);
-        const shift =
-            synced?.shift ??
-            (await prisma.shift.findUnique({
-                where: { userId_date: { userId: user.id, date: today } },
-            }));
+        // Sync before read/cache so lunch_break resumes to active after 14:00
+        await syncUserShiftSchedule(user.id);
+
+        const shift = await prisma.shift.findUnique({
+            where: { userId_date: { userId: user.id, date: today } },
+        });
 
         const schedule = getScheduleForUser(user, today);
         const scheduleLabel = schedule ? formatScheduleLabel(schedule) : null;

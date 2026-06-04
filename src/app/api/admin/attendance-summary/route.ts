@@ -2,6 +2,13 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { todayCO } from "@/lib/attendance-utils";
+import { syncUserShiftSchedule } from "@/lib/shift-schedule-sync";
+import {
+    computeShiftDurations,
+    formatDurationMinutes,
+    getScheduleForUser,
+    type ScheduleUser,
+} from "@/lib/work-schedule";
 
 export const dynamic = "force-dynamic";
 
@@ -19,16 +26,71 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const date = url.searchParams.get("date") || todayCO();
 
-    const [employees, shifts, recentLogins] = await Promise.all([
-        prisma.user.findMany({
-            where: { role: "employee" },
-            select: { id: true, name: true, email: true },
-            orderBy: { name: "asc" },
-        }),
-        prisma.shift.findMany({
+    const employees = await prisma.user.findMany({
+        where: { role: "employee" },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            workStart: true,
+            morningEnd: true,
+            lunchStart: true,
+            lunchEnd: true,
+            workEnd: true,
+            satWorkStart: true,
+            satWorkEnd: true,
+        },
+        orderBy: { name: "asc" },
+    });
+
+    let shifts = await prisma.shift.findMany({
+        where: { date },
+        include: {
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    workStart: true,
+                    morningEnd: true,
+                    lunchStart: true,
+                    lunchEnd: true,
+                    workEnd: true,
+                    satWorkStart: true,
+                    satWorkEnd: true,
+                },
+            },
+        },
+    });
+
+    if (date === todayCO()) {
+        for (const shift of shifts) {
+            if (!shift.checkOut) {
+                await syncUserShiftSchedule(shift.userId);
+            }
+        }
+        shifts = await prisma.shift.findMany({
             where: { date },
-            include: { user: { select: { id: true, name: true, email: true } } },
-        }),
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        workStart: true,
+                        morningEnd: true,
+                        lunchStart: true,
+                        lunchEnd: true,
+                        workEnd: true,
+                        satWorkStart: true,
+                        satWorkEnd: true,
+                    },
+                },
+            },
+        });
+    }
+
+    const [recentLogins] = await Promise.all([
         prisma.loginLog.findMany({
             where: {
                 success: true,
@@ -57,12 +119,23 @@ export async function GET(req: Request) {
             user: emp,
             status,
             shift: shift
-                ? {
-                      id: shift.id,
-                      checkIn: shift.checkIn,
-                      checkOut: shift.checkOut,
-                      isLate: shift.isLate,
-                  }
+                ? (() => {
+                      const schedule = getScheduleForUser(shift.user as ScheduleUser, date);
+                      const durations = computeShiftDurations(shift, schedule);
+                      return {
+                          id: shift.id,
+                          checkIn: shift.checkIn,
+                          checkOut: shift.checkOut,
+                          isLate: shift.isLate,
+                          status: shift.status,
+                          workHours: formatDurationMinutes(durations.workMinutes),
+                          breakHours: formatDurationMinutes(durations.breakMinutes),
+                          totalHours: formatDurationMinutes(durations.totalMinutes),
+                          workMinutes: durations.workMinutes,
+                          breakMinutes: durations.breakMinutes,
+                          totalMinutes: durations.totalMinutes,
+                      };
+                  })()
                 : null,
             lastPortalLogin: lastLogin?.createdAt ?? null,
         };
@@ -77,5 +150,19 @@ export async function GET(req: Request) {
         tarde: shifts.filter((s) => s.isLate).length,
     };
 
-    return NextResponse.json({ summary, roster, shifts });
+    const shiftsWithDurations = shifts.map((shift) => {
+        const schedule = getScheduleForUser(shift.user as ScheduleUser, date);
+        const durations = computeShiftDurations(shift, schedule);
+        return {
+            ...shift,
+            workHours: formatDurationMinutes(durations.workMinutes),
+            breakHours: formatDurationMinutes(durations.breakMinutes),
+            totalHours: formatDurationMinutes(durations.totalMinutes),
+            workMinutes: durations.workMinutes,
+            breakMinutes: durations.breakMinutes,
+            totalMinutes: durations.totalMinutes,
+        };
+    });
+
+    return NextResponse.json({ summary, roster, shifts: shiftsWithDurations });
 }

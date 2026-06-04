@@ -83,3 +83,97 @@ export function formatScheduleLabel(schedule: DaySchedule): string {
     }
     return `${schedule.workStart}–${schedule.morningEnd} · almuerzo ${schedule.lunchStart}–${schedule.lunchEnd} · ${schedule.lunchEnd}–${schedule.workEnd}`;
 }
+
+export type ShiftForDuration = {
+    date: string;
+    checkIn: Date | string;
+    checkOut: Date | string | null;
+    status?: string | null;
+    lunchStartedAt?: Date | string | null;
+    lunchEndedAt?: Date | string | null;
+};
+
+export type ShiftDurations = {
+    workMinutes: number;
+    breakMinutes: number;
+    totalMinutes: number;
+};
+
+export function formatDurationMinutes(minutes: number): string {
+    if (minutes <= 0) return "0h 0m";
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    return `${h}h ${m}m`;
+}
+
+/** Work = morning + afternoon blocks; break = lunch window (excluded from work). */
+export function computeShiftDurations(
+    shift: ShiftForDuration,
+    schedule: DaySchedule | null,
+    now: Date = new Date()
+): ShiftDurations {
+    const checkIn = new Date(shift.checkIn);
+    const endTime = shift.checkOut ? new Date(shift.checkOut) : now;
+
+    if (!schedule?.hasLunchBreak) {
+        const workMinutes = Math.max(0, Math.round((endTime.getTime() - checkIn.getTime()) / 60_000));
+        return { workMinutes, breakMinutes: 0, totalMinutes: workMinutes };
+    }
+
+    const schedLunchStart = parseTimeOnDate(shift.date, schedule.lunchStart);
+    const schedLunchEnd = parseTimeOnDate(shift.date, schedule.lunchEnd);
+    const schedMorningEnd = parseTimeOnDate(shift.date, schedule.morningEnd);
+
+    if (endTime.getTime() <= checkIn.getTime()) {
+        return { workMinutes: 0, breakMinutes: 0, totalMinutes: 0 };
+    }
+
+    if (endTime.getTime() <= schedLunchStart.getTime()) {
+        const workMinutes = Math.max(0, Math.round((endTime.getTime() - checkIn.getTime()) / 60_000));
+        return { workMinutes, breakMinutes: 0, totalMinutes: workMinutes };
+    }
+
+    const lunchStart = shift.lunchStartedAt
+        ? new Date(shift.lunchStartedAt)
+        : schedLunchStart;
+
+    let lunchEnd: Date;
+    if (shift.lunchEndedAt) {
+        lunchEnd = new Date(shift.lunchEndedAt);
+    } else if (shift.status === "lunch_break") {
+        lunchEnd = endTime;
+    } else if (endTime.getTime() >= schedLunchEnd.getTime()) {
+        lunchEnd = schedLunchEnd;
+    } else {
+        lunchEnd = endTime;
+    }
+
+    const morningStop = Math.min(
+        schedMorningEnd.getTime(),
+        lunchStart.getTime(),
+        endTime.getTime()
+    );
+    const morningMinutes =
+        morningStop > checkIn.getTime()
+            ? Math.max(0, Math.round((morningStop - checkIn.getTime()) / 60_000))
+            : 0;
+
+    const breakEnd = Math.min(lunchEnd.getTime(), endTime.getTime());
+    const breakMinutes =
+        breakEnd > lunchStart.getTime()
+            ? Math.max(0, Math.round((breakEnd - lunchStart.getTime()) / 60_000))
+            : 0;
+
+    const afternoonStart = Math.max(schedLunchEnd.getTime(), lunchEnd.getTime());
+    const afternoonMinutes =
+        endTime.getTime() > afternoonStart
+            ? Math.max(0, Math.round((endTime.getTime() - afternoonStart) / 60_000))
+            : 0;
+
+    const workMinutes = morningMinutes + afternoonMinutes;
+    return {
+        workMinutes,
+        breakMinutes,
+        totalMinutes: workMinutes + breakMinutes,
+    };
+}
