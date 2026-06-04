@@ -37,12 +37,7 @@ export async function autoCheckOutIfNeeded(): Promise<boolean> {
     return false;
 }
 
-/** Sign out and record shift checkout when applicable. */
+/** Sign out only — salida del turno es manual (Terminar turno / Registrar salida). */
 export async function signOutWithAttendance(callbackUrl = "/personal/login") {
-    try {
-        await autoCheckOutIfNeeded();
-    } catch {
-        // still sign out even if checkout fails
-    }
     await signOut({ callbackUrl });
 }

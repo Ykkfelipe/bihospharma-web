@@ -347,7 +347,12 @@ const getInitials = (name?: string | null) => {
 /* ── Attendance Widget ─────────────────────────────────── */
 
 function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "unauthenticated" }) {
-    const [shift, setShift] = useState<{ checkIn: string; checkOut: string | null } | null>(null);
+    const [shift, setShift] = useState<{
+        checkIn: string;
+        checkOut: string | null;
+        status?: string;
+    } | null>(null);
+    const [scheduleLabel, setScheduleLabel] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [checkingOut, setCheckingOut] = useState(false);
     const [checkingIn, setCheckingIn] = useState(false);
@@ -359,6 +364,7 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
             const res = await fetch("/api/attendance", { cache: "no-store" });
             const data = await res.json();
             setShift(data.shift ?? null);
+            setScheduleLabel(data.scheduleLabel ?? null);
             if (!res.ok && data.error) {
                 setToast({ msg: data.error, type: "error" });
             }
@@ -405,11 +411,15 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
 
         const onAttendanceChange = () => fetchShift();
         window.addEventListener(ATTENDANCE_CHANGED_EVENT, onAttendanceChange);
-        return () => window.removeEventListener(ATTENDANCE_CHANGED_EVENT, onAttendanceChange);
+        const poll = setInterval(fetchShift, 60_000);
+        return () => {
+            window.removeEventListener(ATTENDANCE_CHANGED_EVENT, onAttendanceChange);
+            clearInterval(poll);
+        };
     }, [status]);
 
     useEffect(() => {
-        if (!shift || !shift.checkIn || shift.checkOut) return;
+        if (!shift || !shift.checkIn || shift.checkOut || shift.status === "lunch_break") return;
         const interval = setInterval(() => {
             const now = new Date().getTime();
             const start = new Date(shift.checkIn).getTime();
@@ -471,10 +481,20 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
                     {shift && !shift.checkOut && <div className="portal-attendance-pulse" title="Turno activo" />}
                 </div>
                 
+                {scheduleLabel && (
+                    <p style={{ color: "#94a3b8", fontSize: 11, margin: "0 0 8px" }}>
+                        Horario: {scheduleLabel}
+                    </p>
+                )}
+                {shift?.status === "lunch_break" && (
+                    <p style={{ color: "#d97706", fontSize: 13, fontWeight: 600, margin: "0 0 8px" }}>
+                        En almuerzo (1:00 p.m. – 2:00 p.m.) — seguimiento en pausa
+                    </p>
+                )}
                 {!shift ? (
                     <p style={{ color: "#64748b", fontSize: 13, margin: 0 }}>
-                        La entrada se registra automáticamente al ingresar al portal.
-                        La salida se registra al cerrar sesión (o usa el botón manual).
+                        La entrada se registra al ingresar al portal. El almuerzo se pausa automáticamente.
+                        La salida solo con el botón o &quot;Terminar turno&quot;.
                     </p>
                 ) : (
                     <div style={{ display: "flex", gap: 20, marginTop: 12 }}>

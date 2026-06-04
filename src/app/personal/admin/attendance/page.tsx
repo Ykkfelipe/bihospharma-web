@@ -17,7 +17,7 @@ type Shift = {
 type RosterRow = {
     user: { id: string; name: string; email: string };
     status: "sin_entrada" | "en_turno" | "turno_cerrado";
-    shift: { checkIn: string; checkOut: string | null; isLate: boolean } | null;
+    shift: { checkIn: string; checkOut: string | null; isLate: boolean; status?: string } | null;
     lastPortalLogin: string | null;
 };
 
@@ -250,6 +250,9 @@ export default function AttendanceReportPage() {
                                                 >
                                                     {STATUS_LABEL[row.status].label}
                                                 </span>
+                                                {row.shift?.status === "lunch_break" && (
+                                                    <span className="ml-1 text-[10px] text-amber-600">Almuerzo</span>
+                                                )}
                                             </td>
                                             <td className="px-4 py-3 text-[#10b981]">
                                                 {row.shift ? formatTime(row.shift.checkIn) : "—"}

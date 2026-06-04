@@ -81,24 +81,23 @@ export async function safeCheckIn(
         });
 
         if (existing) {
-            return { shift: existing, alreadyCheckedIn: true };
+            const { syncUserShiftSchedule } = await import("@/lib/shift-schedule-sync");
+            const synced = await syncUserShiftSchedule(userId);
+            const syncedShift =
+                synced && "shift" in synced ? synced.shift : synced;
+            return { shift: syncedShift ?? existing, alreadyCheckedIn: true };
         }
 
-        const nowCO = getNowCO();
-        const isLate = nowCO.getHours() > 8 || (nowCO.getHours() === 8 && nowCO.getMinutes() > 0);
+        const { scheduledCheckIn } = await import("@/lib/shift-schedule-sync");
+        const scheduled = await scheduledCheckIn(userId, ipAddress, userAgent);
+        if (scheduled?.shift) {
+            return {
+                shift: scheduled.shift,
+                alreadyCheckedIn: scheduled.alreadyCheckedIn ?? false,
+            };
+        }
 
-        const shift = await prisma.shift.create({
-            data: {
-                userId,
-                date,
-                checkIn: new Date(),
-                ipAddress,
-                userAgent,
-                isLate,
-            },
-        });
-
-        return { shift, alreadyCheckedIn: false };
+        throw new Error(scheduled?.error || "No se pudo registrar la entrada.");
     }, 5, 150); // 5 retries with exponential backoff starting at 150ms
 }
 

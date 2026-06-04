@@ -17,6 +17,15 @@ model User {
   name         String
   role         String     @default("employee") // "admin" | "employee"
   createdAt    DateTime   @default(now())
+  // Horario laboral (America/Bogota) — L-V estándar
+  workStart    String     @default("07:30")
+  morningEnd   String     @default("13:00")
+  lunchStart   String     @default("13:00")
+  lunchEnd     String     @default("14:00")
+  workEnd      String     @default("17:30")
+  // Sábado especial (ej. María Angélica)
+  satWorkStart String?
+  satWorkEnd   String?
   reactions    Reaction[]
   comments     Comment[]
   shifts       Shift[]
@@ -34,6 +43,9 @@ model Shift {
   checkoutIpAddress String?
   checkoutUserAgent String?
   isLate            Boolean   @default(false)
+  status            String    @default("active") // active | lunch_break | completed
+  lunchStartedAt    DateTime?
+  lunchEndedAt      DateTime?
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, date])

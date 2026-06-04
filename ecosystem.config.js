@@ -91,5 +91,17 @@ module.exports = {
     error_file: '/home/ec2-user/bihospharma-web/logs/cron-error.log',
     out_file: '/home/ec2-user/bihospharma-web/logs/cron-output.log',
     log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
+  }, {
+    name: 'bihos-schedule',
+    script: 'scripts/attendance-schedule-cron.js',
+    cwd: '/home/ec2-user/bihospharma-web',
+    env: sharedEnv,
+    cron_restart: '*/5 * * * *',
+    autorestart: false,
+    instances: 1,
+    exec_mode: 'fork',
+    error_file: '/home/ec2-user/bihospharma-web/logs/schedule-cron-error.log',
+    out_file: '/home/ec2-user/bihospharma-web/logs/schedule-cron-output.log',
+    log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
   }],
 };
