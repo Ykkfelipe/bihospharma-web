@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run chat:knowledge && next dev --turbopack",
+    "dev": "npm run chat:knowledge && next dev --turbopack -p 3001",
+    "dev:fresh": "rm -rf .next && npm run dev",
     "build": "npm run chat:knowledge && next build",
     "chat:knowledge": "node scripts/build-chat-knowledge.mjs",
     "start": "NODE_ENV=production node server.js",

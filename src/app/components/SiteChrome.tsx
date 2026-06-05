@@ -4,26 +4,15 @@ import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import ChatWidget from './ChatWidget';
-import { isPortalAdminPath, isPortalAppPath, isPortalAuthPath } from '@/lib/portalRoutes';
+import { isPortalAppPath } from '@/lib/portalRoutes';
 
 const chatEnabled = process.env.NEXT_PUBLIC_ENABLE_CHAT === 'true';
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? '';
-  const portalAuth = isPortalAuthPath(pathname);
-  const portalApp = isPortalAppPath(pathname) && !portalAuth;
 
-  if (portalAuth || isPortalAdminPath(pathname)) {
+  if (isPortalAppPath(pathname)) {
     return <>{children}</>;
-  }
-
-  if (portalApp) {
-    return (
-      <>
-        <Navbar />
-        <div className="portal-with-site-nav flex min-h-0 flex-1 flex-col">{children}</div>
-      </>
-    );
   }
 
   return (

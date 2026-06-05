@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { PortalShell } from "../components/PortalShell";
-import { PortalToast } from "../components/PortalToast";
-import { ATTENDANCE_CHANGED_EVENT, registerCheckOutIfNeeded } from "../lib/attendance-client";
+import { ATTENDANCE_CHANGED_EVENT } from "../lib/attendance-client";
 
 type Shift = {
     id: string;
@@ -19,8 +19,6 @@ export default function EmployeeShiftsPage() {
     const [shifts, setShifts] = useState<Shift[]>([]);
     const [loading, setLoading] = useState(true);
     const [todayShift, setTodayShift] = useState<Shift | null>(null);
-    const [actionLoading, setActionLoading] = useState(false);
-    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" | "info" } | null>(null);
 
     const todayStr = new Date().toLocaleDateString("es-CO", {
         weekday: "long",
@@ -51,45 +49,6 @@ export default function EmployeeShiftsPage() {
         window.addEventListener(ATTENDANCE_CHANGED_EVENT, refresh);
         return () => window.removeEventListener(ATTENDANCE_CHANGED_EVENT, refresh);
     }, [status]);
-
-    const startShift = async () => {
-        setActionLoading(true);
-        setToast(null);
-        try {
-            const res = await fetch("/api/attendance", { method: "POST" });
-            const data = await res.json();
-            if (data.shift) {
-                setTodayShift(data.shift);
-                setToast({ msg: "Entrada registrada y guardada en el sistema.", type: "success" });
-                await loadData();
-            } else {
-                setToast({ msg: data.error || "No se pudo registrar la entrada.", type: "error" });
-            }
-        } finally {
-            setActionLoading(false);
-        }
-    };
-
-    const endShift = async () => {
-        if (!confirm("¿Registrar salida de tu turno?")) return;
-        setActionLoading(true);
-        setToast(null);
-        try {
-            const result = await registerCheckOutIfNeeded();
-            if (result.ok && result.shift) {
-                setTodayShift(result.shift as Shift);
-                setToast({ msg: "Salida registrada y guardada en el sistema.", type: "success" });
-                await loadData();
-            } else if (result.skipped) {
-                setToast({ msg: "Ya tenías la salida registrada hoy.", type: "info" });
-                await loadData();
-            } else {
-                setToast({ msg: result.error || "No se pudo registrar la salida.", type: "error" });
-            }
-        } finally {
-            setActionLoading(false);
-        }
-    };
 
     const formatTime = (iso: string) =>
         new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
@@ -122,57 +81,35 @@ export default function EmployeeShiftsPage() {
 
                 <div className="portal-attendance-card portal-attendance-card--stacked" style={{ marginBottom: 24 }}>
                     <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0a2540", margin: 0 }}>Turno de hoy</h2>
-                    {toast && <PortalToast message={toast.msg} type={toast.type} />}
                     {!todayShift ? (
-                        <>
-                            <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>
-                                Aún no has registrado entrada hoy.
-                            </p>
-                            <button
-                                type="button"
-                                className="portal-btn-checkin"
-                                onClick={startShift}
-                                disabled={actionLoading}
-                                style={{ alignSelf: "flex-start" }}
-                            >
-                                {actionLoading ? "Registrando..." : "Registrar entrada"}
-                            </button>
-                        </>
+                        <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>
+                            Sin entrada registrada hoy.
+                        </p>
                     ) : (
-                        <>
-                            <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+                            <div>
+                                <p style={{ fontSize: 10, textTransform: "uppercase", color: "#94a3b8", fontWeight: 600, margin: 0 }}>
+                                    Entrada
+                                </p>
+                                <p style={{ fontSize: 20, fontWeight: 700, color: "#0f4c8a", margin: "4px 0 0" }}>
+                                    {formatTime(todayShift.checkIn)}
+                                </p>
+                            </div>
+                            {todayShift.checkOut && (
                                 <div>
                                     <p style={{ fontSize: 10, textTransform: "uppercase", color: "#94a3b8", fontWeight: 600, margin: 0 }}>
-                                        Entrada
+                                        Salida
                                     </p>
-                                    <p style={{ fontSize: 20, fontWeight: 700, color: "#0f4c8a", margin: "4px 0 0" }}>
-                                        {formatTime(todayShift.checkIn)}
+                                    <p style={{ fontSize: 20, fontWeight: 700, color: "#ef4444", margin: "4px 0 0" }}>
+                                        {formatTime(todayShift.checkOut)}
                                     </p>
                                 </div>
-                                {todayShift.checkOut && (
-                                    <div>
-                                        <p style={{ fontSize: 10, textTransform: "uppercase", color: "#94a3b8", fontWeight: 600, margin: 0 }}>
-                                            Salida
-                                        </p>
-                                        <p style={{ fontSize: 20, fontWeight: 700, color: "#ef4444", margin: "4px 0 0" }}>
-                                            {formatTime(todayShift.checkOut)}
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
-                            {!todayShift.checkOut && (
-                                <button
-                                    type="button"
-                                    className="portal-btn-checkout"
-                                    onClick={endShift}
-                                    disabled={actionLoading}
-                                    style={{ alignSelf: "flex-start" }}
-                                >
-                                    {actionLoading ? "Registrando..." : "Terminar turno (registrar salida)"}
-                                </button>
                             )}
-                        </>
+                        </div>
                     )}
+                    <Link href="/personal/reloj" className="portal-btn-checkin" style={{ alignSelf: "flex-start", textDecoration: "none" }}>
+                        Ir al reloj
+                    </Link>
                 </div>
 
                 <div className="portal-section-card">

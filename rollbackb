@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Roll back production on EC2 to the last pre-deploy backup.
+# Usage: ./rollbackb [backup-stamp]
+exec ssh "${SSH_TARGET:-bihos}" "bash ~/bihospharma-web/scripts/rollback-production.sh ${1:-}"

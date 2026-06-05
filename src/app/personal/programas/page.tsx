@@ -1,9 +1,10 @@
 "use client";
 
-import { type CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import Image from "next/image";
 import { PortalShell } from "../components/PortalShell";
 import { PORTAL_APPS } from "@/lib/portal-apps";
+import { signOutWithAttendance } from "../lib/attendance-client";
 
 function ExternalLinkIcon() {
     return (
@@ -16,13 +17,24 @@ function ExternalLinkIcon() {
 }
 
 export default function ProgramasPage() {
+    const [endingShift, setEndingShift] = useState(false);
+
+    const handleEndShift = async () => {
+        setEndingShift(true);
+        try {
+            await signOutWithAttendance("/personal/login");
+        } finally {
+            setEndingShift(false);
+        }
+    };
+
     return (
         <PortalShell title="Mis programas">
-            <div className="portal-programas-page">
-                <header className="portal-programas-hero">
-                    <p className="portal-programas-eyebrow">Accesos corporativos</p>
-                    <h1 className="portal-programas-title">Mis programas</h1>
-                    <p className="portal-programas-lead">
+            <div className="portal-programas-page portal-animate-in">
+                <header className="portal-programas-hero portal-page-hero">
+                    <p className="portal-page-eyebrow">Accesos corporativos</p>
+                    <h1 className="portal-page-title">Mis programas</h1>
+                    <p className="portal-page-lead">
                         Seleccione el sistema que necesita. Cada acceso abre en una nueva pestaña.
                     </p>
                 </header>
@@ -65,10 +77,22 @@ export default function ProgramasPage() {
                     ))}
                 </div>
 
-                <p className="portal-programas-footnote">
-                    Al finalizar su jornada, cierre las pestañas de los sistemas y use{" "}
-                    <strong>Terminar turno</strong> en el menú superior del portal.
-                </p>
+                <section className="portal-programas-end-shift" aria-label="Fin de jornada">
+                    <div className="portal-programas-end-shift-copy">
+                        <p className="portal-programas-end-shift-title">Fin de jornada</p>
+                        <p className="portal-programas-end-shift-text">
+                            Registra su salida y cierra la sesión del portal.
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        className="portal-programas-end-shift-btn"
+                        onClick={() => void handleEndShift()}
+                        disabled={endingShift}
+                    >
+                        {endingShift ? "Guardando…" : "Terminar turno"}
+                    </button>
+                </section>
             </div>
         </PortalShell>
     );

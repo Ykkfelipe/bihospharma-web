@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./personal/portal.css";
 
 html {
   scroll-behavior: smooth;
@@ -47,6 +48,110 @@ body {
 
 .btn-primary {
   @apply inline-flex min-h-[44px] items-center justify-center rounded-full bg-[#48a4dc] px-6 py-2.5 text-sm font-semibold text-white shadow-md transition hover:bg-[#3a8fc4] hover:shadow-lg;
+}
+
+/* Home hero carousel controls */
+.hero-fade-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #1c2b4e;
+  box-shadow: 0 4px 14px rgba(10, 37, 64, 0.18);
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: background 0.15s ease, box-shadow 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.hero-fade-arrow:hover {
+  background: #fff;
+  color: #0f4c8a;
+  box-shadow: 0 6px 18px rgba(10, 37, 64, 0.22);
+}
+
+.hero-fade-arrow:active {
+  transform: translateY(-50%) scale(0.96);
+}
+
+.hero-fade-arrow--prev {
+  left: 12px;
+}
+
+.hero-fade-arrow--next {
+  right: 12px;
+}
+
+@media (min-width: 640px) {
+  .hero-fade-arrow {
+    width: 48px;
+    height: 48px;
+  }
+
+  .hero-fade-arrow--prev {
+    left: 20px;
+  }
+
+  .hero-fade-arrow--next {
+    right: 20px;
+  }
+}
+
+.hero-fade-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.hero-fade-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(28, 43, 78, 0.28);
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, width 0.15s ease;
+}
+
+.hero-fade-dot:hover {
+  background: rgba(28, 43, 78, 0.45);
+}
+
+.hero-fade-dot--active {
+  width: 22px;
+  background: #48a4dc;
+}
+
+@media (min-width: 640px) {
+  .hero-fade-dots {
+    bottom: 14px;
+  }
+
+  .hero-fade-dot {
+    width: 9px;
+    height: 9px;
+  }
+
+  .hero-fade-dot--active {
+    width: 24px;
+  }
 }
 
 

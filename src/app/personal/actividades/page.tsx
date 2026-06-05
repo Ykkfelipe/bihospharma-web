@@ -79,20 +79,28 @@ export default function ActividadesPage() {
 
     return (
         <PortalShell title="Seguimiento de actividades">
-            <div style={{ maxWidth: 640, margin: "0 auto", padding: "32px 20px" }}>
-                <p style={{ textAlign: "center", color: "#64748b", fontSize: 13, margin: "0 0 8px" }}>
-                    {today}
-                </p>
-                {userArea && (
-                    <p style={{ textAlign: "center", color: "#0f4c8a", fontSize: 12, fontWeight: 600, margin: "0 0 24px" }}>
-                        Área: {userArea}
+            <div className="portal-page portal-animate-in">
+                <header className="portal-page-hero" style={{ textAlign: "center" }}>
+                    <p className="portal-page-eyebrow">Registro diario</p>
+                    <h1 className="portal-page-title">Actividades del día</h1>
+                    <p className="portal-page-lead" style={{ margin: "0 auto" }}>
+                        {today}
+                        {userArea ? ` · Área: ${userArea}` : ""}
                     </p>
-                )}
+                </header>
 
                 <div className="portal-section-card" style={{ padding: 24, marginBottom: 24 }}>
-                    <h2 className="portal-section-header" style={{ marginBottom: 16 }}>
-                        Registrar actividades
-                    </h2>
+                    <div className="portal-section-header" style={{ margin: "-24px -24px 20px", borderRadius: "16px 16px 0 0" }}>
+                        <div className="portal-section-icon announcement">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+                            </svg>
+                        </div>
+                        <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0a2540", margin: 0 }}>
+                            Registrar actividades
+                        </h2>
+                    </div>
                     <form onSubmit={handleSubmit}>
                         <label
                             htmlFor="activity-summary"
@@ -126,9 +134,17 @@ export default function ActividadesPage() {
                 </div>
 
                 <div className="portal-section-card" style={{ padding: 24 }}>
-                    <h2 className="portal-section-header" style={{ marginBottom: 16 }}>
-                        Registros de hoy
-                    </h2>
+                    <div className="portal-section-header" style={{ margin: "-24px -24px 20px", borderRadius: "16px 16px 0 0" }}>
+                        <div className="portal-section-icon document">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                            </svg>
+                        </div>
+                        <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0a2540", margin: 0 }}>
+                            Registros de hoy
+                        </h2>
+                    </div>
                     {loading ? (
                         <p style={{ textAlign: "center", color: "#94a3b8", fontSize: 13 }}>Cargando…</p>
                     ) : logs.length === 0 ? (
@@ -157,8 +173,9 @@ export default function ActividadesPage() {
                     )}
                 </div>
 
-                <p style={{ textAlign: "center", fontSize: 12, color: "#94a3b8", marginTop: 20 }}>
-                    Este registro es independiente del control de asistencia. Use el reloj para marcar entrada y salida.
+                <p className="portal-programas-footnote">
+                    Este registro es independiente del control de asistencia. Use{" "}
+                    <strong>Reloj</strong> en el menú para marcar entrada y salida.
                 </p>
             </div>
         </PortalShell>

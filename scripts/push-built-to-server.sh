@@ -20,6 +20,9 @@ rsync_to_server() {
   rsync -az -e "$RSYNC_SSH" "$@"
 }
 
+echo "→ Pre-deploy backup on server (for rollback)…"
+remote "bash -s" < "$LOCAL_APP_DIR/scripts/pre-deploy-backup.sh" || true
+
 echo "→ Syncing built output to ${SSH_TARGET}:~/bihospharma-web/"
 cd "$LOCAL_APP_DIR"
 

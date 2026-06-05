@@ -1,20 +1,29 @@
 /**
  * Reset one portal user (password, role, unlock failed-login lock).
  *   npx tsx scripts/reset-portal-user.ts duglas.cifuentes@bihospharma.com
+ *
+ * On production (no dotenv devDependency):
+ *   DATABASE_URL=file:./prod.db PORTAL_RESET_PASSWORD='...' npx tsx scripts/reset-portal-user.ts <email>
  */
-import dotenv from "dotenv";
 import path from "path";
-
-dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
-dotenv.config({ path: path.resolve(process.cwd(), ".env.production") });
-dotenv.config();
-
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+async function loadEnv() {
+    try {
+        const dotenv = await import("dotenv");
+        dotenv.config({ path: path.resolve(process.cwd(), ".env.local") });
+        dotenv.config({ path: path.resolve(process.cwd(), ".env.production") });
+        dotenv.config();
+    } catch {
+        // dotenv is dev-only; rely on DATABASE_URL / PORTAL_RESET_PASSWORD from the shell
+    }
+}
+
 async function main() {
+    await loadEnv();
     const email = process.argv[2]?.trim().toLowerCase();
     if (!email) {
         console.error("Usage: npx tsx scripts/reset-portal-user.ts <email> [admin|employee]");

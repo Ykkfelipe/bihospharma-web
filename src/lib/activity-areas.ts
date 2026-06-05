@@ -5,6 +5,7 @@ export const ACTIVITY_AREAS = [
     "Medicina laboral",
     "Gestión",
     "Enfermería",
+    "Recursos humanos",
     "General",
 ] as const;
 

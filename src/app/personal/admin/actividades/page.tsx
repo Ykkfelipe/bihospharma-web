@@ -3,8 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import Image from "next/image";
-import { signOutWithAttendance } from "../../lib/attendance-client";
+import { AdminPortalShell } from "../../components/PortalShell";
 import { ACTIVITY_AREAS } from "@/lib/activity-areas";
 
 type Employee = {
@@ -127,72 +126,11 @@ export default function AdminActividadesPage() {
     }
 
     return (
-        <main className="min-h-screen bg-gray-50 pb-20">
-            <header className="portal-header">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between flex-wrap gap-3">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                        <Image
-                            src="/logos/bihos-logo.png"
-                            alt="Bihospharma"
-                            width={32}
-                            height={32}
-                            style={{ borderRadius: "50%", background: "#fff", padding: 3 }}
-                        />
-                        <div>
-                            <p className="text-white font-bold text-xs sm:text-sm leading-none">
-                                Seguimiento de actividades
-                            </p>
-                            <p style={{ color: "#64748b", fontSize: 10, margin: 0 }}>Bihospharma IPS</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-                        <Link
-                            href="/personal/admin"
-                            style={{ color: "#94a3b8", fontSize: 11, textDecoration: "none" }}
-                        >
-                            Publicaciones
-                        </Link>
-                        <Link
-                            href="/personal/admin/attendance"
-                            style={{ color: "#94a3b8", fontSize: 11, textDecoration: "none" }}
-                        >
-                            Asistencia
-                        </Link>
-                        <Link
-                            href="/personal/admin/actividades"
-                            style={{
-                                color: "#0f4c8a",
-                                fontSize: 12,
-                                fontWeight: 600,
-                                textDecoration: "none",
-                                background: "#e0e7ff",
-                                padding: "6px 12px",
-                                borderRadius: 8,
-                            }}
-                        >
-                            Actividades
-                        </Link>
-                        <Link href="/personal" style={{ color: "#94a3b8", fontSize: 11, textDecoration: "none" }}>
-                            ← Ver portal
-                        </Link>
-                        <button
-                            type="button"
-                            onClick={() => signOutWithAttendance("/personal/login")}
-                            style={{
-                                background: "none",
-                                border: "none",
-                                color: "#64748b",
-                                fontSize: 11,
-                                cursor: "pointer",
-                            }}
-                        >
-                            Cerrar sesión
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6">
+        <AdminPortalShell
+            heading="Seguimiento de actividades"
+            lead="Revise el registro diario del equipo por área y fecha."
+        >
+            <div className="space-y-6">
                 <div className="flex flex-wrap gap-2 items-center">
                     <input
                         type="date"
@@ -298,6 +236,6 @@ export default function AdminActividadesPage() {
                     )}
                 </div>
             </div>
-        </main>
+        </AdminPortalShell>
     );
 }

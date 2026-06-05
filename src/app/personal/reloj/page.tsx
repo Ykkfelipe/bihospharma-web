@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { PortalShell } from "../components/PortalShell";
@@ -13,19 +14,70 @@ import {
 type Shift = {
     checkIn: string;
     checkOut: string | null;
+    status?: string | null;
 };
+
+type AttendancePayload = {
+    shift: Shift | null;
+    scheduleLabel: string | null;
+    status: string | null;
+};
+
+function useLiveClock() {
+    const [now, setNow] = useState(() => new Date());
+
+    useEffect(() => {
+        const id = setInterval(() => setNow(new Date()), 1000);
+        return () => clearInterval(id);
+    }, []);
+
+    return now;
+}
+
+function formatClockParts(date: Date) {
+    const parts = new Intl.DateTimeFormat("es-CO", {
+        timeZone: "America/Bogota",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+    }).formatToParts(date);
+
+    const get = (type: Intl.DateTimeFormatPartTypes) =>
+        parts.find((p) => p.type === type)?.value ?? "";
+
+    return {
+        hour: get("hour"),
+        minute: get("minute"),
+        second: get("second"),
+        dayPeriod: get("dayPeriod"),
+    };
+}
+
+function turnoState(shift: Shift | null, shiftStatus: string | null) {
+    if (!shift) return { label: "Sin entrada", tone: "idle" as const };
+    if (shift.checkOut) return { label: "Turno cerrado", tone: "done" as const };
+    if (shiftStatus === "lunch_break") return { label: "En almuerzo", tone: "lunch" as const };
+    return { label: "En turno", tone: "active" as const };
+}
 
 export default function RelojPage() {
     const { status } = useSession();
+    const now = useLiveClock();
     const [shift, setShift] = useState<Shift | null>(null);
+    const [scheduleLabel, setScheduleLabel] = useState<string | null>(null);
+    const [shiftStatus, setShiftStatus] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
+    const [elapsed, setElapsed] = useState("");
     const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
 
     const load = async () => {
         const res = await fetch("/api/attendance", { cache: "no-store" });
-        const data = await res.json();
+        const data: AttendancePayload = await res.json();
         setShift(data.shift ?? null);
+        setScheduleLabel(data.scheduleLabel ?? null);
+        setShiftStatus(data.status ?? data.shift?.status ?? null);
         setLoading(false);
     };
 
@@ -37,8 +89,39 @@ export default function RelojPage() {
         return () => window.removeEventListener(ATTENDANCE_CHANGED_EVENT, refresh);
     }, [status]);
 
+    useEffect(() => {
+        if (!shift?.checkIn || shift.checkOut || shiftStatus === "lunch_break") {
+            setElapsed("");
+            return;
+        }
+        const tick = () => {
+            const diff = Math.max(0, Date.now() - new Date(shift.checkIn).getTime());
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            setElapsed(`${hours}h ${mins}m`);
+        };
+        tick();
+        const id = setInterval(tick, 1000);
+        return () => clearInterval(id);
+    }, [shift, shiftStatus]);
+
+    const clock = formatClockParts(now);
+    const tabTime = `${clock.hour}:${clock.minute}:${clock.second} ${clock.dayPeriod}`;
+
+    useEffect(() => {
+        const previous = document.title;
+        document.title = `${tabTime} · Reloj · Bihospharma`;
+        return () => {
+            document.title = previous;
+        };
+    }, [tabTime]);
+
     const formatTime = (iso: string) =>
-        new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+        new Date(iso).toLocaleTimeString("es-CO", {
+            timeZone: "America/Bogota",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
 
     const onEntrada = async () => {
         setBusy(true);
@@ -64,80 +147,102 @@ export default function RelojPage() {
         setBusy(false);
     };
 
-    const today = new Date().toLocaleDateString("es-CO", {
+    const today = now.toLocaleDateString("es-CO", {
+        timeZone: "America/Bogota",
         weekday: "long",
         day: "numeric",
         month: "long",
         year: "numeric",
     });
 
+    const turno = turnoState(shift, shiftStatus);
+    const registroLabel = shift
+        ? shift.checkOut
+            ? `Entrada ${formatTime(shift.checkIn)} · Salida ${formatTime(shift.checkOut)}`
+            : `Entrada ${formatTime(shift.checkIn)}`
+        : "—";
+
     return (
-        <PortalShell title="Reloj de asistencia">
-            <div style={{ maxWidth: 420, margin: "0 auto", padding: "32px 20px" }}>
-                <p style={{ textAlign: "center", color: "#64748b", fontSize: 13, margin: "0 0 24px" }}>
-                    {today}
-                </p>
-
-                {loading ? (
-                    <p style={{ textAlign: "center", color: "#94a3b8" }}>Cargando…</p>
-                ) : (
-                    <div className="portal-section-card" style={{ padding: 28, textAlign: "center" }}>
-                        {shift ? (
-                            <>
-                                <p style={{ fontSize: 11, color: "#94a3b8", textTransform: "uppercase", margin: 0 }}>
-                                    Entrada
-                                </p>
-                                <p style={{ fontSize: 28, fontWeight: 800, color: "#0f4c8a", margin: "4px 0 20px" }}>
-                                    {formatTime(shift.checkIn)}
-                                </p>
-                                {shift.checkOut && (
-                                    <>
-                                        <p style={{ fontSize: 11, color: "#94a3b8", textTransform: "uppercase", margin: 0 }}>
-                                            Salida
-                                        </p>
-                                        <p style={{ fontSize: 28, fontWeight: 800, color: "#ef4444", margin: "4px 0 20px" }}>
-                                            {formatTime(shift.checkOut)}
-                                        </p>
-                                    </>
+        <PortalShell title="Reloj" fullHeight>
+            <div className="portal-page portal-page--reloj">
+                <div className="portal-reloj-stage">
+                    <div className="portal-reloj-card">
+                        <div className="portal-reloj-clock" aria-live="off">
+                            <div className="portal-reloj-topline">
+                                <p className="portal-reloj-date">{today}</p>
+                                {!loading && (
+                                    <span className={`portal-reloj-pill portal-reloj-pill--${turno.tone}`}>
+                                        {turno.label}
+                                    </span>
                                 )}
-                            </>
-                        ) : (
-                            <p style={{ color: "#64748b", marginBottom: 20 }}>Sin registro de entrada hoy.</p>
-                        )}
+                            </div>
 
-                        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                            {!shift && (
-                                <button
-                                    type="button"
-                                    className="portal-btn-checkin"
-                                    disabled={busy}
-                                    onClick={onEntrada}
-                                    style={{ width: "100%" }}
-                                >
-                                    {busy ? "…" : "Registrar entrada"}
-                                </button>
-                            )}
-                            {shift && !shift.checkOut && (
-                                <button
-                                    type="button"
-                                    className="portal-btn-checkout"
-                                    disabled={busy}
-                                    onClick={onSalida}
-                                    style={{ width: "100%" }}
-                                >
-                                    {busy ? "…" : "Registrar salida"}
-                                </button>
-                            )}
+                            <div className="portal-reloj-time" aria-label={`Hora actual: ${tabTime}`}>
+                                <span className="portal-reloj-time-main">
+                                    {clock.hour}:{clock.minute}
+                                </span>
+                                <span className="portal-reloj-time-secs">:{clock.second}</span>
+                                <span className="portal-reloj-time-ampm">{clock.dayPeriod}</span>
+                            </div>
+                            <p className="portal-reloj-tz">Hora Colombia</p>
                         </div>
 
-                        {toast && <PortalToast message={toast.msg} type={toast.type} />}
-                    </div>
-                )}
+                        {loading ? (
+                            <p className="portal-reloj-shift-loading">Cargando…</p>
+                        ) : (
+                            <>
+                                <div className="portal-reloj-metrics">
+                                    <div className="portal-reloj-metric">
+                                        <span className="portal-reloj-metric-label">Horario</span>
+                                        <span className="portal-reloj-metric-value">{scheduleLabel ?? "—"}</span>
+                                    </div>
+                                    <div className="portal-reloj-metric">
+                                        <span className="portal-reloj-metric-label">Tiempo activo</span>
+                                        <span className="portal-reloj-metric-value portal-reloj-metric-value--emphasis">
+                                            {elapsed || (shift && !shift.checkOut ? "0h 0m" : "—")}
+                                        </span>
+                                    </div>
+                                    <div className="portal-reloj-metric">
+                                        <span className="portal-reloj-metric-label">Registro</span>
+                                        <span className="portal-reloj-metric-value">{registroLabel}</span>
+                                    </div>
+                                </div>
 
-                <p style={{ textAlign: "center", fontSize: 12, color: "#94a3b8", marginTop: 20 }}>
-                    Marque entrada al llegar y salida al terminar. Al cerrar sesión en el portal también se
-                    registra su salida automáticamente.
-                </p>
+                                {(!shift || !shift.checkOut) && (
+                                    <div className="portal-reloj-actions">
+                                        {!shift ? (
+                                            <button
+                                                type="button"
+                                                className="portal-btn-checkin portal-reloj-btn"
+                                                disabled={busy}
+                                                onClick={onEntrada}
+                                            >
+                                                {busy ? "…" : "Registrar entrada"}
+                                            </button>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                className="portal-btn-checkout portal-reloj-btn"
+                                                disabled={busy}
+                                                onClick={onSalida}
+                                            >
+                                                {busy ? "…" : "Registrar salida"}
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+
+                                {toast && <PortalToast message={toast.msg} type={toast.type} />}
+
+                                <div className="portal-reloj-card-footer">
+                                    <Link href="/personal/shifts" className="portal-reloj-card-link">
+                                        Historial de turnos
+                                    </Link>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
             </div>
         </PortalShell>
     );

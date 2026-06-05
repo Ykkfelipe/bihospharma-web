@@ -31,9 +31,7 @@ export default function Home() {
           Para cambiar las imágenes o los textos del carrusel,
           editar el archivo: src/app/components/HeroCarousel.tsx
           Ahí hay un arreglo de "slides" con las rutas de imagen. */}
-      <section className="relative z-0 w-full">
-        <HeroFade />
-      </section>
+      <HeroFade />
 
       {/* ——— SECCIÓN 2: Bloque de Servicios ———
           Imagen a la izquierda, texto y botón a la derecha.

@@ -79,16 +79,16 @@ export function isAfterLunch(now: Date, dateStr: string, schedule: DaySchedule):
 
 export function formatScheduleLabel(schedule: DaySchedule): string {
     if (!schedule.hasLunchBreak) {
-        return `Sáb: ${schedule.workStart} – ${schedule.workEnd}`;
+        return `Sábado · ${schedule.workStart} – ${schedule.workEnd}`;
     }
-    return `Inicio ${schedule.workStart}–${schedule.morningEnd} · Almuerzo ${schedule.lunchStart}–${schedule.lunchEnd} · Tarde ${schedule.lunchEnd}–${schedule.workEnd}`;
+    return `Mañana ${schedule.workStart}–${schedule.morningEnd} · Almuerzo ${schedule.lunchStart}–${schedule.lunchEnd} · Tarde ${schedule.lunchEnd}–${schedule.workEnd}`;
 }
 
 /** Horario completo del empleado (para panel admin). */
 export function formatEmployeeScheduleProfile(user: ScheduleUser): string {
-    const base = `L-V: ${user.workStart}–${user.morningEnd} · Almuerzo ${user.lunchStart}–${user.lunchEnd} · ${user.lunchEnd}–${user.workEnd}`;
+    const base = `L-V · Mañana ${user.workStart}–${user.morningEnd} · Almuerzo ${user.lunchStart}–${user.lunchEnd} · Tarde ${user.lunchEnd}–${user.workEnd}`;
     if (user.satWorkStart && user.satWorkEnd) {
-        return `${base} · Sábados: ${user.satWorkStart}–${user.satWorkEnd}`;
+        return `${base} · Sáb: ${user.satWorkStart}–${user.satWorkEnd}`;
     }
     return base;
 }

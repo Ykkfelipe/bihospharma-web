@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef, FormEvent, useEffect } from "react";
-import { signOutWithAttendance } from "../lib/attendance-client";
 import Link from "next/link";
 import Image from "next/image";
+import { AdminPortalShell } from "../components/PortalShell";
 
 const ACCEPTED = "application/pdf,image/jpeg,image/png,image/gif,image/webp";
 
@@ -158,33 +158,11 @@ export default function AdminPage() {
         new Date(iso).toLocaleDateString("es-CO", { year: "numeric", month: "short", day: "numeric" });
 
     return (
-        <main className="min-h-screen bg-gray-50 pb-20">
-            {/* Top bar */}
-            <header className="portal-header">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                        <Image src="/logos/bihos-logo.png" alt="Bihospharma" width={32} height={32} style={{ borderRadius: '50%', background: '#fff', padding: 3 }} />
-                        <div>
-                            <p className="text-white font-bold text-xs sm:text-sm leading-none">Panel de Administración</p>
-                            <p style={{ color: '#64748b', fontSize: 10, margin: 0 }}>Bihospharma IPS</p>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-3 sm:gap-4">
-                        <Link href="/personal/admin/attendance" style={{ color: '#94a3b8', fontSize: 11, textDecoration: 'none' }}>
-                            Asistencia
-                        </Link>
-                        <Link href="/personal/admin/actividades" style={{ color: '#0f4c8a', fontSize: 12, fontWeight: 600, textDecoration: 'none', background: '#e0e7ff', padding: '6px 12px', borderRadius: 8 }}>
-                            Actividades
-                        </Link>
-                        <Link href="/personal" style={{ color: '#94a3b8', fontSize: 11, textDecoration: 'none', transition: 'color 0.2s' }}>← Ver portal</Link>
-                        <button onClick={() => signOutWithAttendance("/personal/login")} style={{ background: 'none', border: 'none', color: '#64748b', fontSize: 11, cursor: 'pointer', transition: 'color 0.2s' }}>
-                            Cerrar sesión
-                        </button>
-                    </div>
-                </div>
-            </header>
-
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-10 grid lg:grid-cols-2 gap-6 sm:gap-10 items-start">
+        <AdminPortalShell
+            heading="Publicaciones"
+            lead="Comunicados, documentos e información institucional para el equipo."
+        >
+            <div className="grid lg:grid-cols-2 gap-6 sm:gap-10 items-start">
 
                 {/* ── CREATE FORM ── */}
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -330,6 +308,6 @@ export default function AdminPage() {
                     )}
                 </div>
             </div>
-        </main>
+        </AdminPortalShell>
     );
 }

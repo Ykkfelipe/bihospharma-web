@@ -98,7 +98,7 @@ export default function RegisterPage() {
                             />
                         </div>
                         <p style={{ color: '#7dd3fc', fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: 4 }}>
-                            Bihospharma IPS
+                            Bihospharma S.A.S
                         </p>
                         <h1 style={{ color: '#fff', fontSize: 20, fontWeight: 800, margin: 0 }}>
                             Crear Cuenta Corporativa
@@ -227,7 +227,7 @@ export default function RegisterPage() {
                 </div>
 
                 <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: 11, marginTop: 24 }}>
-                    © {new Date().getFullYear()} Bihospharma IPS S.A.S · Todos los derechos reservados
+                    © {new Date().getFullYear()} Bihospharma S.A.S · Todos los derechos reservados
                 </p>
                 </div>
         </PortalAuthPage>

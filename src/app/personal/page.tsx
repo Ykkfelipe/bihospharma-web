@@ -1,16 +1,15 @@
 "use client";
 
 import { useEffect, useState, FormEvent } from "react";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {
     ATTENDANCE_CHANGED_EVENT,
-    signOutWithAttendance,
 } from "./lib/attendance-client";
-import Link from "next/link";
-import Image from "next/image";
 import { PostAttachment } from "../components/PostAttachment";
-import PdfIframe from "../components/clients/PdfIframe";
 import { PortalToast } from "./components/PortalToast";
+import { PortalShell } from "./components/PortalShell";
+import { PortalQuickLinks } from "./components/PortalQuickLinks";
 
 /* ── Types ─────────────────────────────────────────────── */
 
@@ -155,7 +154,7 @@ function ReactionsBar({
 function CommentsSection({
     postId,
     comments: initialComments,
-    commentCount: initialCount,
+    commentCount: _commentCount,
 }: {
     postId: string;
     comments: PostComment[];
@@ -339,11 +338,6 @@ const getGreeting = () => {
     return "Buenas noches";
 };
 
-const getInitials = (name?: string | null) => {
-    if (!name) return "?";
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-};
-
 /* ── Attendance Widget ─────────────────────────────────── */
 
 function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "unauthenticated" }) {
@@ -354,8 +348,6 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
     } | null>(null);
     const [scheduleLabel, setScheduleLabel] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-    const [checkingOut, setCheckingOut] = useState(false);
-    const [checkingIn, setCheckingIn] = useState(false);
     const [elapsed, setElapsed] = useState("");
     const [toast, setToast] = useState<{ msg: string; type: "success" | "error" | "info" } | null>(null);
 
@@ -373,35 +365,6 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
             setToast({ msg: "No se pudo cargar tu asistencia. Recarga la página.", type: "error" });
         } finally {
             setLoading(false);
-        }
-    };
-
-    const manualCheckIn = async () => {
-        setCheckingIn(true);
-        setToast(null);
-        try {
-            const res = await fetch("/api/attendance", { method: "POST" });
-            const data = await res.json();
-            if (data.shift) {
-                setShift(data.shift);
-                const t = new Date(data.shift.checkIn).toLocaleTimeString("es-CO", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                });
-                setToast({
-                    msg: data.alreadyCheckedIn
-                        ? `Ya tenías entrada registrada hoy (${t}).`
-                        : `Entrada registrada correctamente a las ${t}.`,
-                    type: "success",
-                });
-            } else if (!res.ok) {
-                setToast({ msg: data.error || "No se pudo registrar la entrada.", type: "error" });
-            }
-        } catch (e) {
-            console.error(e);
-            setToast({ msg: "Error de red al registrar entrada.", type: "error" });
-        } finally {
-            setCheckingIn(false);
         }
     };
 
@@ -430,37 +393,6 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
         }, 1000);
         return () => clearInterval(interval);
     }, [shift]);
-
-    const handleCheckOut = async () => {
-        if (!confirm("¿Seguro que quieres registrar tu salida?")) return;
-        setCheckingOut(true);
-        setToast(null);
-        try {
-            const res = await fetch("/api/attendance/check-out", { method: "POST" });
-            const data = await res.json();
-            const updated = data.shift ?? data;
-            if (res.ok && updated?.checkIn) {
-                setShift(updated);
-                const t = updated.checkOut
-                    ? new Date(updated.checkOut).toLocaleTimeString("es-CO", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                      })
-                    : "";
-                setToast({
-                    msg: t ? `Salida registrada correctamente a las ${t}.` : "Salida registrada.",
-                    type: "success",
-                });
-            } else {
-                setToast({ msg: data.error || "No se pudo registrar la salida.", type: "error" });
-            }
-        } catch (e) {
-            console.error(e);
-            setToast({ msg: "Error de red al registrar salida.", type: "error" });
-        } finally {
-            setCheckingOut(false);
-        }
-    };
 
     const formatTime = (iso: string) =>
         new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
@@ -493,8 +425,7 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
                 )}
                 {!shift ? (
                     <p style={{ color: "#64748b", fontSize: 13, margin: 0 }}>
-                        La entrada se registra al ingresar al portal. El almuerzo se pausa automáticamente.
-                        La salida solo con el botón o &quot;Terminar turno&quot;.
+                        Use el reloj para registrar entrada y salida del turno.
                     </p>
                 ) : (
                     <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
@@ -517,17 +448,10 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
                 )}
             </div>
 
-            <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                {!shift && (
-                    <button className="portal-btn-checkin" onClick={manualCheckIn} disabled={checkingIn}>
-                        {checkingIn ? "Registrando..." : "Registrar Entrada"}
-                    </button>
-                )}
-                {shift && !shift.checkOut && (
-                    <button className="portal-btn-checkout" onClick={handleCheckOut} disabled={checkingOut}>
-                        {checkingOut ? "Registrando..." : "Registrar Salida"}
-                    </button>
-                )}
+            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+                <Link href="/personal/reloj" className="portal-btn-checkin" style={{ textDecoration: "none" }}>
+                    Ir al reloj
+                </Link>
             </div>
             {toast && <PortalToast message={toast.msg} type={toast.type} />}
         </div>
@@ -542,9 +466,6 @@ export default function PersonalPage() {
     const { data: session, status } = useSession();
     const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
-
-    const role = (session?.user as { role?: string })?.role;
-    const userName = session?.user?.name ?? session?.user?.email ?? "";
 
     useEffect(() => {
         fetch("/api/posts")
@@ -565,119 +486,26 @@ export default function PersonalPage() {
     });
 
     return (
-        <main style={{ minHeight: '100vh', background: '#f5f7fa', paddingBottom: 40 }}>
-            {/* ── Premium Header ───────────────────────────────── */}
-            <header className="portal-header">
-                <div style={{ maxWidth: 960, margin: '0 auto', padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <Image
-                            src="/logos/bihos-logo.png"
-                            alt="Bihospharma"
-                            width={32}
-                            height={32}
-                            style={{ borderRadius: '50%', background: '#fff', padding: 3 }}
-                        />
-                        <div>
-                            <p style={{ color: '#fff', fontWeight: 700, fontSize: 13, lineHeight: 1, margin: 0 }}>Acceso Corporativo</p>
-                            <p style={{ color: '#64748b', fontSize: 10, margin: 0 }}>Bihospharma IPS</p>
-                        </div>
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <div className="portal-avatar" style={{ display: 'none' }}>
-                            {getInitials(session?.user?.name)}
-                        </div>
-                        <span className="hidden sm:block" style={{ color: '#94a3b8', fontSize: 12 }}>
-                            {userName}
-                        </span>
-                        <Link
-                            href="/personal/programas"
-                            style={{
-                                color: '#94a3b8', fontSize: 10, fontWeight: 600,
-                                textDecoration: 'none', padding: '6px 10px',
-                            }}
-                        >
-                            Mis programas
-                        </Link>
-                        <Link
-                            href="/personal/actividades"
-                            style={{
-                                color: '#94a3b8', fontSize: 10, fontWeight: 600,
-                                textDecoration: 'none', padding: '6px 10px',
-                            }}
-                        >
-                            Actividades
-                        </Link>
-                        <Link
-                            href="/personal/reloj"
-                            style={{
-                                color: '#94a3b8', fontSize: 10, fontWeight: 600,
-                                textDecoration: 'none', padding: '6px 10px',
-                            }}
-                        >
-                            Reloj
-                        </Link>
-                        <Link
-                            href="/personal/shifts"
-                            style={{
-                                color: '#94a3b8', fontSize: 10, fontWeight: 600,
-                                textDecoration: 'none', padding: '6px 10px',
-                            }}
-                        >
-                            Mis turnos
-                        </Link>
-                        {role === "admin" && (
-                            <Link
-                                href="/personal/admin"
-                                style={{
-                                    background: 'rgba(15, 76, 138, 0.5)', color: '#fff', fontSize: 10,
-                                    fontWeight: 600, padding: '6px 14px', borderRadius: 8,
-                                    textDecoration: 'none', transition: 'all 0.2s',
-                                    border: '1px solid rgba(255,255,255,0.1)',
-                                }}
-                            >
-                                Administrar
-                            </Link>
-                        )}
-                        <button
-                            onClick={() => signOutWithAttendance("/personal/login")}
-                            style={{
-                                background: 'none', border: 'none', color: '#64748b',
-                                fontSize: 11, cursor: 'pointer', transition: 'color 0.2s',
-                                padding: '4px 8px',
-                            }}
-                        >
-                            Cerrar sesión
-                        </button>
-                    </div>
-                </div>
-            </header>
+        <PortalShell title="Inicio">
+            <div className="portal-page portal-page--home">
+                <header className="portal-home-header portal-animate-in">
+                    <h1 className="portal-home-title">
+                        {getGreeting()}, {(session?.user?.name || "").split(" ")[0]}
+                    </h1>
+                    <p className="portal-home-date">{todayStr}</p>
+                </header>
 
-            <div style={{ maxWidth: 960, margin: '0 auto', padding: '24px 20px' }}>
-                {/* ── Welcome Banner ───────────────────────────── */}
-                <div className="portal-welcome portal-animate-in" style={{ marginBottom: 32 }}>
-                    <div style={{ position: 'relative', zIndex: 1 }}>
-                        <p style={{ fontSize: 11, color: '#7dd3fc', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 600, marginBottom: 4, margin: 0 }}>
-                            {todayStr}
-                        </p>
-                        <h1 style={{ fontSize: 24, fontWeight: 800, margin: '8px 0 4px', color: '#fff' }}>
-                            {getGreeting()}, {(session?.user?.name || "").split(' ')[0]} 👋
-                        </h1>
-                        <p style={{ fontSize: 13, color: '#94a3b8', margin: 0 }}>
-                            Bienvenido al portal corporativo de Bihospharma IPS
-                        </p>
-                    </div>
-                </div>
+                <PortalQuickLinks />
+
+                <AttendanceWidget status={status} />
 
                 {loading ? (
-                    <div className="portal-animate-in" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                    <div className="portal-animate-in" style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                         <SkeletonCard />
                         <SkeletonCard />
                     </div>
                 ) : (
-                    <div className="portal-animate-in-delay" style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
-                        {/* ── Mi Asistencia Widget ───────────────── */}
-                        <AttendanceWidget status={status} />
-
+                    <div className="portal-home-feed">
                         {/* ── Pinned Institutional Documents ─────── */}
                         {pinned.length > 0 && (
                             <section>
@@ -767,10 +595,9 @@ export default function PersonalPage() {
                         )}
 
                         {posts.length === 0 && (
-                            <div className="portal-section-card" style={{ padding: 32, textAlign: 'center' }}>
-                                <p style={{ color: '#64748b', fontSize: 14, margin: 0 }}>
-                                    Aún no hay publicaciones en el tablero. Los administradores pueden publicar comunicados desde el panel de administración.
-                                </p>
+                            <div className="portal-home-empty">
+                                Aún no hay publicaciones en el tablero. Los administradores pueden publicar
+                                comunicados desde el panel de administración.
                             </div>
                         )}
 
@@ -881,11 +708,6 @@ export default function PersonalPage() {
                     </div>
                 )}
             </div>
-
-            {/* ── Footer ───────────────────────────────────── */}
-            <div className="portal-footer">
-                © {new Date().getFullYear()} Bihospharma IPS S.A.S · Portal Corporativo · Todos los derechos reservados
-            </div>
-        </main>
+        </PortalShell>
     );
 }

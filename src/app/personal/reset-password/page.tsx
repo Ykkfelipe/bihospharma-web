@@ -155,7 +155,7 @@ export default function ResetPasswordPage() {
                             height={70}
                             className="mx-auto rounded-full bg-white p-1.5 mb-4"
                         />
-                        <p className="text-blue-200 text-[10px] sm:text-xs font-semibold uppercase tracking-widest mb-1">Bihospharma IPS</p>
+                        <p className="text-blue-200 text-[10px] sm:text-xs font-semibold uppercase tracking-widest mb-1">Bihospharma S.A.S</p>
                         <h1 className="text-white text-xl sm:text-2xl font-bold">Nueva Contraseña</h1>
                     </div>
 
