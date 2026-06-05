@@ -29,10 +29,16 @@ const prisma = new PrismaClient();
 
 try {
   const hash = await bcrypt.hash(password, 10);
+  const forcePassword = process.env.PORTAL_FORCE_PASSWORD === '1';
   for (const u of users) {
+    const existing = await prisma.user.findUnique({ where: { email: u.email } });
     await prisma.user.upsert({
       where: { email: u.email },
-      update: { passwordHash: hash, name: u.name, role: u.role || 'employee' },
+      update: {
+        name: u.name,
+        role: u.role || existing?.role || 'employee',
+        ...(forcePassword ? { passwordHash: hash } : {}),
+      },
       create: {
         email: u.email,
         name: u.name,
@@ -40,9 +46,9 @@ try {
         role: u.role || 'employee',
       },
     });
-    console.log('✓', u.email);
+    console.log('✓', u.email, existing ? (forcePassword ? '(password updated)' : '(password kept)') : '(created)');
   }
-  console.log(`Done — ${users.length} user(s) ready. Share PORTAL_TEMP_PASSWORD securely.`);
+  console.log(`Done — ${users.length} user(s) ready.${forcePassword ? '' : ' Existing passwords were not changed.'}`);
 } finally {
   await prisma.$disconnect();
 }
