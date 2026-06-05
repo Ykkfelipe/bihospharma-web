@@ -1,5 +1,3 @@
-import { auth } from "@/auth";
-import { SessionProvider } from "next-auth/react";
 import { ReactNode } from "react";
 import { PortalAttendanceGuard } from "./components/PortalAttendanceGuard";
 import { LateReasonModal } from "./components/LateReasonModal";
@@ -11,14 +9,12 @@ export const metadata = {
     },
 };
 
-export default async function PersonalLayout({ children }: { children: ReactNode }) {
-    const session = await auth();
-
+export default function PersonalLayout({ children }: { children: ReactNode }) {
     return (
-        <SessionProvider session={session}>
+        <>
             <PortalAttendanceGuard />
             <LateReasonModal />
             {children}
-        </SessionProvider>
+        </>
     );
 }

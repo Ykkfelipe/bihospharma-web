@@ -14,8 +14,8 @@ const INTERVAL_MS = 5000;
 function ChevronIcon({ direction }: { direction: 'left' | 'right' }) {
   return (
     <svg
-      width="20"
-      height="20"
+      width="16"
+      height="16"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
@@ -49,65 +49,69 @@ export default function HeroFade() {
 
   return (
     <section
-      className="hero-fade relative z-0 w-full overflow-hidden bg-white"
+      className="hero-fade"
       aria-label="Carrusel principal"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="hero-fade-viewport">
-        {SLIDES.map((slide, index) => (
-          <div
-            key={slide.src}
-            className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-              index === active ? 'opacity-100 z-10' : 'opacity-0 z-0'
-            }`}
-            aria-hidden={index !== active}
-          >
-            <Image
-              src={slide.src}
-              alt={slide.alt}
-              fill
-              priority={index === 0}
-              fetchPriority={index === 0 ? 'high' : 'low'}
-              loading={index === 0 ? 'eager' : 'lazy'}
-              quality={85}
-              sizes="100vw"
-              className="object-contain object-center"
-            />
-          </div>
-        ))}
-      </div>
+      <div className="hero-fade-frame">
+        <div className="hero-fade-viewport">
+          {SLIDES.map((slide, index) => (
+            <div
+              key={slide.src}
+              className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
+                index === active ? 'opacity-100 z-10' : 'opacity-0 z-0'
+              }`}
+              aria-hidden={index !== active}
+            >
+              <Image
+                src={slide.src}
+                alt={slide.alt}
+                fill
+                priority={index === 0}
+                fetchPriority={index === 0 ? 'high' : 'low'}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                quality={85}
+                sizes="100vw"
+                className="hero-fade-slide"
+              />
+            </div>
+          ))}
 
-      <button
-        type="button"
-        onClick={() => goTo(active - 1)}
-        className="hero-fade-arrow hero-fade-arrow--prev"
-        aria-label="Slide anterior"
-      >
-        <ChevronIcon direction="left" />
-      </button>
-      <button
-        type="button"
-        onClick={() => goTo(active + 1)}
-        className="hero-fade-arrow hero-fade-arrow--next"
-        aria-label="Slide siguiente"
-      >
-        <ChevronIcon direction="right" />
-      </button>
-
-      <div className="hero-fade-dots" role="tablist" aria-label="Slides del carrusel">
-        {SLIDES.map((slide, index) => (
           <button
-            key={slide.src}
             type="button"
-            role="tab"
-            onClick={() => goTo(index)}
-            className={`hero-fade-dot${index === active ? ' hero-fade-dot--active' : ''}`}
-            aria-label={`Ir al slide ${index + 1}`}
-            aria-selected={index === active}
-          />
-        ))}
+            onClick={() => goTo(active - 1)}
+            className="hero-fade-arrow hero-fade-arrow--prev"
+            aria-label="Slide anterior"
+          >
+            <ChevronIcon direction="left" />
+          </button>
+          <button
+            type="button"
+            onClick={() => goTo(active + 1)}
+            className="hero-fade-arrow hero-fade-arrow--next"
+            aria-label="Slide siguiente"
+          >
+            <ChevronIcon direction="right" />
+          </button>
+
+          <div className="hero-fade-dots" role="tablist" aria-label="Slides del carrusel">
+            {SLIDES.map((slide, index) => (
+              <button
+                key={slide.src}
+                type="button"
+                role="tab"
+                onClick={() => goTo(index)}
+                className={`hero-fade-dot${index === active ? ' hero-fade-dot--active' : ''}`}
+                aria-label={`Ir al slide ${index + 1}`}
+                aria-selected={index === active}
+              />
+            ))}
+          </div>
+        </div>
       </div>
+
+      <div className="hero-fade-edge" aria-hidden />
     </section>
   );
 }

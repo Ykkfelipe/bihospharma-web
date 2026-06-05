@@ -336,8 +336,29 @@
 
 @media (min-width: 768px) {
   .portal-mobile-bar {
-    display: none;
+    padding: 12px 20px;
   }
+}
+
+.portal-mobile-bar--dark {
+  background: rgba(10, 37, 64, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.portal-mobile-bar--dark .portal-mobile-brand {
+  color: #fff;
+}
+
+.portal-mobile-bar--dark .portal-shell-menu-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.portal-mobile-bar--dark .portal-shell-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
 }
 
 .portal-mobile-brand {
@@ -366,9 +387,9 @@
 /* ── Sidebar ────────────────────────────────────────── */
 
 .portal-sidebar {
-  display: none;
+  display: flex;
   flex-direction: column;
-  width: 260px;
+  width: min(280px, 88vw);
   flex-shrink: 0;
   background: linear-gradient(180deg, #0a2540 0%, #0f4c8a 100%);
   color: #fff;
@@ -379,20 +400,14 @@
   z-index: 70;
   overflow-y: auto;
   box-shadow: 4px 0 24px rgba(10, 37, 64, 0.12);
-}
-
-@media (min-width: 768px) {
-  .portal-sidebar {
-    display: flex;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    transform: none;
-  }
+  transform: translateX(-105%);
+  visibility: hidden;
+  transition: transform 0.24s ease, visibility 0.24s ease;
 }
 
 .portal-sidebar--open {
-  display: flex;
+  transform: translateX(0);
+  visibility: visible;
 }
 
 .portal-sidebar-backdrop {
@@ -402,17 +417,51 @@
   background: rgba(10, 37, 64, 0.45);
   border: none;
   cursor: pointer;
+  animation: portal-backdrop-in 0.2s ease;
 }
 
-@media (min-width: 768px) {
-  .portal-sidebar-backdrop {
-    display: none;
+@keyframes portal-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
 .portal-sidebar-brand {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
   padding: 20px 18px 12px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.portal-sidebar-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-top: 2px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.portal-sidebar-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.portal-sidebar-brand .portal-shell-brand {
+  flex: 1;
+  min-width: 0;
 }
 
 .portal-sidebar-brand .portal-shell-brand-title {
@@ -556,6 +605,22 @@
   cursor: not-allowed;
 }
 
+.portal-sidebar-action--signout {
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.portal-sidebar-action--signout:hover:not(:disabled) {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.portal-sidebar-action--signout:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .portal-sidebar-site-link {
   text-align: center;
   font-size: 12px;
@@ -582,6 +647,7 @@
 .portal-main {
   flex: 1;
   min-width: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -1432,6 +1498,50 @@
   background: #fff;
   border-color: #94c4e8;
   box-shadow: 0 2px 8px rgba(15, 76, 138, 0.1);
+}
+
+.portal-profile-signout {
+  font-size: 14px;
+  font-weight: 600;
+  color: #b91c1c;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  box-shadow: 0 1px 2px rgba(185, 28, 28, 0.06);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  font-family: inherit;
+  width: 100%;
+}
+
+.portal-profile-signout:hover:not(:disabled) {
+  color: #991b1b;
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.portal-profile-signout:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.portal-profile-signout-note {
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.portal-profile-inline-link {
+  color: #0f4c8a;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.portal-profile-inline-link:hover {
+  color: #48a4dc;
 }
 
 .portal-profile-grid {

@@ -58,7 +58,7 @@ export default function RegisterPage() {
             if (result?.error) {
                 throw new Error("Cuenta creada, pero hubo un error al iniciar sesión.");
             } else {
-                router.push("/personal");
+                router.push("/personal/reloj");
                 router.refresh();
             }
         } catch (err) {

@@ -48,9 +48,13 @@ export const authConfig: NextAuthConfig = {
             return session;
         },
     },
-    session: { 
+    session: {
         strategy: "jwt",
         maxAge: 180 * 24 * 60 * 60, // 180 days
+        updateAge: 24 * 60 * 60, // refresh session daily while active
+    },
+    jwt: {
+        maxAge: 180 * 24 * 60 * 60,
     },
     trustHost: true,
     debug: false,

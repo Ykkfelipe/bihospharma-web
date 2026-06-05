@@ -52,6 +52,11 @@ export async function autoCheckOutIfNeeded(): Promise<boolean> {
     return result.ok && !result.skipped;
 }
 
+/** Cierra sesión sin registrar salida (cambiar de cuenta, salir del portal). */
+export async function signOutPortal(callbackUrl = "/personal/login") {
+    await signOut({ callbackUrl });
+}
+
 /**
  * Terminar turno: registra salida si hay turno abierto, luego cierra sesión.
  */

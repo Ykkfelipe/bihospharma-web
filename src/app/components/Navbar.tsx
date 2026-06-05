@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { isPortalAppPath, isPortalAuthPath } from "@/lib/portalRoutes";
 
 const NAV_LINKS = [
@@ -30,9 +31,11 @@ const linkClass =
 
 export default function Navbar() {
   const pathname = usePathname() ?? "";
+  const { status } = useSession();
   const onPortalApp = isPortalAppPath(pathname) && !isPortalAuthPath(pathname);
-  const portalHref = onPortalApp ? "/personal" : "/personal/login";
-  const portalLabel = onPortalApp ? "Mi portal" : "Acceso Corporativo";
+  const isLoggedIn = status === "authenticated";
+  const portalHref = onPortalApp || isLoggedIn ? "/personal/reloj" : "/personal/login";
+  const portalLabel = onPortalApp || isLoggedIn ? "Mi portal" : "Acceso Corporativo";
 
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);

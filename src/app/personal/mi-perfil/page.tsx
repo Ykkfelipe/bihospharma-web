@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { PortalShell } from "../components/PortalShell";
+import { signOutPortal } from "../lib/attendance-client";
 
 type ScheduleBlock = {
   label: string;
@@ -65,6 +66,7 @@ export default function MiPerfilPage() {
   const { data: session } = useSession();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [signingOut, setSigningOut] = useState(false);
 
   useEffect(() => {
     fetch("/api/profile", { cache: "no-store" })
@@ -142,7 +144,25 @@ export default function MiPerfilPage() {
               <Link href="/personal/forgot-password?returnTo=/personal/mi-perfil">
                 Cambiar contraseña
               </Link>
+              <button
+                type="button"
+                className="portal-profile-signout"
+                disabled={signingOut}
+                onClick={() => {
+                  setSigningOut(true);
+                  void signOutPortal("/personal/login").finally(() => setSigningOut(false));
+                }}
+              >
+                {signingOut ? "Cerrando sesión…" : "Cerrar sesión"}
+              </button>
             </div>
+            <p className="portal-profile-muted portal-profile-signout-note">
+              Para registrar su salida del turno use <strong>Terminar turno</strong> en el menú o en{" "}
+              <Link href="/personal/reloj" className="portal-profile-inline-link">
+                Reloj
+              </Link>
+              .
+            </p>
           </section>
         </div>
       </div>

@@ -1,6 +1,8 @@
 import "./globals.css";
 
 import { DM_Sans } from "next/font/google";
+import { auth } from "@/auth";
+import { AuthProvider } from "./components/AuthProvider";
 import SiteChrome from "./components/SiteChrome";
 import { OrganizationJsonLd } from "./components/JsonLd";
 
@@ -39,16 +41,20 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await auth();
+
   return (
     <html lang="es" className={dmSans.variable}>
       <body className="flex min-h-screen flex-col overflow-x-hidden bg-white font-sans text-gray-800 antialiased">
-        <OrganizationJsonLd />
-        <SiteChrome>{children}</SiteChrome>
+        <AuthProvider session={session}>
+          <OrganizationJsonLd />
+          <SiteChrome>{children}</SiteChrome>
+        </AuthProvider>
       </body>
     </html>
   );

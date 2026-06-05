@@ -4,6 +4,13 @@ import Link from "next/link";
 
 const QUICK_LINKS = [
   {
+    href: "/personal/reloj",
+    label: "Reloj",
+    desc: "Entrada y salida del turno",
+    color: "#059669",
+    bg: "#d1fae5",
+  },
+  {
     href: "/personal/programas",
     label: "Programas",
     desc: "Mantisweb, QB Médica y más",
@@ -16,13 +23,6 @@ const QUICK_LINKS = [
     desc: "Registro diario por área",
     color: "#7c3aed",
     bg: "#ede9fe",
-  },
-  {
-    href: "/personal/reloj",
-    label: "Reloj",
-    desc: "Entrada y salida del turno",
-    color: "#059669",
-    bg: "#d1fae5",
   },
   {
     href: "/personal/mi-perfil",

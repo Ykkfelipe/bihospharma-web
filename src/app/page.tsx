@@ -38,9 +38,9 @@ export default function Home() {
           Para cambiar la imagen: reemplazar /public/images/services.png
           Para cambiar el texto: editar el <h2> y el <p> de abajo.
           El botón "VER TODOS" lleva a /services */}
-      <section className="py-16 px-4 bg-white">
+      <section className="home-services-section px-4 pt-5 pb-12 bg-white sm:pt-8 md:py-16">
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
-          <div>
+          <div className="home-services-photo-wrap">
             <Image
               src="/images/services.png"
               alt="Consulta médica"
@@ -48,7 +48,7 @@ export default function Home() {
               height={400}
               priority
               sizes="(max-width: 768px) 100vw, 50vw"
-              className="rounded-lg w-full object-cover"
+              className="home-services-photo rounded-lg w-full object-cover"
             />
           </div>
           <div>

@@ -1,18 +1,27 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import { signIn } from "next-auth/react";
+import { useState, FormEvent, useEffect } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { MailIcon, LockIcon, AlertIcon } from "../components/PortalFieldIcons";
 import { PortalAuthPage } from "../components/PortalPublicNav";
 
 export default function LoginPage() {
+    const router = useRouter();
+    const { status } = useSession();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (status === "authenticated") {
+            router.replace("/personal/reloj");
+        }
+    }, [status, router]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -44,7 +53,7 @@ export default function LoginPage() {
                     setError(result.error);
                 }
             } else if (result?.ok) {
-                window.location.href = "/personal";
+                window.location.href = "/personal/reloj";
             }
         } catch (err) {
             setLoading(false);
