@@ -92,8 +92,8 @@ export default function DiaMundialFibrosisQuisticaPage() {
       </BlogSection>
 
       <BlogCtaBand>
-        En <strong>Bihospharma</strong> contamos con profesionales dispuestos a acompañarte en el cuidado de tu salud. Si
-        sufres de migrañas o dolores de cabeza frecuentes, agenda tu cita y recibe la atención que necesitas.
+        En <strong>Bihospharma</strong> contamos con profesionales dispuestos a acompañarte en el cuidado integral de tu
+        salud. Agenda tu cita y recibe la orientación y el acompañamiento que tú y tu familia necesitan.
       </BlogCtaBand>
     </BlogPostLayout>
   );

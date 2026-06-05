@@ -1535,7 +1535,9 @@
 
 .portal-profile-inline-link {
   color: #0f4c8a;
-  font-weight: 700;
+  font-size: inherit;
+  font-weight: 600;
+  line-height: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
 }

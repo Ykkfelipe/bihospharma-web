@@ -4,6 +4,7 @@ import BlogPostLayout, {
   BlogHeading,
   BlogParagraph,
   BlogList,
+  BlogCtaBand,
 } from '@/app/components/BlogPostLayout';
 
 export const metadata = buildPageMetadata({
@@ -47,7 +48,7 @@ export default function BlogPostDiaMundialDelLinfoma() {
             <h3 className="mb-1 text-lg font-extrabold text-gray-900">Linfoma de Hodgkin</h3>
             <BlogList
               items={[
-                'Afecta  principalmente a los ganglios linfáticos de la parte superior del cuerpo (cuello, tórax, costillas).',
+                'Afecta principalmente a los ganglios linfáticos de la parte superior del cuerpo (cuello, tórax, costillas).',
                 'Se caracteriza por la presencia de la célula de Reed-Sternberg.',
                 'Es más fácil de tratar en comparación con otros tipos.',
                 'Se propaga de un ganglio a otro siguiendo un patrón más predecible.',
@@ -125,6 +126,11 @@ export default function BlogPostDiaMundialDelLinfoma() {
           factores de riesgo es fundamental para consultar al especialista de manera oportuna.
         </BlogParagraph>
       </BlogSection>
+
+      <BlogCtaBand>
+        En <strong>Bihospharma</strong> te acompañamos en el cuidado de tu salud. Ante cualquier signo de alerta, agenda
+        tu cita con nuestros especialistas: la detección temprana marca la diferencia.
+      </BlogCtaBand>
     </BlogPostLayout>
   );
 }

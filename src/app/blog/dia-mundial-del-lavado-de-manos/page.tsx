@@ -50,7 +50,7 @@ export default function DiaLavadoManos() {
           para detener la propagación de gérmenes y proteger la salud de todos.
         </BlogParagraph>
 
-        <BlogHeading>La salud mental desde la infancia y la adolescencia.</BlogHeading>
+        <BlogHeading>Los cinco momentos clave para una correcta higiene de manos</BlogHeading>
 
         <BlogParagraph>
           La Organización Mundial de la Salud (OMS) define cinco momentos esenciales para mantener una correcta higiene de
