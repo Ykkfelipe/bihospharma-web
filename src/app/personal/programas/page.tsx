@@ -23,13 +23,7 @@ export default function ProgramasPage() {
                     <p className="portal-programas-eyebrow">Accesos corporativos</p>
                     <h1 className="portal-programas-title">Mis programas</h1>
                     <p className="portal-programas-lead">
-                        Accesos directos a los sistemas de trabajo de la IPS. Haga clic en la tarjeta
-                        del programa que va a usar.
-                    </p>
-                    <p className="portal-programas-note">
-                        Se abrirá en una <strong>nueva pestaña</strong>. En esa página deberá ingresar
-                        el <strong>usuario y contraseña de ese programa</strong> (Mantisweb o QB Médica).
-                        No son los mismos datos del portal Bihospharma.
+                        Seleccione el sistema que necesita. Cada acceso abre en una nueva pestaña.
                     </p>
                 </header>
 
