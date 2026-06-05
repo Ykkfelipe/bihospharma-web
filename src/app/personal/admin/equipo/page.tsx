@@ -81,8 +81,10 @@ export default function AdminEquipoPage() {
             {loading ? (
                 <p className="portal-admin-loading">Cargando equipo…</p>
             ) : (
-                <div className="portal-section-card portal-equipo-table-wrap">
-                    <table className="portal-equipo-table">
+                <>
+                    <p className="portal-equipo-scroll-hint">Deslice horizontalmente para ver toda la tabla</p>
+                    <div className="portal-section-card portal-equipo-table-wrap">
+                        <table className="portal-equipo-table">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
@@ -146,7 +148,8 @@ export default function AdminEquipoPage() {
                             })}
                         </tbody>
                     </table>
-                </div>
+                    </div>
+                </>
             )}
         </AdminPortalShell>
     );

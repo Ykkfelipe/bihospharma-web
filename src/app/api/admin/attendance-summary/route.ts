@@ -30,8 +30,8 @@ export async function GET(req: Request) {
     const url = new URL(req.url);
     const date = url.searchParams.get("date") || todayCO();
 
-    const employees = await prisma.user.findMany({
-        where: { role: "employee" },
+    const staff = await prisma.user.findMany({
+        where: { role: { in: ["employee", "admin"] } },
         select: {
             id: true,
             name: true,
@@ -115,7 +115,7 @@ export async function GET(req: Request) {
     const nowCO = getNowInBogota();
     const isToday = date === todayCO();
 
-    const roster = employees.map((emp) => {
+    const roster = staff.map((emp) => {
         const shift = shiftByUser.get(emp.id);
         const schedule = getScheduleForUser(emp as ScheduleUser, date);
         const scheduleToday = schedule ? formatScheduleLabel(schedule) : null;
@@ -173,7 +173,7 @@ export async function GET(req: Request) {
 
     const summary = {
         date,
-        totalEmployees: employees.length,
+        totalEmployees: staff.length,
         sinEntrada: roster.filter((r) => r.status === "sin_entrada").length,
         tardeSinEntrada: roster.filter((r) => r.status === "tarde_sin_entrada").length,
         enTurno: roster.filter((r) => r.status === "en_turno").length,

@@ -49,12 +49,12 @@ export default function HeroFade() {
 
   return (
     <section
-      className="relative z-0 w-full overflow-hidden bg-[#eef4fa]"
+      className="hero-fade relative z-0 w-full overflow-hidden bg-white"
       aria-label="Carrusel principal"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="relative aspect-[2/1] w-full sm:aspect-[3.17/1] sm:min-h-[220px]">
+      <div className="hero-fade-viewport">
         {SLIDES.map((slide, index) => (
           <div
             key={slide.src}
@@ -70,9 +70,9 @@ export default function HeroFade() {
               priority={index === 0}
               fetchPriority={index === 0 ? 'high' : 'low'}
               loading={index === 0 ? 'eager' : 'lazy'}
-              quality={80}
+              quality={85}
               sizes="100vw"
-              className="object-cover object-top sm:object-contain sm:object-center"
+              className="object-contain object-center"
             />
           </div>
         ))}

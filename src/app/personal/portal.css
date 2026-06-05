@@ -781,10 +781,34 @@
 .portal-equipo-table-wrap {
   padding: 0;
   overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.portal-section-card.portal-equipo-table-wrap {
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.portal-equipo-scroll-hint {
+  display: none;
+  margin: 0;
+  padding: 8px 16px 0;
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+@media (max-width: 767px) {
+  .portal-equipo-scroll-hint {
+    display: block;
+  }
 }
 
 .portal-equipo-table {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
   font-size: 14px;
 }

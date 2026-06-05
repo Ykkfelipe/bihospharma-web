@@ -51,6 +51,13 @@ body {
 }
 
 /* Home hero carousel controls */
+.hero-fade-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3.2 / 1;
+  background: #fff;
+}
+
 .hero-fade-arrow {
   position: absolute;
   top: 50%;
