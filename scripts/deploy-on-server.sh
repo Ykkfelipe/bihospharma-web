@@ -51,7 +51,7 @@ npx prisma generate --schema=./prisma/schema.prisma 2>/dev/null \
   || npx --yes prisma@5.22.0 generate --schema=./prisma/schema.prisma
 
 echo "→ Applying database migrations"
-npx prisma migrate deploy 2>/dev/null || npx prisma db push 2>/dev/null || true
+bash scripts/prisma-migrate-deploy.sh
 
 touch .env.production
 chmod 600 .env.production

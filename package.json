@@ -16,7 +16,7 @@
     "prepare-deploy": "rm -rf deploy-ready && mkdir deploy-ready && cp -r public deploy-ready/ && cp -r .next deploy-ready/.next && cp package.json deploy-ready/ && cp server.js deploy-ready/ && zip -r bihospharma-deploy.zip deploy-ready",
     "db:seed": "npx tsx prisma/seed.ts",
     "db:push": "npx prisma db push",
-    "db:migrate": "npx prisma migrate deploy",
+    "db:migrate": "bash scripts/prisma-migrate-deploy.sh",
     "test:attendance": "npx tsx scripts/verify-attendance.ts"
   },
   "prisma": {

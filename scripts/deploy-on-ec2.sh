@@ -35,7 +35,7 @@ if [ "${SKIP_INSTALL:-}" != "1" ]; then
   fi
 
   echo "→ Database schema…"
-  npx prisma migrate deploy 2>/dev/null || npx prisma db push 2>/dev/null || true
+  bash scripts/prisma-migrate-deploy.sh
 fi
 
 echo "→ Restart PM2 (clean start)…"

@@ -76,7 +76,7 @@ rebuild_app() {
   log "REBUILD_ON_FAILURE=true — running emergency rebuild on server"
   npm run build >>"$LOG_FILE" 2>&1
   npx prisma generate >>"$LOG_FILE" 2>&1
-  npx prisma migrate deploy >>"$LOG_FILE" 2>&1 || npx prisma db push >>"$LOG_FILE" 2>&1 || true
+  bash scripts/prisma-migrate-deploy.sh >>"$LOG_FILE" 2>&1
   pm2 restart bihos --update-env >>"$LOG_FILE" 2>&1 || pm2 start ecosystem.config.js --only bihos --update-env >>"$LOG_FILE" 2>&1
   pm2 save >>"$LOG_FILE" 2>&1 || true
   sleep 12
