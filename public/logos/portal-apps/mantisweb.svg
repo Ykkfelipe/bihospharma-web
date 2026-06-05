@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" role="img" aria-label="Mantisweb">
+  <text x="0" y="42" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="400" fill="#6b7280">mantis</text>
+  <text x="148" y="42" font-family="Arial, Helvetica, sans-serif" font-size="36" font-weight="700" fill="#4b5563">web</text>
+  <text x="0" y="68" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#9ca3af">software ERP</text>
+  <circle cx="218" cy="22" r="8" fill="#94a3b8"/>
+  <circle cx="248" cy="38" r="6" fill="#cbd5e1"/>
+  <circle cx="232" cy="52" r="5" fill="#64748b"/>
+  <line x1="218" y1="22" x2="248" y2="38" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="248" y1="38" x2="232" y2="52" stroke="#94a3b8" stroke-width="2"/>
+</svg>

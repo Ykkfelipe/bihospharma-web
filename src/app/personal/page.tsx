@@ -590,6 +590,15 @@ export default function PersonalPage() {
                             {userName}
                         </span>
                         <Link
+                            href="/personal/programas"
+                            style={{
+                                color: '#94a3b8', fontSize: 10, fontWeight: 600,
+                                textDecoration: 'none', padding: '6px 10px',
+                            }}
+                        >
+                            Mis programas
+                        </Link>
+                        <Link
                             href="/personal/reloj"
                             style={{
                                 color: '#94a3b8', fontSize: 10, fontWeight: 600,
