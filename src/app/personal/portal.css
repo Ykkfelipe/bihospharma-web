@@ -584,11 +584,29 @@
 }
 
 .portal-programas-lead {
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.6;
+  color: #475569;
+  margin: 0 auto 12px;
+  max-width: 540px;
+  font-weight: 500;
+}
+
+.portal-programas-note {
+  font-size: 13px;
+  line-height: 1.55;
   color: #64748b;
   margin: 0 auto;
-  max-width: 520px;
+  max-width: 540px;
+  padding: 12px 16px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.portal-programas-note strong {
+  color: #334155;
+  font-weight: 600;
 }
 
 .portal-programas-footnote {
