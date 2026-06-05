@@ -10,6 +10,7 @@ import { useState } from "react";
 const NAV = [
     { href: "/personal", label: "Inicio" },
     { href: "/personal/programas", label: "Mis programas" },
+    { href: "/personal/actividades", label: "Actividades" },
     { href: "/personal/reloj", label: "Reloj" },
     { href: "/personal/shifts", label: "Mis turnos" },
 ] as const;

@@ -599,6 +599,15 @@ export default function PersonalPage() {
                             Mis programas
                         </Link>
                         <Link
+                            href="/personal/actividades"
+                            style={{
+                                color: '#94a3b8', fontSize: 10, fontWeight: 600,
+                                textDecoration: 'none', padding: '6px 10px',
+                            }}
+                        >
+                            Actividades
+                        </Link>
+                        <Link
                             href="/personal/reloj"
                             style={{
                                 color: '#94a3b8', fontSize: 10, fontWeight: 600,

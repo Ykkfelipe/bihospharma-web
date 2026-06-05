@@ -239,6 +239,12 @@ export default function AttendanceReportPage() {
                         >
                             Asistencia
                         </Link>
+                        <Link
+                            href="/personal/admin/actividades"
+                            style={{ color: "#94a3b8", fontSize: 11, textDecoration: "none" }}
+                        >
+                            Actividades
+                        </Link>
                         <Link href="/personal" style={{ color: "#94a3b8", fontSize: 11, textDecoration: "none" }}>
                             ← Ver portal
                         </Link>
