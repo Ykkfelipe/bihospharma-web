@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" role="img" aria-label="Softmedica">
-  <rect x="0" y="12" width="56" height="56" rx="12" fill="#0f4c8a"/>
-  <path d="M28 28v24M16 40h24" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
-  <text x="68" y="38" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#0a2540">Softmedica</text>
-  <text x="68" y="58" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#64748b">QB Médica</text>
-</svg>
