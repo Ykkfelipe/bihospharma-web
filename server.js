@@ -29,6 +29,26 @@ function memorySnapshot() {
   };
 }
 
+function shouldRejectSuspiciousRequest(req) {
+  const method = (req.method || 'GET').toUpperCase();
+  if (method !== 'POST') return false;
+
+  const pathname = parse(req.url || '/', true).pathname || '/';
+
+  // Scanner paths seen in nginx logs for React Flight RCE probes.
+  if (/^\/RSC\//i.test(pathname)) return true;
+  if (pathname === '/_next/static/chunks/react-flight') return true;
+  if (pathname === '/_next/on-demand-entries-ping') return true;
+
+  // Bare POST / without a Server Action header is not used by this app.
+  if (pathname === '/') {
+    const actionHeader = req.headers['next-action'] || req.headers['Next-Action'];
+    if (!actionHeader) return true;
+  }
+
+  return false;
+}
+
 function isRecoverableUncaughtException(err) {
   const msg = err && (err.message || String(err));
   if (!msg) return false;
@@ -71,6 +91,12 @@ app.prepare().then(() => {
       res.statusCode = 503;
       res.setHeader('Retry-After', '5');
       res.end('Server is shutting down');
+      return;
+    }
+
+    if (shouldRejectSuspiciousRequest(req)) {
+      res.statusCode = 403;
+      res.end('Forbidden');
       return;
     }
 
