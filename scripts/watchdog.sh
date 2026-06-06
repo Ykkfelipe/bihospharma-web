@@ -32,7 +32,18 @@ load_env() {
 }
 
 check_health() {
-  curl -sf --max-time 5 "$HEALTH_URL" >/dev/null 2>&1
+  local response
+  response="$(curl -sf --max-time 5 "$HEALTH_URL" 2>/dev/null || true)"
+  [ -n "$response" ] || return 1
+  echo "$response" | node -e "
+    const fs = require('fs');
+    const input = fs.readFileSync(0, 'utf8').trim();
+    if (!input) process.exit(1);
+    let data;
+    try { data = JSON.parse(input); } catch { process.exit(1); }
+    if (data.status === 'ok' && data.ready !== false) process.exit(0);
+    process.exit(1);
+  " >/dev/null 2>&1
 }
 
 pm2_status() {
@@ -51,20 +62,24 @@ restart_app() {
   local attempt=$1
   log "Restart attempt ${attempt}/${MAX_RESTART_ATTEMPTS}"
 
-  sudo fuser -k 3000/tcp 2>/dev/null || true
-  sleep 1
-
   local status
   status="$(pm2_status)"
   if [ "$status" = "online" ] || [ "$status" = "launching" ]; then
-    pm2 restart bihos --update-env >>"$LOG_FILE" 2>&1 || true
+    pm2 reload bihos --update-env --wait-ready --listen-timeout 20000 >>"$LOG_FILE" 2>&1       || pm2 restart bihos --update-env >>"$LOG_FILE" 2>&1 || true
   else
     pm2 delete bihos 2>/dev/null || true
     pm2 start ecosystem.config.js --only bihos --update-env >>"$LOG_FILE" 2>&1
   fi
 
+  if [ "$attempt" -eq "$MAX_RESTART_ATTEMPTS" ]; then
+    sudo fuser -k 3000/tcp 2>/dev/null || true
+    sleep 1
+    pm2 delete bihos 2>/dev/null || true
+    pm2 start ecosystem.config.js --only bihos --update-env >>"$LOG_FILE" 2>&1
+  fi
+
   pm2 save >>"$LOG_FILE" 2>&1 || true
-  sleep 8
+  bash "$APP_DIR/scripts/verify-health.sh" >>"$LOG_FILE" 2>&1 || sleep 8
 }
 
 rebuild_app() {

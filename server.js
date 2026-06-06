@@ -8,29 +8,65 @@ const port = process.env.PORT || 3000;
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
-// Request timeout configuration (in milliseconds)
-const REQUEST_TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT_MS || '30000');
+const REQUEST_TIMEOUT = parseInt(process.env.REQUEST_TIMEOUT_MS || '30000', 10);
+const HEAP_WARN_PERCENT = parseFloat(process.env.HEAP_WARN_PERCENT || '85');
+const HEAP_UNHEALTHY_PERCENT = parseFloat(process.env.HEAP_UNHEALTHY_PERCENT || '95');
+const RSS_UNHEALTHY_MB = parseFloat(process.env.RSS_UNHEALTHY_MB || '900');
 
-// Track active requests for graceful shutdown
 let activeRequests = 0;
 let isShuttingDown = false;
+let isAppReady = false;
+let lastRecoverableExceptionAt = 0;
+
+function memorySnapshot() {
+  const mem = process.memoryUsage();
+  const heapUsedPercent =
+    mem.heapTotal > 0 ? (mem.heapUsed / mem.heapTotal) * 100 : 0;
+  return {
+    ...mem,
+    heapUsedPercent,
+    rssMb: mem.rss / 1024 / 1024,
+  };
+}
+
+function isRecoverableUncaughtException(err) {
+  const msg = err && (err.message || String(err));
+  if (!msg) return false;
+
+  // Long-standing Next/runtime abort noise on this deployment — not fatal for the process.
+  if (/kill\[[^\]]+\] is not a function/i.test(msg)) return true;
+  if (/AbortError/i.test(msg)) return true;
+  if (/This operation was aborted/i.test(msg)) return true;
+
+  return false;
+}
 
 app.prepare().then(() => {
+  isAppReady = true;
+
   const server = createServer(async (req, res) => {
     if (req.url === '/_health' && req.method === 'GET') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
+      const mem = memorySnapshot();
+      const healthy =
+        isAppReady &&
+        !isShuttingDown &&
+        mem.heapUsedPercent < HEAP_UNHEALTHY_PERCENT &&
+        mem.rssMb < RSS_UNHEALTHY_MB;
+
+      res.writeHead(healthy ? 200 : 503, { 'Content-Type': 'application/json' });
       res.end(
         JSON.stringify({
-          status: 'ok',
+          status: healthy ? 'ok' : 'degraded',
+          ready: isAppReady,
           uptime: process.uptime(),
-          memory: process.memoryUsage(),
+          memory: mem,
           activeRequests,
+          shuttingDown: isShuttingDown,
         })
       );
       return;
     }
 
-    // Reject new requests during shutdown
     if (isShuttingDown) {
       res.statusCode = 503;
       res.setHeader('Retry-After', '5');
@@ -42,7 +78,6 @@ app.prepare().then(() => {
 
     let timeoutId;
     try {
-      // Set timeout for individual requests
       timeoutId = setTimeout(() => {
         if (!res.headersSent) {
           res.statusCode = 504;
@@ -51,8 +86,7 @@ app.prepare().then(() => {
       }, REQUEST_TIMEOUT);
 
       const parsedUrl = parse(req.url, true);
-      
-      // Add response listener to clear timeout
+
       res.on('finish', () => {
         clearTimeout(timeoutId);
       });
@@ -65,13 +99,15 @@ app.prepare().then(() => {
     } catch (err) {
       clearTimeout(timeoutId);
       console.error('[Server] Error occurred handling', req.url, err);
-      
+
       if (!res.headersSent) {
         res.statusCode = 500;
-        res.end(JSON.stringify({
-          error: 'Internal server error',
-          message: dev ? err.message : 'An error occurred',
-        }));
+        res.end(
+          JSON.stringify({
+            error: 'Internal server error',
+            message: dev ? err.message : 'An error occurred',
+          })
+        );
       }
     } finally {
       activeRequests--;
@@ -82,14 +118,10 @@ app.prepare().then(() => {
     console.log(`> Ready on http://${hostname}:${port}`);
     console.log(`> Request timeout: ${REQUEST_TIMEOUT}ms`);
     console.log(`> Health check available at http://${hostname}:${port}/_health`);
-    
-    // Tell PM2 we are ready (for wait_ready mode)
+
     if (process.send) process.send('ready');
   });
 
-  /**
-   * Graceful shutdown — close the server and wait for active requests to complete
-   */
   const shutdown = (signal) => {
     console.log(`\n> Received ${signal}, initiating graceful shutdown...`);
     isShuttingDown = true;
@@ -99,7 +131,6 @@ app.prepare().then(() => {
       process.exit(0);
     });
 
-    // Wait for active requests to finish (max 10 seconds)
     const shutdownNSTimer = setInterval(() => {
       if (activeRequests === 0) {
         clearInterval(shutdownNSTimer);
@@ -110,41 +141,47 @@ app.prepare().then(() => {
       }
     }, 1000);
 
-    // Force exit after timeout
     setTimeout(() => {
       console.error('> Forced shutdown timeout reached. Exiting.');
       process.exit(1);
     }, 10000);
   };
 
-  // Handle shutdown signals
   process.on('SIGINT', () => shutdown('SIGINT'));
   process.on('SIGTERM', () => shutdown('SIGTERM'));
 
-  // Handle uncaught exceptions
   process.on('uncaughtException', (err) => {
     console.error('> Uncaught Exception:', err);
+
+    if (isRecoverableUncaughtException(err)) {
+      const now = Date.now();
+      if (now - lastRecoverableExceptionAt > 60000) {
+        console.error('> Recoverable uncaught exception — keeping process alive');
+      }
+      lastRecoverableExceptionAt = now;
+      return;
+    }
+
     process.exit(1);
   });
 
-  // Handle unhandled promise rejections
   process.on('unhandledRejection', (reason, promise) => {
     console.error('> Unhandled Rejection at:', promise, 'reason:', reason);
-    // Continue running but log for monitoring
   });
 
   server.on('error', (err) => {
     console.error('> Server error:', err);
-    process.exit(1);
+    if (err && err.code === 'EADDRINUSE') {
+      process.exit(1);
+    }
   });
 
-  // Monitor memory usage and log warnings
   setInterval(() => {
-    const mem = process.memoryUsage();
-    const heapUsedPercent = (mem.heapUsed / mem.heapTotal) * 100;
-    
-    if (heapUsedPercent > 85) {
-      console.warn(`> WARNING: High memory usage (${heapUsedPercent.toFixed(2)}%)`);
+    const mem = memorySnapshot();
+    if (mem.heapUsedPercent > HEAP_WARN_PERCENT) {
+      console.warn(
+        `> WARNING: High memory usage (${mem.heapUsedPercent.toFixed(2)}% heap, ${mem.rssMb.toFixed(0)}MB RSS)`
+      );
     }
   }, 30000);
 });

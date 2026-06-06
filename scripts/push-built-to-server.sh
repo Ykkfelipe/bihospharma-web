@@ -89,3 +89,14 @@ remote "
 "
 
 echo "✓ Server updated with pre-built artifacts."
+
+echo "→ Post-deploy health check from deploy host…"
+remote "cd $EC2_APP_DIR && bash scripts/verify-health.sh"
+
+echo "→ Public site check…"
+if curl -sf --max-time 15 -o /dev/null https://bihospharma.com/; then
+  echo "✓ https://bihospharma.com responded OK"
+else
+  echo "⚠ Public HTTPS check failed — verify nginx/PM2 on the server"
+fi
+

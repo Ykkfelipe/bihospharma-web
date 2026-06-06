@@ -38,23 +38,43 @@ if [ "${SKIP_INSTALL:-}" != "1" ]; then
   bash scripts/prisma-migrate-deploy.sh
 fi
 
-echo "→ Restart PM2 (clean start)…"
-pm2 delete bihos 2>/dev/null || true
-sudo fuser -k 3000/tcp 2>/dev/null || true
-sleep 1
-pm2 start ecosystem.config.js --only bihos --update-env
+restart_count_before="$(pm2 jlist 2>/dev/null | node -e "
+  const fs = require('fs');
+  const input = fs.readFileSync(0, 'utf8').trim();
+  if (!input) process.exit(0);
+  const apps = JSON.parse(input);
+  const app = apps.find((entry) => entry.name === 'bihos');
+  process.stdout.write(String(app?.pm2_env?.restart_time ?? 0));
+" 2>/dev/null || echo 0)"
+
+echo "→ Graceful PM2 reload (restart count before: ${restart_count_before})…"
+if pm2 describe bihos >/dev/null 2>&1; then
+  pm2 reload bihos --update-env --wait-ready --listen-timeout 20000 || {
+    echo "⚠ reload failed — falling back to clean start"
+    pm2 delete bihos 2>/dev/null || true
+    pm2 start ecosystem.config.js --only bihos --update-env
+  }
+else
+  pm2 start ecosystem.config.js --only bihos --update-env
+fi
+
 pm2 restart bihos-watchdog --update-env 2>/dev/null || pm2 start ecosystem.config.js --only bihos-watchdog --update-env
 pm2 save
 
-echo "→ Smoke test…"
-for i in 1 2 3 4 5; do
-  if curl -sf -o /dev/null http://127.0.0.1:3000/; then
-    echo "✓ App responding on :3000"
-    exit 0
-  fi
-  sleep 2
-done
+echo "→ Health verification…"
+if bash scripts/verify-health.sh; then
+  restart_count_after="$(pm2 jlist 2>/dev/null | node -e "
+    const fs = require('fs');
+    const input = fs.readFileSync(0, 'utf8').trim();
+    if (!input) process.exit(0);
+    const apps = JSON.parse(input);
+    const app = apps.find((entry) => entry.name === 'bihos');
+    process.stdout.write(String(app?.pm2_env?.restart_time ?? 0));
+  " 2>/dev/null || echo 0)"
+  echo "✓ Deploy restart complete (restart count after: ${restart_count_after})"
+  exit 0
+fi
 
-echo "❌ App not responding — recent logs:"
+echo "❌ App not healthy — recent logs:"
 pm2 logs bihos --lines 30 --nostream || true
 exit 1
