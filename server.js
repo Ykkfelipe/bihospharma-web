@@ -67,11 +67,8 @@ app.prepare().then(() => {
   const server = createServer(async (req, res) => {
     if (req.url === '/_health' && req.method === 'GET') {
       const mem = memorySnapshot();
-      const healthy =
-        isAppReady &&
-        !isShuttingDown &&
-        mem.heapUsedPercent < HEAP_UNHEALTHY_PERCENT &&
-        mem.rssMb < RSS_UNHEALTHY_MB;
+      // Node often reports 90–97% heap used with a small RSS; use RSS for liveness, not heap ratio.
+      const healthy = isAppReady && !isShuttingDown && mem.rssMb < RSS_UNHEALTHY_MB;
 
       res.writeHead(healthy ? 200 : 503, { 'Content-Type': 'application/json' });
       res.end(
