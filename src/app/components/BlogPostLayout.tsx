@@ -123,7 +123,7 @@ export function BlogImage({
 /** Blue band with closing message before WhatsApp CTA */
 export function BlogCtaBand({ children }: { children: React.ReactNode }) {
   return (
-    <section className="bg-[#48a4dc] px-4 py-8 sm:px-6">
+    <section className="blog-cta-band bg-[#48a4dc] px-4 py-8 sm:px-6">
       <p className="mx-auto max-w-4xl text-center text-base font-extrabold leading-relaxed text-white sm:text-lg">
         {children}
       </p>

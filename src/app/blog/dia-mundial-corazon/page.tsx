@@ -115,10 +115,8 @@ export default function DiaMundialCorazonPage() {
           El cuidado del corazón depende en gran medida de nuestros hábitos diarios. Prevenir es la mejor manera de
           reducir el riesgo de enfermedades cardiovasculares y garantizar una mejor calidad de vida.
         </BlogParagraph>
-        <div className="mt-8 flex flex-wrap justify-center gap-6">
-          <BlogImage src="/images/corazon4.png" alt="Ejercicio físico" width={280} height={200} className="my-0 max-w-[280px]" />
-          <BlogImage src="/images/corazon5.png" alt="Alimentación saludable" width={280} height={200} className="my-0 max-w-[280px]" />
-          <BlogImage src="/images/corazon6.png" alt="Control de peso" width={280} height={200} className="my-0 max-w-[280px]" />
+        <div className="mx-auto mt-8 max-w-2xl">
+          <BlogImage src="/images/corazon4.png" alt="Hábitos saludables para el corazón" className="my-0" />
         </div>
       </BlogSection>
 
