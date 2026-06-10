@@ -102,7 +102,7 @@ export function EarlyReasonModal() {
             >
                 <div
                     style={{
-                        background: "linear-gradient(135deg, #92400e, #d97706)",
+                        background: "linear-gradient(135deg, #0a2540, #0f4c8a)",
                         padding: "20px 24px",
                     }}
                 >
@@ -112,7 +112,7 @@ export function EarlyReasonModal() {
                     >
                         Saliste antes de la hora
                     </h2>
-                    <p style={{ color: "#fde68a", fontSize: 13, margin: "8px 0 0" }}>
+                    <p style={{ color: "#b6d9f7", fontSize: 13, margin: "8px 0 0" }}>
                         Salida registrada a las <strong>{checkOutLabel}</strong>. Cuéntanos el motivo.
                     </p>
                 </div>
@@ -154,7 +154,7 @@ export function EarlyReasonModal() {
                             style={{
                                 flex: 1,
                                 minWidth: 140,
-                                background: "#d97706",
+                                background: "#0f4c8a",
                                 color: "#fff",
                                 border: "none",
                                 borderRadius: 10,
