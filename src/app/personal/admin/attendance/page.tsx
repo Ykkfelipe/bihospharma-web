@@ -25,6 +25,9 @@ type RosterRow = {
         isLate: boolean;
         lateReason?: string | null;
         lateReasonAt?: string | null;
+        isEarly?: boolean;
+        earlyReason?: string | null;
+        earlyReasonAt?: string | null;
         status?: string;
         workHours?: string;
         breakHours?: string;
@@ -41,6 +44,7 @@ type Summary = {
     enTurno: number;
     turnoCerrado: number;
     tarde: number;
+    salidaAnticipada?: number;
     diaLibre?: number;
 };
 
@@ -132,6 +136,9 @@ export default function AttendanceReportPage() {
             "Tarde",
             "Motivo tarde",
             "Motivo registrado",
+            "Salida anticipada",
+            "Motivo salida anticipada",
+            "Motivo salida registrado",
             "Último acceso portal",
         ];
         const dataRows = filteredRoster.map((r) => {
@@ -144,6 +151,10 @@ export default function AttendanceReportPage() {
                 r.shift?.lateReason ??
                 (r.shift?.isLate ? "Pendiente" : r.status === "tarde_sin_entrada" ? "Sin entrada" : "");
             const motivoAt = r.shift?.lateReasonAt ? formatTime24(r.shift.lateReasonAt) : "";
+            const anticipada = r.shift?.isEarly ? "Sí" : "No";
+            const motivoAnticipada =
+                r.shift?.earlyReason ?? (r.shift?.isEarly ? "Pendiente" : "");
+            const motivoAnticipadaAt = r.shift?.earlyReasonAt ? formatTime24(r.shift.earlyReasonAt) : "";
             return csvRow([
                 r.user.name,
                 r.user.email,
@@ -160,6 +171,9 @@ export default function AttendanceReportPage() {
                 tarde,
                 motivo,
                 motivoAt,
+                anticipada,
+                motivoAnticipada,
+                motivoAnticipadaAt,
                 r.lastPortalLogin ? formatTime24(r.lastPortalLogin) : "",
             ]);
         });
@@ -248,6 +262,11 @@ export default function AttendanceReportPage() {
                             { label: "En turno", value: summary.enTurno, color: "#10b981" },
                             { label: "Cerrados", value: summary.turnoCerrado, color: "#6366f1" },
                             { label: "Tarde (total)", value: summary.tarde, color: "#dc2626" },
+                            {
+                                label: "Salida anticipada",
+                                value: summary.salidaAnticipada ?? 0,
+                                color: "#d97706",
+                            },
                         ].map((card) => (
                             <div key={card.label} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
                                 <p className="text-[10px] uppercase text-gray-500 font-semibold m-0">{card.label}</p>
@@ -275,6 +294,7 @@ export default function AttendanceReportPage() {
                                         <th className="px-3 py-3 min-w-[180px]">Empleado</th>
                                         <th className="px-3 py-3 min-w-[120px]">Estado</th>
                                         <th className="px-3 py-3 min-w-[200px]">Motivo tarde</th>
+                                        <th className="px-3 py-3 min-w-[200px]">Motivo salida anticipada</th>
                                         <th className="px-3 py-3 min-w-[200px]">Horario hoy</th>
                                         <th className="px-3 py-3 min-w-[220px]">Horario asignado</th>
                                         <th className="px-3 py-3">Entrada</th>
@@ -302,6 +322,11 @@ export default function AttendanceReportPage() {
                                                         Tarde
                                                     </span>
                                                 )}
+                                                {row.shift?.isEarly && (
+                                                    <span className="ml-1 text-[10px] text-amber-600 font-semibold">
+                                                        Salida anticipada
+                                                    </span>
+                                                )}
                                                 {row.shift?.status === "lunch_break" && (
                                                     <span className="ml-1 text-[10px] text-amber-600">Almuerzo</span>
                                                 )}
@@ -321,6 +346,25 @@ export default function AttendanceReportPage() {
                                                 {row.shift?.lateReasonAt && (
                                                     <span className="block text-[10px] text-gray-400 mt-1">
                                                         {new Date(row.shift.lateReasonAt).toLocaleString("es-CO", {
+                                                            dateStyle: "short",
+                                                            timeStyle: "short",
+                                                        })}
+                                                    </span>
+                                                )}
+                                            </td>
+                                            <td className="px-3 py-3 text-xs text-gray-700 whitespace-normal leading-snug max-w-[280px]">
+                                                {row.shift?.isEarly ? (
+                                                    row.shift.earlyReason ? (
+                                                        <span title={row.shift.earlyReason}>{row.shift.earlyReason}</span>
+                                                    ) : (
+                                                        <span className="text-amber-600 italic">Pendiente</span>
+                                                    )
+                                                ) : (
+                                                    "—"
+                                                )}
+                                                {row.shift?.earlyReasonAt && (
+                                                    <span className="block text-[10px] text-gray-400 mt-1">
+                                                        {new Date(row.shift.earlyReasonAt).toLocaleString("es-CO", {
                                                             dateStyle: "short",
                                                             timeStyle: "short",
                                                         })}

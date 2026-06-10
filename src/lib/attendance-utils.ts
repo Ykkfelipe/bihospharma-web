@@ -123,13 +123,26 @@ export async function safeCheckOut(
             throw new Error("Ya registraste tu salida hoy.");
         }
 
+        const user = await prisma.user.findUnique({ where: { id: userId } });
+        const now = new Date();
+        let isEarly = false;
+
+        if (user) {
+            const { getScheduleForUser, isEarlyCheckOut } = await import("@/lib/work-schedule");
+            const schedule = getScheduleForUser(user, date);
+            if (schedule) {
+                isEarly = isEarlyCheckOut(now, date, schedule);
+            }
+        }
+
         const shift = await prisma.shift.update({
             where: { id: existing.id },
             data: {
-                checkOut: new Date(),
+                checkOut: now,
                 status: "completed",
                 checkoutIpAddress: ipAddress,
                 checkoutUserAgent: userAgent,
+                isEarly,
             },
         });
 

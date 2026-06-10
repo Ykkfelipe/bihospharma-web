@@ -157,6 +157,9 @@ export async function GET(req: Request) {
                           isLate: shift.isLate,
                           lateReason: shift.lateReason,
                           lateReasonAt: shift.lateReasonAt,
+                          isEarly: shift.isEarly,
+                          earlyReason: shift.earlyReason,
+                          earlyReasonAt: shift.earlyReasonAt,
                           status: shift.status,
                           workHours: formatDurationMinutes(durations.workMinutes),
                           breakHours: formatDurationMinutes(durations.breakMinutes),
@@ -181,6 +184,7 @@ export async function GET(req: Request) {
         tarde:
             shifts.filter((s) => s.isLate).length +
             roster.filter((r) => r.status === "tarde_sin_entrada").length,
+        salidaAnticipada: shifts.filter((s) => s.isEarly).length,
         diaLibre: roster.filter((r) => r.status === "dia_libre").length,
     };
 

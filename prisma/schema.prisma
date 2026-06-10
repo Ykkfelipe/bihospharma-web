@@ -60,6 +60,9 @@ model Shift {
   isLate            Boolean   @default(false)
   lateReason        String?
   lateReasonAt      DateTime?
+  isEarly           Boolean   @default(false)
+  earlyReason       String?
+  earlyReasonAt     DateTime?
   status            String    @default("active") // active | lunch_break | completed
   lunchStartedAt    DateTime?
   lunchEndedAt      DateTime?

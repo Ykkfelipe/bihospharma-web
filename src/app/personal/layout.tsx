@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { PortalAttendanceGuard } from "./components/PortalAttendanceGuard";
 import { LateReasonModal } from "./components/LateReasonModal";
+import { EarlyReasonModal } from "./components/EarlyReasonModal";
 
 export const metadata = {
     title: {
@@ -14,6 +15,7 @@ export default function PersonalLayout({ children }: { children: ReactNode }) {
         <>
             <PortalAttendanceGuard />
             <LateReasonModal />
+            <EarlyReasonModal />
             {children}
         </>
     );

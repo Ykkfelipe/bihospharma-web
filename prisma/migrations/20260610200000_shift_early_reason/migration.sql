@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Shift" ADD COLUMN "isEarly" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "Shift" ADD COLUMN "earlyReason" TEXT;
+ALTER TABLE "Shift" ADD COLUMN "earlyReasonAt" DATETIME;

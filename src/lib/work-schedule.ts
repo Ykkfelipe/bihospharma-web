@@ -64,6 +64,11 @@ export function isLateCheckIn(now: Date, schedule: DaySchedule): boolean {
     return now.getTime() > start.getTime() + 60_000; // after 7:31
 }
 
+export function isEarlyCheckOut(now: Date, dateStr: string, schedule: DaySchedule): boolean {
+    const end = parseTimeOnDate(dateStr, schedule.workEnd);
+    return now.getTime() < end.getTime() - 60_000; // before scheduled end (1 min grace)
+}
+
 export function isInLunchWindow(now: Date, dateStr: string, schedule: DaySchedule): boolean {
     if (!schedule.hasLunchBreak) return false;
     const lunchStart = parseTimeOnDate(dateStr, schedule.lunchStart);

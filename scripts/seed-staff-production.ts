@@ -39,6 +39,9 @@ const STAFF: Array<{
     { email: "sonia.gomez@bihospharma.com", name: "SONIA MARCELA GOMEZ ACOSTA" },
     { email: "julian.villamil@bihospharma.com", name: "JULIAN DAVID VILLAMIL BENAVIDES" },
     { email: "ingridt.tumay@bihospharma.com", name: "INGRIDT ANGELICA TUMAY" },
+    { email: "carolina.bonilla@bihospharma.com", name: "CAROLINA BONILLA" },
+    { email: "maria.montano@bihospharma.com", name: "MARIA MONTANO" },
+    { email: "paola.rodriguez@bihospharma.com", name: "PAOLA RODRIGUEZ" },
 ];
 
 async function main() {
