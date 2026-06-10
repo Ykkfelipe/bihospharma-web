@@ -332,7 +332,13 @@ const formatDate = (iso: string) =>
     });
 
 const getGreeting = () => {
-    const h = new Date().getHours();
+    const h = Number(
+        new Intl.DateTimeFormat("en-US", {
+            timeZone: "America/Bogota",
+            hour: "numeric",
+            hour12: false,
+        }).format(new Date())
+    );
     if (h < 12) return "Buenos días";
     if (h < 18) return "Buenas tardes";
     return "Buenas noches";
@@ -407,7 +413,11 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
     }, [shift]);
 
     const formatTime = (iso: string) =>
-        new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+        new Date(iso).toLocaleTimeString("es-CO", {
+            timeZone: "America/Bogota",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
     const lunchRange = formatLunchRange(scheduleLabel);
 
     if (loading) return null;
@@ -495,7 +505,11 @@ export default function PersonalPage() {
     const pinned = posts.filter((p) => p.type === "pinned");
 
     const todayStr = new Date().toLocaleDateString("es-CO", {
-        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        timeZone: "America/Bogota",
     });
 
     return (

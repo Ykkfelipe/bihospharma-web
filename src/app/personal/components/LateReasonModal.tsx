@@ -33,6 +33,7 @@ export function LateReasonModal() {
             if (shift?.isLate && !shift.lateReason) {
                 setCheckInLabel(
                     new Date(shift.checkIn).toLocaleTimeString("es-CO", {
+                        timeZone: "America/Bogota",
                         hour: "2-digit",
                         minute: "2-digit",
                     })

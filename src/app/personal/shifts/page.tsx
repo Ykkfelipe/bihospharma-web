@@ -55,12 +55,17 @@ export default function EmployeeShiftsPage() {
     }, [status]);
 
     const formatTime = (iso: string) =>
-        new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+        new Date(iso).toLocaleTimeString("es-CO", {
+            timeZone: "America/Bogota",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
 
     const formatDate = (dateStr: string) => {
         const [y, m, d] = dateStr.split("-").map(Number);
         if (!y || !m || !d) return dateStr;
-        return new Date(y, m - 1, d).toLocaleDateString("es-CO", {
+        return new Date(`${dateStr}T12:00:00-05:00`).toLocaleDateString("es-CO", {
+            timeZone: "America/Bogota",
             weekday: "short",
             day: "numeric",
             month: "short",

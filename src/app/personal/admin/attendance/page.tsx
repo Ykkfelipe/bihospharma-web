@@ -61,6 +61,7 @@ export default function AttendanceReportPage() {
     const [roster, setRoster] = useState<RosterRow[]>([]);
     const [summary, setSummary] = useState<Summary | null>(null);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [filterDate, setFilterDate] = useState("");
     const [filterUser, setFilterUser] = useState("all");
 
@@ -68,15 +69,32 @@ export default function AttendanceReportPage() {
 
     const loadData = () => {
         setLoading(true);
+        setLoadError(null);
         const date = filterDate || todayStr;
         fetch(`/api/admin/attendance-summary?date=${date}`, { cache: "no-store" })
-            .then((r) => r.json())
-            .then((summaryPayload) => {
+            .then(async (r) => {
+                const summaryPayload = await r.json().catch(() => ({}));
+                if (!r.ok) {
+                    const message =
+                        typeof summaryPayload.error === "string"
+                            ? summaryPayload.error
+                            : `Error al cargar el reporte (${r.status})`;
+                    setLoadError(message);
+                    setRoster([]);
+                    setSummary(null);
+                    return;
+                }
                 if (summaryPayload.roster) setRoster(summaryPayload.roster);
                 if (summaryPayload.summary) setSummary(summaryPayload.summary);
-                setLoading(false);
             })
-            .catch(() => setLoading(false));
+            .catch(() => {
+                setLoadError(
+                    "No se pudo cargar el reporte de asistencia. Verifica tu conexión e intenta de nuevo."
+                );
+                setRoster([]);
+                setSummary(null);
+            })
+            .finally(() => setLoading(false));
     };
 
     useEffect(() => {
@@ -95,7 +113,11 @@ export default function AttendanceReportPage() {
     }, [roster, filterUser]);
 
     const formatTime = (iso: string) =>
-        new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+        new Date(iso).toLocaleTimeString("es-CO", {
+            timeZone: "America/Bogota",
+            hour: "2-digit",
+            minute: "2-digit",
+        });
 
     const formatPortalLogin = (iso: string) =>
         new Date(iso).toLocaleString("es-CO", {
@@ -256,6 +278,15 @@ export default function AttendanceReportPage() {
                     </select>
                 </div>
 
+                {loadError && (
+                    <div
+                        role="alert"
+                        className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+                    >
+                        {loadError}
+                    </div>
+                )}
+
                 {summary && (
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {[
@@ -296,6 +327,10 @@ export default function AttendanceReportPage() {
                     </h2>
                     {loading ? (
                         <p className="text-sm text-gray-500 text-center py-8">Cargando…</p>
+                    ) : loadError ? (
+                        <p className="text-sm text-red-600 text-center py-8">
+                            No se pudo mostrar el equipo. Use «Actualizar» para reintentar.
+                        </p>
                     ) : filteredRoster.length === 0 ? (
                         <p className="text-sm text-gray-500">No hay empleados registrados.</p>
                     ) : (
@@ -359,6 +394,7 @@ export default function AttendanceReportPage() {
                                                 {row.shift?.lateReasonAt && (
                                                     <span className="block text-[10px] text-gray-400 mt-1">
                                                         {new Date(row.shift.lateReasonAt).toLocaleString("es-CO", {
+                                                            timeZone: "America/Bogota",
                                                             dateStyle: "short",
                                                             timeStyle: "short",
                                                         })}
@@ -378,6 +414,7 @@ export default function AttendanceReportPage() {
                                                 {row.shift?.earlyReasonAt && (
                                                     <span className="block text-[10px] text-gray-400 mt-1">
                                                         {new Date(row.shift.earlyReasonAt).toLocaleString("es-CO", {
+                                                            timeZone: "America/Bogota",
                                                             dateStyle: "short",
                                                             timeStyle: "short",
                                                         })}

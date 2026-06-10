@@ -33,6 +33,7 @@ export function EarlyReasonModal() {
             if (shift?.checkOut && shift.isEarly && !shift.earlyReason) {
                 setCheckOutLabel(
                     new Date(shift.checkOut).toLocaleTimeString("es-CO", {
+                        timeZone: "America/Bogota",
                         hour: "2-digit",
                         minute: "2-digit",
                     })
