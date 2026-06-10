@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { ATTENDANCE_CHANGED_EVENT } from "../lib/attendance-client";
 
@@ -12,6 +13,8 @@ type ShiftInfo = {
 
 export function EarlyReasonModal() {
     const { status } = useSession();
+    const pathname = usePathname();
+    const dismissedRef = useRef(false);
     const [open, setOpen] = useState(false);
     const [checkOutLabel, setCheckOutLabel] = useState("");
     const [reason, setReason] = useState("");
@@ -34,8 +37,9 @@ export function EarlyReasonModal() {
                         minute: "2-digit",
                     })
                 );
-                setOpen(true);
+                setOpen(!dismissedRef.current);
             } else {
+                dismissedRef.current = false;
                 setOpen(false);
             }
         } catch {
@@ -44,7 +48,11 @@ export function EarlyReasonModal() {
     }, [status]);
 
     useEffect(() => {
-        evaluate();
+        dismissedRef.current = false;
+        void evaluate();
+    }, [pathname, evaluate]);
+
+    useEffect(() => {
         const onChange = () => evaluate();
         window.addEventListener(ATTENDANCE_CHANGED_EVENT, onChange);
         return () => window.removeEventListener(ATTENDANCE_CHANGED_EVENT, onChange);
@@ -169,7 +177,10 @@ export function EarlyReasonModal() {
                         </button>
                         <button
                             type="button"
-                            onClick={() => setOpen(false)}
+                            onClick={() => {
+                                dismissedRef.current = true;
+                                setOpen(false);
+                            }}
                             style={{
                                 background: "#f1f5f9",
                                 color: "#64748b",

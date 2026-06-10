@@ -340,6 +340,18 @@ const getGreeting = () => {
 
 /* ── Attendance Widget ─────────────────────────────────── */
 
+const formatLunchRange = (scheduleLabel: string | null): string | null => {
+    if (!scheduleLabel) return null;
+    const match = scheduleLabel.match(/Almuerzo\s+(\d{1,2}:\d{2})[–-](\d{1,2}:\d{2})/);
+    if (!match) return null;
+    const toDisplay = (hhmm: string) => {
+        const [h, min] = hhmm.split(":").map(Number);
+        const d = new Date(2000, 0, 1, h, min);
+        return d.toLocaleTimeString("es-CO", { hour: "numeric", minute: "2-digit", hour12: true });
+    };
+    return `${toDisplay(match[1])} – ${toDisplay(match[2])}`;
+};
+
 function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "unauthenticated" }) {
     const [shift, setShift] = useState<{
         checkIn: string;
@@ -396,6 +408,7 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
 
     const formatTime = (iso: string) =>
         new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
+    const lunchRange = formatLunchRange(scheduleLabel);
 
     if (loading) return null;
 
@@ -420,7 +433,7 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
                 )}
                 {shift?.status === "lunch_break" && (
                     <p style={{ color: "#d97706", fontSize: 13, fontWeight: 600, margin: "0 0 8px" }}>
-                        En almuerzo (1:00 p.m. – 2:00 p.m.) — seguimiento en pausa
+                        En almuerzo{lunchRange ? ` (${lunchRange})` : ""} — seguimiento en pausa
                     </p>
                 )}
                 {!shift ? (
