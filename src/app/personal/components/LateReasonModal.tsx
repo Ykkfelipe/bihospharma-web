@@ -119,10 +119,10 @@ export function LateReasonModal() {
                         id="late-reason-title"
                         style={{ color: "#fff", fontSize: 18, fontWeight: 700, margin: 0 }}
                     >
-                        Llegaste tarde hoy
+                        Llegó tarde hoy
                     </h2>
                     <p style={{ color: "#b6d9f7", fontSize: 13, margin: "8px 0 0" }}>
-                        Entrada registrada a las <strong>{checkInLabel}</strong>. Cuéntanos el motivo.
+                        Entrada registrada a las <strong>{checkInLabel}</strong>. Cuéntenos el motivo.
                     </p>
                 </div>
                 <div style={{ padding: "20px 24px 24px" }}>

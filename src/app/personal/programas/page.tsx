@@ -81,7 +81,7 @@ export default function ProgramasPage() {
                     <div className="portal-programas-end-shift-copy">
                         <p className="portal-programas-end-shift-title">Fin de jornada</p>
                         <p className="portal-programas-end-shift-text">
-                            Registra su salida y cierra la sesión del portal.
+                            Registre su salida y cierre la sesión del portal.
                         </p>
                     </div>
                     <button

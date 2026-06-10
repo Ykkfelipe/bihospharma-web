@@ -51,7 +51,7 @@ export const authConfig: NextAuthConfig = {
     session: {
         strategy: "jwt",
         maxAge: 180 * 24 * 60 * 60, // 180 days
-        updateAge: 24 * 60 * 60, // refresh session daily while active
+        updateAge: 60 * 60, // refresh session hourly while active (role sync from DB)
     },
     jwt: {
         maxAge: 180 * 24 * 60 * 60,

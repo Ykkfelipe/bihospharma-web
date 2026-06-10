@@ -119,10 +119,10 @@ export function EarlyReasonModal() {
                         id="early-reason-title"
                         style={{ color: "#fff", fontSize: 18, fontWeight: 700, margin: 0 }}
                     >
-                        Saliste antes de la hora
+                        Salió antes de la hora
                     </h2>
                     <p style={{ color: "#b6d9f7", fontSize: 13, margin: "8px 0 0" }}>
-                        Salida registrada a las <strong>{checkOutLabel}</strong>. Cuéntanos el motivo.
+                        Salida registrada a las <strong>{checkOutLabel}</strong>. Cuéntenos el motivo.
                     </p>
                 </div>
                 <div style={{ padding: "20px 24px 24px" }}>

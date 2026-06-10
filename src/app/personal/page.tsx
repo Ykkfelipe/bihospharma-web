@@ -380,7 +380,7 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
             }
         } catch (e) {
             console.error(e);
-            setToast({ msg: "No se pudo cargar tu asistencia. Recarga la página.", type: "error" });
+            setToast({ msg: "No se pudo cargar su asistencia. Recargue la página.", type: "error" });
         } finally {
             setLoading(false);
         }
