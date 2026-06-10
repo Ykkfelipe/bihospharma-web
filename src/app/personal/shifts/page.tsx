@@ -12,6 +12,10 @@ type Shift = {
     checkIn: string;
     checkOut?: string | null;
     isLate?: boolean;
+    lateReason?: string | null;
+    isEarly?: boolean;
+    earlyReason?: string | null;
+    workHours?: string;
 };
 
 export default function EmployeeShiftsPage() {
@@ -62,6 +66,14 @@ export default function EmployeeShiftsPage() {
             month: "short",
             year: "numeric",
         });
+    };
+
+    const shiftReason = (s: Shift) => {
+        if (s.isLate && s.lateReason) return s.lateReason;
+        if (s.isEarly && s.earlyReason) return s.earlyReason;
+        if (s.isLate) return "Pendiente";
+        if (s.isEarly) return "Pendiente";
+        return null;
     };
 
     if (status === "loading" || loading) {
@@ -122,28 +134,47 @@ export default function EmployeeShiftsPage() {
                         </p>
                     ) : (
                         <div style={{ overflowX: "auto" }}>
-                            <table style={{ width: "100%", fontSize: 14, borderCollapse: "collapse" }}>
+                            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", minWidth: 520 }}>
                                 <thead>
-                                    <tr style={{ background: "#f8fafc", fontSize: 11, textTransform: "uppercase", color: "#64748b" }}>
-                                        <th style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600 }}>Fecha</th>
-                                        <th style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600 }}>Entrada</th>
-                                        <th style={{ padding: "12px 16px", textAlign: "left", fontWeight: 600 }}>Salida</th>
+                                    <tr style={{ background: "#f8fafc", fontSize: 10, textTransform: "uppercase", color: "#64748b" }}>
+                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Fecha</th>
+                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Entrada</th>
+                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Salida</th>
+                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Tarde</th>
+                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Sal. ant.</th>
+                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Horas</th>
+                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, minWidth: 120 }}>Motivo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {shifts.map((s) => (
-                                        <tr key={s.id} style={{ borderTop: "1px solid #f1f5f9" }}>
-                                            <td style={{ padding: "12px 16px", color: "#334155", whiteSpace: "nowrap" }}>
-                                                {formatDate(s.date)}
-                                            </td>
-                                            <td style={{ padding: "12px 16px", color: "#10b981", fontWeight: 600 }}>
-                                                {formatTime(s.checkIn)}
-                                            </td>
-                                            <td style={{ padding: "12px 16px", color: "#64748b" }}>
-                                                {s.checkOut ? formatTime(s.checkOut) : "—"}
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {shifts.map((s) => {
+                                        const reason = shiftReason(s);
+                                        return (
+                                            <tr key={s.id} style={{ borderTop: "1px solid #f1f5f9" }}>
+                                                <td style={{ padding: "10px 12px", color: "#334155", whiteSpace: "nowrap" }}>
+                                                    {formatDate(s.date)}
+                                                </td>
+                                                <td style={{ padding: "10px 12px", color: "#10b981", fontWeight: 600, whiteSpace: "nowrap" }}>
+                                                    {formatTime(s.checkIn)}
+                                                </td>
+                                                <td style={{ padding: "10px 12px", color: "#64748b", whiteSpace: "nowrap" }}>
+                                                    {s.checkOut ? formatTime(s.checkOut) : "—"}
+                                                </td>
+                                                <td style={{ padding: "10px 12px", color: s.isLate ? "#dc2626" : "#64748b", whiteSpace: "nowrap" }}>
+                                                    {s.isLate ? "Sí" : "No"}
+                                                </td>
+                                                <td style={{ padding: "10px 12px", color: s.isEarly ? "#d97706" : "#64748b", whiteSpace: "nowrap" }}>
+                                                    {s.isEarly ? "Sí" : "No"}
+                                                </td>
+                                                <td style={{ padding: "10px 12px", color: "#0f4c8a", whiteSpace: "nowrap" }}>
+                                                    {s.workHours ?? "—"}
+                                                </td>
+                                                <td style={{ padding: "10px 12px", color: "#64748b", fontSize: 12, maxWidth: 160 }}>
+                                                    {reason ?? "—"}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

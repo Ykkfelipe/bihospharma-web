@@ -97,6 +97,13 @@ export default function AttendanceReportPage() {
     const formatTime = (iso: string) =>
         new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });
 
+    const formatPortalLogin = (iso: string) =>
+        new Date(iso).toLocaleString("es-CO", {
+            timeZone: "America/Bogota",
+            dateStyle: "short",
+            timeStyle: "short",
+        });
+
     const CSV_SEP = ";";
 
     const formatTime24 = (iso: string) => {
@@ -174,7 +181,7 @@ export default function AttendanceReportPage() {
                 anticipada,
                 motivoAnticipada,
                 motivoAnticipadaAt,
-                r.lastPortalLogin ? formatTime24(r.lastPortalLogin) : "",
+                r.lastPortalLogin ? formatPortalLogin(r.lastPortalLogin) : "",
             ]);
         });
         const lines = [`sep=${CSV_SEP}`, csvRow(headers), ...dataRows];
@@ -250,7 +257,7 @@ export default function AttendanceReportPage() {
                 </div>
 
                 {summary && (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {[
                             { label: "Empleados", value: summary.totalEmployees, color: "#64748b" },
                             { label: "Sin entrada", value: summary.sinEntrada, color: "#94a3b8" },
@@ -266,6 +273,11 @@ export default function AttendanceReportPage() {
                                 label: "Salida anticipada",
                                 value: summary.salidaAnticipada ?? 0,
                                 color: "#d97706",
+                            },
+                            {
+                                label: "Día libre",
+                                value: summary.diaLibre ?? 0,
+                                color: "#94a3b8",
                             },
                         ].map((card) => (
                             <div key={card.label} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
@@ -288,7 +300,7 @@ export default function AttendanceReportPage() {
                         <p className="text-sm text-gray-500">No hay empleados registrados.</p>
                     ) : (
                         <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left min-w-[1400px]">
+                            <table className="w-full text-sm text-left min-w-[1560px]">
                                 <thead className="text-xs text-gray-500 uppercase bg-gray-50 border-b">
                                     <tr>
                                         <th className="px-3 py-3 min-w-[180px]">Empleado</th>
@@ -302,6 +314,7 @@ export default function AttendanceReportPage() {
                                         <th className="px-3 py-3">Horas trabajo</th>
                                         <th className="px-3 py-3">Horas almuerzo</th>
                                         <th className="px-3 py-3">Tiempo en turno</th>
+                                        <th className="px-3 py-3 min-w-[140px]">Último acceso portal</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -407,6 +420,11 @@ export default function AttendanceReportPage() {
                                             </td>
                                             <td className="px-3 py-3 text-gray-600">
                                                 {row.shift?.totalHours ?? "—"}
+                                            </td>
+                                            <td className="px-3 py-3 text-xs text-gray-600 whitespace-nowrap">
+                                                {row.lastPortalLogin
+                                                    ? formatPortalLogin(row.lastPortalLogin)
+                                                    : "—"}
                                             </td>
                                         </tr>
                                     ))}

@@ -72,13 +72,30 @@ export async function GET(req: Request) {
                 pagination: { limit, offset, total },
             });
         } else {
-            // Employee: fetch only their records
             const shifts = await getAttendanceHistory(user.id, limit, offset);
-            
             const total = await prisma.shift.count({ where: { userId: user.id } });
-            
+
+            const scheduleUser = user as ScheduleUser;
+            const data = shifts.map((shift) => {
+                const schedule = getScheduleForUser(scheduleUser, shift.date);
+                const durations = computeShiftDurations(shift, schedule);
+                return {
+                    id: shift.id,
+                    date: shift.date,
+                    checkIn: shift.checkIn,
+                    checkOut: shift.checkOut,
+                    isLate: shift.isLate,
+                    lateReason: shift.lateReason,
+                    isEarly: shift.isEarly,
+                    earlyReason: shift.earlyReason,
+                    workHours: formatDurationMinutes(durations.workMinutes),
+                    breakHours: formatDurationMinutes(durations.breakMinutes),
+                    totalHours: formatDurationMinutes(durations.totalMinutes),
+                };
+            });
+
             return NextResponse.json({
-                data: shifts,
+                data,
                 pagination: { limit, offset, total },
             });
         }
