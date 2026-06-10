@@ -70,6 +70,17 @@ export async function autoCheckOutIfNeeded(): Promise<boolean> {
 
 /** Cierra sesión sin registrar salida (cambiar de cuenta, salir del portal). */
 export async function signOutPortal(callbackUrl = "/personal/login") {
+    const res = await fetch("/api/attendance", { cache: "no-store" });
+    const data = await res.json();
+    const hasOpenShift = data.shift && !data.shift.checkOut;
+
+    if (hasOpenShift) {
+        const confirmed = window.confirm(
+            "Tienes un turno abierto. ¿Cerrar sesión sin registrar salida? Usa Terminar turno si quieres registrar tu salida."
+        );
+        if (!confirmed) return;
+    }
+
     await signOut({ callbackUrl });
 }
 

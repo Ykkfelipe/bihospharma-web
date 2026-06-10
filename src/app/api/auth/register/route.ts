@@ -13,6 +13,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Todos los campos son obligatorios." }, { status: 400 });
         }
 
+        if (password.length < 6) {
+            return NextResponse.json({ error: "La contraseña debe tener al menos 6 caracteres." }, { status: 400 });
+        }
+
         const email = normalizePortalEmail(String(rawEmail));
 
         // Check if the access code is correct
