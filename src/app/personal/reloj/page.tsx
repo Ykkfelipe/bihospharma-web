@@ -70,7 +70,7 @@ export default function RelojPage() {
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [elapsed, setElapsed] = useState("");
-    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+    const [toast, setToast] = useState<{ msg: string; type: "success" | "error" | "info" } | null>(null);
 
     const load = async () => {
         const res = await fetch("/api/attendance", { cache: "no-store" });
@@ -126,12 +126,18 @@ export default function RelojPage() {
     const onEntrada = async () => {
         setBusy(true);
         setToast(null);
-        const ok = await autoCheckInIfNeeded();
+        const result = await autoCheckInIfNeeded();
         await load();
-        setToast({
-            msg: ok ? "Entrada registrada." : "Ya tenías entrada registrada hoy.",
-            type: "success",
-        });
+        if (!result.ok) {
+            setToast({
+                msg: result.error || "No se pudo registrar la entrada.",
+                type: "error",
+            });
+        } else if (result.alreadyCheckedIn) {
+            setToast({ msg: "Ya tenías entrada registrada hoy.", type: "info" });
+        } else {
+            setToast({ msg: "Entrada registrada.", type: "success" });
+        }
         setBusy(false);
     };
 

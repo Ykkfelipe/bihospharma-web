@@ -8,19 +8,35 @@ export function notifyAttendanceChanged() {
     }
 }
 
+export type AutoCheckInResult = {
+    ok: boolean;
+    alreadyCheckedIn?: boolean;
+    error?: string;
+};
+
 /** Register today's check-in if the user has no open shift yet. */
-export async function autoCheckInIfNeeded(): Promise<boolean> {
+export async function autoCheckInIfNeeded(): Promise<AutoCheckInResult> {
     const res = await fetch("/api/attendance", { cache: "no-store" });
     const data = await res.json();
-    if (data.shift) return false;
+    if (!res.ok) {
+        return { ok: false, error: data.error || "No se pudo consultar la asistencia." };
+    }
+    if (data.shift) {
+        return { ok: true, alreadyCheckedIn: true };
+    }
 
     const post = await fetch("/api/attendance", { method: "POST" });
     const created = await post.json();
-    if (created.shift) {
-        notifyAttendanceChanged();
-        return true;
+    if (!post.ok) {
+        return { ok: false, error: created.error || "No se pudo registrar la entrada." };
     }
-    return false;
+    if (created.shift) {
+        if (!created.alreadyCheckedIn) {
+            notifyAttendanceChanged();
+        }
+        return { ok: true, alreadyCheckedIn: Boolean(created.alreadyCheckedIn) };
+    }
+    return { ok: false, error: "No se pudo registrar la entrada." };
 }
 
 /** Register today's check-out if the user has an open shift. Returns shift or null. */

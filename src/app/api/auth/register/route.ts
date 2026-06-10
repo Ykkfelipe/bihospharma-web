@@ -1,16 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
+import { normalizePortalEmail } from "@/lib/portal-auth";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
     try {
-        const { email, password, name, accessCode } = await req.json();
+        const { email: rawEmail, password, name, accessCode } = await req.json();
 
-        if (!email || !password || !name || !accessCode) {
+        if (!rawEmail || !password || !name || !accessCode) {
             return NextResponse.json({ error: "Todos los campos son obligatorios." }, { status: 400 });
         }
+
+        const email = normalizePortalEmail(String(rawEmail));
 
         // Check if the access code is correct
         const correctCode = process.env.PORTAL_ACCESS_CODE;
