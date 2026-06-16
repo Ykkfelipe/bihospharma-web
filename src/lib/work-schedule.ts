@@ -82,41 +82,78 @@ export function isAfterLunch(now: Date, dateStr: string, schedule: DaySchedule):
     return now.getTime() >= parseTimeOnDate(dateStr, schedule.lunchEnd).getTime();
 }
 
-/** Texto corto según la franja horaria actual (reloj del portal). */
+/** Texto corto según la franja horaria actual (reloj del portal). @deprecated use getNextShiftInfo */
 export function getUpcomingScheduleHint(
     schedule: DaySchedule | null,
     now: Date,
     dateStr: string
 ): string {
     if (!schedule) return "Día libre";
+    return formatScheduleLabel(schedule);
+}
 
-    const t = now.getTime();
-    const workStart = parseTimeOnDate(dateStr, schedule.workStart);
-    const workEnd = parseTimeOnDate(dateStr, schedule.workEnd);
+export type NextShiftDisplay = {
+    /** "Hoy" o fecha del próximo turno, ej. "miércoles, 17 de junio" */
+    dayLabel: string;
+    /** Horario completo del turno */
+    schedule: string;
+};
 
-    if (t >= workEnd.getTime()) return "Jornada finalizada";
+function addDaysToDateStr(dateStr: string, days: number): string {
+    const d = new Date(`${dateStr}T12:00:00-05:00`);
+    d.setDate(d.getDate() + days);
+    return d.toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
+}
 
-    if (!schedule.hasLunchBreak) {
-        if (t < workStart.getTime()) {
-            return `Sábado · entrada ${schedule.workStart}`;
-        }
-        return `Sábado · ${schedule.workStart}–${schedule.workEnd}`;
+function findScheduledDayFrom(
+    user: ScheduleUser,
+    startDateStr: string,
+    maxDays = 14
+): { dateStr: string; schedule: DaySchedule } | null {
+    for (let i = 0; i < maxDays; i++) {
+        const dateStr = addDaysToDateStr(startDateStr, i);
+        const schedule = getScheduleForUser(user, dateStr);
+        if (schedule) return { dateStr, schedule };
+    }
+    return null;
+}
+
+function formatShiftDayLabel(dateStr: string, isToday: boolean): string {
+    if (isToday) return "Hoy";
+    const label = new Date(`${dateStr}T12:00:00-05:00`).toLocaleDateString("es-CO", {
+        timeZone: "America/Bogota",
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+    });
+    return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+/**
+ * Próximo turno laboral con horario completo.
+ * Si aún no hay entrada hoy → turno de hoy. Si ya hay entrada → siguiente día laboral.
+ */
+export function getNextShiftInfo(
+    user: ScheduleUser,
+    todayStr: string,
+    hasShiftToday: boolean
+): NextShiftDisplay | null {
+    const todaySchedule = getScheduleForUser(user, todayStr);
+
+    if (!hasShiftToday && todaySchedule) {
+        return {
+            dayLabel: "Hoy",
+            schedule: formatScheduleLabel(todaySchedule),
+        };
     }
 
-    if (t < workStart.getTime()) {
-        return `Hoy · entrada ${schedule.workStart}`;
-    }
+    const next = findScheduledDayFrom(user, addDaysToDateStr(todayStr, 1));
+    if (!next) return null;
 
-    const lunchStart = parseTimeOnDate(dateStr, schedule.lunchStart);
-    const lunchEnd = parseTimeOnDate(dateStr, schedule.lunchEnd);
-
-    if (t < lunchStart.getTime()) {
-        return `Mañana hasta ${schedule.morningEnd}`;
-    }
-    if (t < lunchEnd.getTime()) {
-        return `Almuerzo hasta ${schedule.lunchEnd}`;
-    }
-    return `Tarde hasta ${schedule.workEnd}`;
+    return {
+        dayLabel: formatShiftDayLabel(next.dateStr, false),
+        schedule: formatScheduleLabel(next.schedule),
+    };
 }
 
 export function formatScheduleLabel(schedule: DaySchedule): string {

@@ -1263,6 +1263,23 @@
   letter-spacing: -0.02em;
 }
 
+.portal-reloj-metric-value--day {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.portal-reloj-metric-sub {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+  color: rgba(186, 230, 253, 0.85);
+}
+
+.portal-reloj-metric--next-shift {
+  text-align: left;
+}
+
 .portal-reloj-shift-loading {
   margin: 0;
   padding: 18px 20px 24px;

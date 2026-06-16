@@ -19,7 +19,7 @@ type Shift = {
 
 type AttendancePayload = {
     shift: Shift | null;
-    scheduleHint: string | null;
+    nextShift: { dayLabel: string; schedule: string } | null;
     status: string | null;
     dayOff: boolean;
     autoAttendance: boolean;
@@ -72,7 +72,7 @@ export default function RelojPage() {
     const { status } = useSession();
     const now = useLiveClock();
     const [shift, setShift] = useState<Shift | null>(null);
-    const [scheduleHint, setScheduleHint] = useState<string | null>(null);
+    const [nextShift, setNextShift] = useState<AttendancePayload["nextShift"]>(null);
     const [shiftStatus, setShiftStatus] = useState<string | null>(null);
     const [dayOff, setDayOff] = useState(false);
     const [autoAttendance, setAutoAttendance] = useState(false);
@@ -85,7 +85,7 @@ export default function RelojPage() {
         const res = await fetch("/api/attendance", { cache: "no-store" });
         const data: AttendancePayload = await res.json();
         setShift(data.shift ?? null);
-        setScheduleHint(data.scheduleHint ?? null);
+        setNextShift(data.nextShift ?? null);
         setShiftStatus(data.status ?? data.shift?.status ?? null);
         setDayOff(Boolean(data.dayOff));
         setAutoAttendance(Boolean(data.autoAttendance));
@@ -217,11 +217,20 @@ export default function RelojPage() {
                         ) : (
                             <>
                                 <div className="portal-reloj-metrics">
-                                    <div className="portal-reloj-metric">
-                                        <span className="portal-reloj-metric-label">Horario</span>
-                                        <span className="portal-reloj-metric-value">
-                                            {scheduleHint ?? "—"}
-                                        </span>
+                                    <div className="portal-reloj-metric portal-reloj-metric--next-shift">
+                                        <span className="portal-reloj-metric-label">Próximo turno</span>
+                                        {nextShift ? (
+                                            <>
+                                                <span className="portal-reloj-metric-value portal-reloj-metric-value--day">
+                                                    {nextShift.dayLabel}
+                                                </span>
+                                                <span className="portal-reloj-metric-sub">
+                                                    {nextShift.schedule}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <span className="portal-reloj-metric-value">—</span>
+                                        )}
                                     </div>
                                     <div className="portal-reloj-metric">
                                         <span className="portal-reloj-metric-label">Tiempo activo</span>

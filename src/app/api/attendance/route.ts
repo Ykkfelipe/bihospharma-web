@@ -30,7 +30,7 @@ export async function GET() {
         const cacheKey = getCacheKey(user.id, "GET", today);
 
         const { syncUserShiftSchedule } = await import("@/lib/shift-schedule-sync");
-        const { getScheduleForUser, formatScheduleLabel, getUpcomingScheduleHint, getNowInBogota } =
+        const { getScheduleForUser, formatScheduleLabel, getNextShiftInfo } =
             await import("@/lib/work-schedule");
 
         const schedule = getScheduleForUser(user, today);
@@ -46,7 +46,7 @@ export async function GET() {
         });
 
         const scheduleLabel = schedule ? formatScheduleLabel(schedule) : null;
-        const scheduleHint = getUpcomingScheduleHint(schedule, getNowInBogota(), today);
+        const nextShift = getNextShiftInfo(user, today, Boolean(shift));
 
         if (shift) {
             setCachedResult(cacheKey, shift);
@@ -57,7 +57,7 @@ export async function GET() {
             today,
             role: user.role,
             scheduleLabel,
-            scheduleHint,
+            nextShift,
             dayOff,
             autoAttendance: user.autoAttendance,
             status: shift?.status ?? null,
