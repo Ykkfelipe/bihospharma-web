@@ -1,23 +1,143 @@
 @import "tailwindcss";
+
+/* ── Theme tokens (light) ───────────────────────────── */
+:root {
+  color-scheme: light;
+
+  --background: #ffffff;
+  --foreground: #171717;
+  --surface: #ffffff;
+  --surface-muted: #f8fafc;
+  --surface-subtle: #f1f5f9;
+  --surface-tint: #e8f4fc;
+  --text-primary: #1c2b4e;
+  --text-secondary: #374151;
+  --text-muted: #64748b;
+  --text-subtle: #94a3b8;
+  --border: #e5e7eb;
+  --border-subtle: #f3f4f6;
+  --nav-bg: #ffffff;
+  --nav-border: #f3f4f6;
+  --nav-link: #1c2b4e;
+  --nav-link-hover-bg: #eff6ff;
+  --input-bg: #f9fafb;
+  --input-border: #d1d5db;
+  --input-text: #111827;
+  --hero-frame-bg: #ffffff;
+  --hero-frame-border: #b8c9d9;
+  --hero-arrow-bg: rgba(255, 255, 255, 0.88);
+  --hero-arrow-text: #1c2b4e;
+  --hero-dots-bg: rgba(255, 255, 255, 0.72);
+  --card-border: #d7e0e8;
+  --brand-blue: #48a4dc;
+  --brand-blue-dark: #1c82c3;
+  --brand-navy: #1c2b4e;
+
+  /* Portal */
+  --portal-shell-bg: #f4f7fb;
+  --portal-surface: #ffffff;
+  --portal-surface-muted: #f8fafc;
+  --portal-surface-subtle: #f1f5f9;
+  --portal-border: #e8edf3;
+  --portal-border-strong: #e2e8f0;
+  --portal-text-heading: #1c2b4e;
+  --portal-text-body: #64748b;
+  --portal-text-strong: #0a2540;
+  --portal-text-label: #475569;
+  --portal-input-bg: #f8fafc;
+  --portal-input-border: #e2e8f0;
+  --portal-input-text: #1a202c;
+  --portal-table-header-bg: #f8fafc;
+  --portal-table-row-border: #f1f5f9;
+  --portal-card-border: #f0f0f0;
+  --portal-card-shadow: rgba(0, 0, 0, 0.04);
+  --portal-auth-card-bg: rgba(255, 255, 255, 0.98);
+  --portal-schedule-break-bg: #fffbeb;
+  --portal-schedule-break-border: #f0d878;
+
+  /* PQRS */
+  --pqrs-outer-bg: rgba(255, 255, 255, 0.96);
+  --pqrs-form-bg: #ffffff;
+  --pqrs-text: #0f2342;
+  --pqrs-text-muted: #4b5563;
+  --pqrs-type-grid-bg: #fdfefe;
+  --pqrs-contact-bar-bg: #f4f7fb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --background: #0f1419;
+    --foreground: #e8eaed;
+    --surface: #1a2332;
+    --surface-muted: #151c28;
+    --surface-subtle: #243044;
+    --surface-tint: rgba(72, 164, 220, 0.12);
+    --text-primary: #e8edf3;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-subtle: #64748b;
+    --border: #334155;
+    --border-subtle: #1e293b;
+    --nav-bg: #151c28;
+    --nav-border: #334155;
+    --nav-link: #e8edf3;
+    --nav-link-hover-bg: rgba(72, 164, 220, 0.14);
+    --input-bg: #1a2332;
+    --input-border: #475569;
+    --input-text: #f1f5f9;
+    --hero-frame-bg: #243044;
+    --hero-frame-border: #475569;
+    --hero-arrow-bg: rgba(30, 41, 59, 0.92);
+    --hero-arrow-text: #e8edf3;
+    --hero-dots-bg: rgba(15, 20, 25, 0.72);
+    --card-border: #475569;
+
+    --portal-shell-bg: #0f1419;
+    --portal-surface: #1a2332;
+    --portal-surface-muted: #151c28;
+    --portal-surface-subtle: #243044;
+    --portal-border: #334155;
+    --portal-border-strong: #475569;
+    --portal-text-heading: #e8edf3;
+    --portal-text-body: #94a3b8;
+    --portal-text-strong: #f1f5f9;
+    --portal-text-label: #cbd5e1;
+    --portal-input-bg: #151c28;
+    --portal-input-border: #475569;
+    --portal-input-text: #f1f5f9;
+    --portal-table-header-bg: #151c28;
+    --portal-table-row-border: #334155;
+    --portal-card-border: #334155;
+    --portal-card-shadow: rgba(0, 0, 0, 0.25);
+    --portal-auth-card-bg: rgba(255, 255, 255, 0.98);
+    --portal-schedule-break-bg: rgba(245, 158, 11, 0.12);
+    --portal-schedule-break-border: rgba(245, 158, 11, 0.35);
+
+    --pqrs-outer-bg: rgba(26, 35, 50, 0.96);
+    --pqrs-form-bg: #1a2332;
+    --pqrs-text: #e8edf3;
+    --pqrs-text-muted: #94a3b8;
+    --pqrs-type-grid-bg: #151c28;
+    --pqrs-contact-bar-bg: #151c28;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-text-primary: var(--text-primary);
+  --color-brand-blue: var(--brand-blue);
+}
+
 @import "./personal/portal.css";
 
 html {
   scroll-behavior: smooth;
-}
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --brand-blue: #48a4dc;
-  --brand-blue-dark: #1c82c3;
-}
-
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  color-scheme: light dark;
 }
 
 body {
@@ -30,7 +150,7 @@ body {
 .prose-content {
   font-size: clamp(1rem, 2vw, 1.125rem);
   line-height: 1.75;
-  color: #1f2937;
+  color: var(--text-secondary);
 }
 
 .prose-content p {
@@ -38,7 +158,7 @@ body {
 }
 
 .prose-content strong {
-  color: #1C2B4E;
+  color: var(--text-primary);
   font-weight: 600;
 }
 
@@ -60,24 +180,24 @@ body {
 .hero-fade {
   display: block;
   margin: 0;
-  background: #fff;
+  background: var(--hero-frame-bg);
 }
 
 .hero-fade-frame {
   overflow: hidden;
-  background: #fff;
-  border: 1px solid #b8c9d9;
+  background: var(--hero-frame-bg);
+  border: 1px solid var(--hero-frame-border);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.98),
-    0 2px 6px rgba(28, 43, 78, 0.05),
-    0 12px 30px -18px rgba(28, 43, 78, 0.22);
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    0 12px 30px -18px rgba(0, 0, 0, 0.2);
 }
 
 .hero-fade-viewport {
   position: relative;
   width: 100%;
   aspect-ratio: 3.2 / 1;
-  background: #fff;
+  background: var(--hero-frame-bg);
   line-height: 0;
   overflow: hidden;
 }
@@ -96,19 +216,19 @@ body {
   justify-content: center;
   width: 34px;
   height: 34px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--hero-frame-border);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.88);
-  color: #1c2b4e;
-  box-shadow: 0 2px 8px rgba(28, 43, 78, 0.12);
+  background: var(--hero-arrow-bg);
+  color: var(--hero-arrow-text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transform: translateY(-50%);
   cursor: pointer;
   transition: opacity 0.2s ease, background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
 .hero-fade-arrow:hover {
-  background: #fff;
-  color: #0f4c8a;
+  background: var(--hero-frame-bg);
+  color: var(--brand-blue);
 }
 
 .hero-fade-arrow:active {
@@ -135,7 +255,7 @@ body {
   transform: translateX(-50%);
   padding: 3px 7px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--hero-dots-bg);
   backdrop-filter: blur(3px);
 }
 
@@ -145,18 +265,18 @@ body {
   padding: 0;
   border: none;
   border-radius: 999px;
-  background: rgba(28, 43, 78, 0.25);
+  background: rgba(148, 163, 184, 0.45);
   cursor: pointer;
   transition: background 0.15s ease, width 0.15s ease;
 }
 
 .hero-fade-dot:hover {
-  background: rgba(28, 43, 78, 0.45);
+  background: rgba(148, 163, 184, 0.7);
 }
 
 .hero-fade-dot--active {
   width: 16px;
-  background: #48a4dc;
+  background: var(--brand-blue);
 }
 
 .hero-fade-edge {
@@ -164,7 +284,7 @@ body {
   background: linear-gradient(
     90deg,
     rgba(72, 164, 220, 0.2) 0%,
-    #48a4dc 50%,
+    var(--brand-blue) 50%,
     rgba(72, 164, 220, 0.2) 100%
   );
 }
@@ -200,7 +320,7 @@ body {
   .hero-fade-edge {
     margin: 0 12px;
     border-radius: 0 0 12px 12px;
-    box-shadow: 0 0 0 1px #b8c9d9;
+    box-shadow: 0 0 0 1px var(--hero-frame-border);
   }
 
   .home-services-section {
@@ -230,14 +350,14 @@ body {
 }
 
 .home-services-section {
-  background: #fff;
+  background: var(--surface);
 }
 
 .home-services-photo-wrap {
   overflow: hidden;
   border-radius: 0.75rem;
-  box-shadow: 0 10px 28px -18px rgba(28, 43, 78, 0.35);
-  border: 1px solid #d7e0e8;
+  box-shadow: 0 10px 28px -18px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--card-border);
 }
 
 .home-services-photo {
@@ -270,13 +390,13 @@ body {
 
 .slick-dots li button:before {
   font-size: 10px;
-  color: #007bff;
+  color: var(--brand-blue);
   opacity: 0.75;
 }
 
 .slick-dots li.slick-active button:before {
   opacity: 1;
-  color: #0056b3;
+  color: var(--brand-blue-dark);
 }
 
 @media (max-width: 768px) {
@@ -300,5 +420,116 @@ body {
   span,
   a {
     font-size: 16px;
+  }
+}
+
+/* ── Dark mode: remap common Tailwind utilities sitewide ── */
+@media (prefers-color-scheme: dark) {
+  .bg-white:not(.preserve-light) {
+    background-color: var(--surface);
+  }
+
+  .portal-auth-bg .bg-white,
+  .portal-auth-bg .focus\:bg-white:focus {
+    background-color: #ffffff;
+  }
+
+  .bg-gray-50,
+  .bg-gray-50\/50 {
+    background-color: var(--surface-muted);
+  }
+
+  .bg-slate-100 {
+    background-color: var(--surface-subtle);
+  }
+
+  .bg-\[\#e8f4fc\] {
+    background-color: var(--surface-tint);
+  }
+
+  .text-gray-900 {
+    color: var(--foreground);
+  }
+
+  .text-gray-800,
+  .text-gray-700 {
+    color: var(--text-secondary);
+  }
+
+  .text-gray-600,
+  .text-gray-500 {
+    color: var(--text-muted);
+  }
+
+  .text-gray-400 {
+    color: var(--text-subtle);
+  }
+
+  .border-gray-100,
+  .border-gray-200,
+  .border-gray-300 {
+    border-color: var(--border);
+  }
+
+  .hover\:bg-gray-100:hover {
+    background-color: var(--surface-muted);
+  }
+
+  .hover\:bg-blue-50:hover {
+    background-color: var(--nav-link-hover-bg);
+  }
+
+  nav.sticky .bg-white {
+    background-color: var(--nav-bg);
+  }
+
+  nav.sticky .border-gray-100 {
+    border-color: var(--nav-border);
+  }
+
+  nav.sticky [class*="text-[#1C2B4E]"],
+  nav.sticky [class*="text-[#1c2b4e]"] {
+    color: var(--nav-link);
+  }
+
+  .fixed.z-\[9999\].bg-white {
+    background-color: var(--surface);
+    border-color: var(--border);
+  }
+
+  .fixed.z-\[9999\] [class*="text-[#1C2B4E]"] {
+    color: var(--text-primary);
+  }
+
+  [class*="text-[#1C2B4E]"],
+  [class*="text-[#1c2b4e]"] {
+    color: var(--text-primary);
+  }
+
+  [class*="text-[#0a2540]"],
+  [class*="text-[#0A2540]"] {
+    color: var(--text-primary);
+  }
+
+  [class*="text-[#0B1B2B]"] {
+    color: var(--text-primary);
+  }
+
+  input.bg-gray-50,
+  textarea.bg-gray-50,
+  select.bg-gray-50 {
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-color: var(--input-border);
+  }
+
+  input.focus\:bg-white:focus,
+  textarea.focus\:bg-white:focus {
+    background-color: var(--surface);
+  }
+
+  .shadow-md,
+  .shadow-lg {
+    --tw-shadow-color: rgba(0, 0, 0, 0.25);
   }
 }

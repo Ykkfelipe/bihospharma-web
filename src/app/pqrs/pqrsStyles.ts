@@ -11,7 +11,7 @@ import type { CSSProperties } from 'react';
 export const outerShell: CSSProperties = {
     width: '100%',
     maxWidth: 780,
-    background: 'rgba(255,255,255,0.96)',
+    background: 'var(--pqrs-outer-bg)',
     padding: '32px 32px 42px',
     borderRadius: 30,
     boxShadow: '0 20px 42px rgba(23, 54, 94, 0.18)',
@@ -20,7 +20,7 @@ export const outerShell: CSSProperties = {
 
 export const formShell: CSSProperties = {
     position: 'relative',
-    background: '#fff',
+    background: 'var(--pqrs-form-bg)',
     borderRadius: 24,
     overflow: 'hidden',
     display: 'flex',
@@ -122,7 +122,7 @@ export const contentBody: CSSProperties = {
 
 export const formTitle: CSSProperties = {
     textAlign: 'center',
-    color: '#0f2342',
+    color: 'var(--pqrs-text)',
     fontWeight: 800,
     letterSpacing: 1.1,
     fontSize: '1.08rem',
@@ -144,7 +144,7 @@ export const pairRow: CSSProperties = {
 
 export const sectionLabel: CSSProperties = {
     marginBottom: 12,
-    color: '#102b49',
+    color: 'var(--pqrs-text)',
     fontWeight: 600,
     fontSize: 13,
     letterSpacing: 0.2,
@@ -159,7 +159,7 @@ export const typeGrid: CSSProperties = {
     border: '1.4px solid #1c3559',
     borderRadius: 8,
     overflow: 'hidden',
-    background: '#fdfefe',
+    background: 'var(--pqrs-type-grid-bg)',
 };
 
 export const typePill: CSSProperties = {
@@ -177,7 +177,7 @@ export const textareaField: CSSProperties = {
     border: '1.4px solid rgba(15,35,66,0.28)',
     padding: '16px 16px',
     fontSize: 14,
-    color: '#0f2342',
+    color: 'var(--pqrs-text)',
     resize: 'vertical',
     minHeight: 150,
     background: 'transparent',
@@ -201,7 +201,7 @@ export const submitButton: CSSProperties = {
 
 export const disclaimerText: CSSProperties = {
     fontSize: 12,
-    color: '#4b5563',
+    color: 'var(--pqrs-text-muted)',
     textAlign: 'center',
     letterSpacing: 0.15,
 };
@@ -220,14 +220,14 @@ export const contactBar: CSSProperties = {
     gap: 16,
     justifyContent: 'center',
     padding: '1.05rem 2rem',
-    background: '#f4f7fb',
+    background: 'var(--pqrs-contact-bar-bg)',
 };
 
 export const infoItem: CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     gap: 10,
-    color: '#0f2342',
+    color: 'var(--pqrs-text)',
     fontWeight: 600,
     fontSize: 12,
 };
@@ -314,7 +314,7 @@ export const lineRowMobile: CSSProperties = {
 
 export const lineLabel: CSSProperties = {
     whiteSpace: 'nowrap',
-    color: '#0f2342',
+    color: 'var(--pqrs-text)',
     fontWeight: 600,
     fontSize: 13,
     letterSpacing: 0.2,
@@ -336,10 +336,10 @@ export const requiredMark: CSSProperties = {
 export const lineInput: CSSProperties = {
     minWidth: 0,
     border: 'none',
-    borderBottom: '1.6px solid #0f2342',
+    borderBottom: '1.6px solid var(--pqrs-text)',
     padding: '4px 0 2px',
     fontSize: 14,
-    color: '#0f2342',
+    color: 'var(--pqrs-text)',
     background: 'transparent',
     outline: 'none',
     fontFamily: 'inherit',

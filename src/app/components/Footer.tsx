@@ -14,7 +14,7 @@ export default function Footer() {
               alt="Bihospharma"
               width={80}
               height={80}
-              className="rounded-lg bg-white p-1"
+              className="preserve-light rounded-lg bg-white p-1"
             />
           </Link>
           <p className="mt-4 text-sm leading-relaxed text-blue-100">

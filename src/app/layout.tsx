@@ -50,7 +50,7 @@ export default async function RootLayout({
 
   return (
     <html lang="es" className={dmSans.variable}>
-      <body className="flex min-h-screen flex-col overflow-x-hidden bg-white font-sans text-gray-800 antialiased">
+      <body className="flex min-h-screen flex-col overflow-x-hidden bg-background font-sans text-foreground antialiased">
         <AuthProvider session={session}>
           <OrganizationJsonLd />
           <SiteChrome>{children}</SiteChrome>
