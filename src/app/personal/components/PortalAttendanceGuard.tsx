@@ -19,10 +19,21 @@ export function PortalAttendanceGuard() {
             return;
         }
         if (!pathname || PUBLIC_AUTH_PATHS.some((p) => pathname.startsWith(p))) return;
-        if (ranForSession.current) return;
 
-        ranForSession.current = true;
-        void autoCheckInIfNeeded();
+        void (async () => {
+            const res = await fetch("/api/attendance", { cache: "no-store" });
+            const data = await res.json();
+            if (data.dayOff) return;
+
+            if (data.autoAttendance) {
+                await autoCheckInIfNeeded();
+                return;
+            }
+
+            if (ranForSession.current) return;
+            ranForSession.current = true;
+            await autoCheckInIfNeeded();
+        })();
     }, [status, pathname]);
 
     return null;

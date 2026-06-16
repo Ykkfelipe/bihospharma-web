@@ -11,6 +11,7 @@ export function notifyAttendanceChanged() {
 export type AutoCheckInResult = {
     ok: boolean;
     alreadyCheckedIn?: boolean;
+    skipped?: boolean;
     error?: string;
 };
 
@@ -21,6 +22,9 @@ export async function autoCheckInIfNeeded(): Promise<AutoCheckInResult> {
     if (!res.ok) {
         return { ok: false, error: data.error || "No se pudo consultar la asistencia." };
     }
+    if (data.dayOff) {
+        return { ok: true, skipped: true };
+    }
     if (data.shift) {
         return { ok: true, alreadyCheckedIn: true };
     }
@@ -28,6 +32,9 @@ export async function autoCheckInIfNeeded(): Promise<AutoCheckInResult> {
     const post = await fetch("/api/attendance", { method: "POST" });
     const created = await post.json();
     if (!post.ok) {
+        if (created.dayOff) {
+            return { ok: true, skipped: true };
+        }
         return { ok: false, error: created.error || "No se pudo registrar la entrada." };
     }
     if (created.shift) {

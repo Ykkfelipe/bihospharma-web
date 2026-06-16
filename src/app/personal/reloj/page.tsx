@@ -19,8 +19,10 @@ type Shift = {
 
 type AttendancePayload = {
     shift: Shift | null;
-    scheduleLabel: string | null;
+    scheduleHint: string | null;
     status: string | null;
+    dayOff: boolean;
+    autoAttendance: boolean;
 };
 
 function useLiveClock() {
@@ -54,7 +56,12 @@ function formatClockParts(date: Date) {
     };
 }
 
-function turnoState(shift: Shift | null, shiftStatus: string | null) {
+function turnoState(
+    shift: Shift | null,
+    shiftStatus: string | null,
+    dayOff: boolean
+) {
+    if (dayOff) return { label: "Día libre", tone: "dayoff" as const };
     if (!shift) return { label: "Sin entrada", tone: "idle" as const };
     if (shift.checkOut) return { label: "Turno cerrado", tone: "done" as const };
     if (shiftStatus === "lunch_break") return { label: "En almuerzo", tone: "lunch" as const };
@@ -65,8 +72,10 @@ export default function RelojPage() {
     const { status } = useSession();
     const now = useLiveClock();
     const [shift, setShift] = useState<Shift | null>(null);
-    const [scheduleLabel, setScheduleLabel] = useState<string | null>(null);
+    const [scheduleHint, setScheduleHint] = useState<string | null>(null);
     const [shiftStatus, setShiftStatus] = useState<string | null>(null);
+    const [dayOff, setDayOff] = useState(false);
+    const [autoAttendance, setAutoAttendance] = useState(false);
     const [loading, setLoading] = useState(true);
     const [busy, setBusy] = useState(false);
     const [elapsed, setElapsed] = useState("");
@@ -76,8 +85,10 @@ export default function RelojPage() {
         const res = await fetch("/api/attendance", { cache: "no-store" });
         const data: AttendancePayload = await res.json();
         setShift(data.shift ?? null);
-        setScheduleLabel(data.scheduleLabel ?? null);
+        setScheduleHint(data.scheduleHint ?? null);
         setShiftStatus(data.status ?? data.shift?.status ?? null);
+        setDayOff(Boolean(data.dayOff));
+        setAutoAttendance(Boolean(data.autoAttendance));
         setLoading(false);
     };
 
@@ -128,6 +139,10 @@ export default function RelojPage() {
         setToast(null);
         const result = await autoCheckInIfNeeded();
         await load();
+        if (result.skipped) {
+            setBusy(false);
+            return;
+        }
         if (!result.ok) {
             setToast({
                 msg: result.error || "No se pudo registrar la entrada.",
@@ -161,12 +176,16 @@ export default function RelojPage() {
         year: "numeric",
     });
 
-    const turno = turnoState(shift, shiftStatus);
-    const registroLabel = shift
-        ? shift.checkOut
-            ? `Entrada ${formatTime(shift.checkIn)} · Salida ${formatTime(shift.checkOut)}`
-            : `Entrada ${formatTime(shift.checkIn)}`
-        : "—";
+    const turno = turnoState(shift, shiftStatus, dayOff);
+    const registroLabel = dayOff
+        ? "Sin jornada hoy"
+        : shift
+          ? shift.checkOut
+              ? `Entrada ${formatTime(shift.checkIn)} · Salida ${formatTime(shift.checkOut)}`
+              : `Entrada ${formatTime(shift.checkIn)}`
+          : "—";
+
+    const showManualActions = !dayOff && !autoAttendance && (!shift || !shift.checkOut);
 
     return (
         <PortalShell title="Reloj" fullHeight>
@@ -200,12 +219,16 @@ export default function RelojPage() {
                                 <div className="portal-reloj-metrics">
                                     <div className="portal-reloj-metric">
                                         <span className="portal-reloj-metric-label">Horario</span>
-                                        <span className="portal-reloj-metric-value">{scheduleLabel ?? "—"}</span>
+                                        <span className="portal-reloj-metric-value">
+                                            {scheduleHint ?? "—"}
+                                        </span>
                                     </div>
                                     <div className="portal-reloj-metric">
                                         <span className="portal-reloj-metric-label">Tiempo activo</span>
                                         <span className="portal-reloj-metric-value portal-reloj-metric-value--emphasis">
-                                            {elapsed || (shift && !shift.checkOut ? "0h 0m" : "—")}
+                                            {dayOff
+                                                ? "—"
+                                                : elapsed || (shift && !shift.checkOut ? "0h 0m" : "—")}
                                         </span>
                                     </div>
                                     <div className="portal-reloj-metric">
@@ -214,7 +237,19 @@ export default function RelojPage() {
                                     </div>
                                 </div>
 
-                                {(!shift || !shift.checkOut) && (
+                                {dayOff && (
+                                    <p className="portal-reloj-notice">
+                                        Hoy no tienes jornada programada. Disfruta tu día libre.
+                                    </p>
+                                )}
+
+                                {autoAttendance && !dayOff && (
+                                    <p className="portal-reloj-notice">
+                                        Su asistencia se registra automáticamente.
+                                    </p>
+                                )}
+
+                                {showManualActions && (
                                     <div className="portal-reloj-actions">
                                         {!shift ? (
                                             <button

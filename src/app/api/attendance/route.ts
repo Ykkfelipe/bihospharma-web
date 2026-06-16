@@ -30,17 +30,23 @@ export async function GET() {
         const cacheKey = getCacheKey(user.id, "GET", today);
 
         const { syncUserShiftSchedule } = await import("@/lib/shift-schedule-sync");
-        const { getScheduleForUser, formatScheduleLabel } = await import("@/lib/work-schedule");
+        const { getScheduleForUser, formatScheduleLabel, getUpcomingScheduleHint, getNowInBogota } =
+            await import("@/lib/work-schedule");
+
+        const schedule = getScheduleForUser(user, today);
+        const dayOff = schedule === null;
 
         // Sync before read/cache so lunch_break resumes to active after 14:00
-        await syncUserShiftSchedule(user.id);
+        if (!dayOff) {
+            await syncUserShiftSchedule(user.id);
+        }
 
         const shift = await prisma.shift.findUnique({
             where: { userId_date: { userId: user.id, date: today } },
         });
 
-        const schedule = getScheduleForUser(user, today);
         const scheduleLabel = schedule ? formatScheduleLabel(schedule) : null;
+        const scheduleHint = getUpcomingScheduleHint(schedule, getNowInBogota(), today);
 
         if (shift) {
             setCachedResult(cacheKey, shift);
@@ -51,6 +57,9 @@ export async function GET() {
             today,
             role: user.role,
             scheduleLabel,
+            scheduleHint,
+            dayOff,
+            autoAttendance: user.autoAttendance,
             status: shift?.status ?? null,
         });
     } catch (err) {
@@ -77,6 +86,14 @@ export async function POST(req: Request) {
         const cached = getCachedResult<{ shift: unknown; alreadyCheckedIn: boolean }>(cacheKey);
         if (cached) {
             return NextResponse.json(cached, { headers: { "X-Deduped": "true" } });
+        }
+
+        const { getScheduleForUser } = await import("@/lib/work-schedule");
+        if (!getScheduleForUser(user, today)) {
+            return NextResponse.json(
+                { error: "Hoy no hay jornada laboral.", dayOff: true },
+                { status: 400 }
+            );
         }
 
             // -------------------------------------------------

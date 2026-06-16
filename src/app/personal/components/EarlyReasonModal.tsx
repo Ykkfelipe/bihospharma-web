@@ -29,6 +29,10 @@ export function EarlyReasonModal() {
         try {
             const res = await fetch("/api/attendance", { cache: "no-store" });
             const data = await res.json();
+            if (data.dayOff) {
+                setOpen(false);
+                return;
+            }
             const shift = data.shift as ShiftInfo | null;
             if (shift?.checkOut && shift.isEarly && !shift.earlyReason) {
                 setCheckOutLabel(

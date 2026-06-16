@@ -21,6 +21,7 @@ const STAFF: Array<{
     role?: "admin" | "employee";
     satWorkStart?: string;
     satWorkEnd?: string;
+    autoAttendance?: boolean;
 }> = [
     { email: "amanda.bonilla@bihospharma.com", name: "AMANDA  BONILLA ROZO" },
     {
@@ -28,6 +29,7 @@ const STAFF: Array<{
         name: "MARIA ANGELICA ARENAS GOMEZ",
         satWorkStart: "08:00",
         satWorkEnd: "12:00",
+        autoAttendance: true,
     },
     { email: "duglas.cifuentes@bihospharma.com", name: "DUGLAS MIGUEL CIFUENTES MARTINEZ", role: "admin" },
     { email: "luis.bello@bihospharma.com", name: "LUIS ERNESTO BELLO VILLARREAL" },
@@ -63,6 +65,7 @@ async function main() {
                 workEnd: "17:30",
                 satWorkStart: s.satWorkStart ?? null,
                 satWorkEnd: s.satWorkEnd ?? null,
+                autoAttendance: s.autoAttendance ?? false,
             },
             create: {
                 email: s.email,
@@ -76,6 +79,7 @@ async function main() {
                 workEnd: "17:30",
                 satWorkStart: s.satWorkStart ?? null,
                 satWorkEnd: s.satWorkEnd ?? null,
+                autoAttendance: s.autoAttendance ?? false,
             },
         });
         console.log(`✅ ${s.email} — ${s.name}`);

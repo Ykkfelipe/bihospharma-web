@@ -82,6 +82,43 @@ export function isAfterLunch(now: Date, dateStr: string, schedule: DaySchedule):
     return now.getTime() >= parseTimeOnDate(dateStr, schedule.lunchEnd).getTime();
 }
 
+/** Texto corto según la franja horaria actual (reloj del portal). */
+export function getUpcomingScheduleHint(
+    schedule: DaySchedule | null,
+    now: Date,
+    dateStr: string
+): string {
+    if (!schedule) return "Día libre";
+
+    const t = now.getTime();
+    const workStart = parseTimeOnDate(dateStr, schedule.workStart);
+    const workEnd = parseTimeOnDate(dateStr, schedule.workEnd);
+
+    if (t >= workEnd.getTime()) return "Jornada finalizada";
+
+    if (!schedule.hasLunchBreak) {
+        if (t < workStart.getTime()) {
+            return `Sábado · entrada ${schedule.workStart}`;
+        }
+        return `Sábado · ${schedule.workStart}–${schedule.workEnd}`;
+    }
+
+    if (t < workStart.getTime()) {
+        return `Hoy · entrada ${schedule.workStart}`;
+    }
+
+    const lunchStart = parseTimeOnDate(dateStr, schedule.lunchStart);
+    const lunchEnd = parseTimeOnDate(dateStr, schedule.lunchEnd);
+
+    if (t < lunchStart.getTime()) {
+        return `Mañana hasta ${schedule.morningEnd}`;
+    }
+    if (t < lunchEnd.getTime()) {
+        return `Almuerzo hasta ${schedule.lunchEnd}`;
+    }
+    return `Tarde hasta ${schedule.workEnd}`;
+}
+
 export function formatScheduleLabel(schedule: DaySchedule): string {
     if (!schedule.hasLunchBreak) {
         return `Sábado · ${schedule.workStart} – ${schedule.workEnd}`;

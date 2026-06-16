@@ -26,6 +26,7 @@ model User {
   // Sábado especial (ej. María Angélica)
   satWorkStart String?
   satWorkEnd   String?
+  autoAttendance Boolean    @default(false) // Registro automático sin botones manuales
   area         String?       // Área operativa (ej. "Enfermería", "Administración")
   reactions    Reaction[]
   comments     Comment[]

@@ -24,6 +24,23 @@ export async function syncUserShiftSchedule(userId: string, now = new Date()) {
     if (!shift) return null;
     if (shift.checkOut) return { shift, schedule };
 
+    // Auto check-out at scheduled end for users with automatic attendance
+    if (user.autoAttendance) {
+        const workEnd = parseTimeOnDate(date, schedule.workEnd);
+        if (now.getTime() >= workEnd.getTime()) {
+            shift = await prisma.shift.update({
+                where: { id: shift.id },
+                data: {
+                    checkOut: workEnd,
+                    status: "completed",
+                    isEarly: false,
+                },
+            });
+            invalidateAttendanceCache(userId, date);
+            return { shift, schedule };
+        }
+    }
+
     const status = shift.status || "active";
     const updates: {
         status?: string;
