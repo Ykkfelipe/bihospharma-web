@@ -82,16 +82,6 @@ export function isAfterLunch(now: Date, dateStr: string, schedule: DaySchedule):
     return now.getTime() >= parseTimeOnDate(dateStr, schedule.lunchEnd).getTime();
 }
 
-/** Texto corto según la franja horaria actual (reloj del portal). @deprecated use getNextShiftInfo */
-export function getUpcomingScheduleHint(
-    schedule: DaySchedule | null,
-    now: Date,
-    dateStr: string
-): string {
-    if (!schedule) return "Día libre";
-    return formatScheduleLabel(schedule);
-}
-
 export type NextShiftDisplay = {
     /** "Hoy" o fecha del próximo turno, ej. "miércoles, 17 de junio" */
     dayLabel: string;
