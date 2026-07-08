@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, FormEvent, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { AdminPortalShell } from "../components/PortalShell";
 
@@ -127,6 +126,9 @@ export default function AdminPage() {
         try {
             let fileUrl = editFileUrl;
             if (editFile) fileUrl = await uploadFile(editFile);
+            if (editType === "document" && !fileUrl) {
+                throw new Error("Los documentos deben incluir un PDF o imagen adjunta.");
+            }
 
             const res = await fetch(`/api/posts/${editId}`, {
                 method: "PATCH",
@@ -280,7 +282,11 @@ export default function AdminPage() {
                                         <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 flex items-start justify-between gap-4">
                                             <div className="flex-1 min-w-0">
                                                 <span className="inline-block text-xs font-bold uppercase tracking-wide text-[#0f4c8a] mb-1">
-                                                    {p.type === "document" ? "📄 Documento" : "📢 Comunicado"}
+                                                    {p.type === "document"
+                                                        ? "📄 Documento"
+                                                        : p.type === "pinned"
+                                                          ? "📌 Doc. institucional"
+                                                          : "📢 Comunicado"}
                                                 </span>
                                                 <p className="font-semibold text-[#0a2540] text-sm truncate">{p.title}</p>
                                                 <p className="text-xs text-gray-400">{formatDate(p.createdAt)}</p>

@@ -25,8 +25,9 @@ export async function GET(req: Request) {
         const date = url.searchParams.get("date") || todayCO();
         const area = url.searchParams.get("area");
         const userId = url.searchParams.get("userId");
+        const adminView = url.searchParams.get("view") === "admin";
 
-        if (user.role === "admin") {
+        if (user.role === "admin" && adminView) {
             const where: { date?: string; area?: string; userId?: string } = { date };
             if (area && area !== "all") where.area = area;
             if (userId && userId !== "all") where.userId = userId;

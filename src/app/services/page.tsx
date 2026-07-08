@@ -26,7 +26,7 @@ export default function ServicesPage() {
         heightClass="h-[45vh] min-h-[240px] sm:min-h-[300px] md:min-h-[360px]"
       />
 
-      <section className="bg-[#48a4dc] px-4 py-10 sm:px-6 sm:py-14">
+      <section className="bg-[var(--brand-blue)] px-4 py-10 sm:px-6 sm:py-14">
         <h2 className="mb-8 text-center text-2xl font-bold text-white sm:text-3xl md:text-4xl">
           Consulta Externa
         </h2>
@@ -45,7 +45,7 @@ export default function ServicesPage() {
                 quality={80}
                 className="object-cover transition-transform group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-black/40" aria-hidden="true" />
+              <div className="absolute inset-0 bg-black/45" aria-hidden="true" />
               <div className="relative z-10 flex h-full flex-col items-center justify-center gap-2 px-3 text-center text-white">
                 <span className="text-sm font-bold leading-tight drop-shadow sm:text-base">
                   {title}
@@ -55,7 +55,7 @@ export default function ServicesPage() {
                     </span>
                   ))}
                 </span>
-                <span className="rounded-full bg-[#48a4dc] px-4 py-1.5 text-xs font-semibold shadow sm:text-sm">
+                <span className="rounded-full bg-[var(--brand-blue)] px-4 py-1.5 text-xs font-semibold shadow sm:text-sm">
                   VER MÁS
                 </span>
               </div>

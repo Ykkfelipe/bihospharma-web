@@ -107,7 +107,9 @@ export function EarlyReasonModal() {
                 style={{
                     width: "100%",
                     maxWidth: 440,
-                    background: "#fff",
+                    background: "var(--portal-surface)",
+                    color: "var(--portal-text-strong)",
+                    border: "1px solid var(--portal-border-strong)",
                     borderRadius: 16,
                     boxShadow: "0 24px 48px rgba(0,0,0,0.2)",
                     overflow: "hidden",
@@ -129,10 +131,16 @@ export function EarlyReasonModal() {
                         Salida registrada a las <strong>{checkOutLabel}</strong>. Cuéntenos el motivo.
                     </p>
                 </div>
-                <div style={{ padding: "20px 24px 24px" }}>
+                <div style={{ padding: "20px 24px 24px", background: "var(--portal-surface)" }}>
                     <label
                         htmlFor="early-reason-text"
-                        style={{ display: "block", fontSize: 13, fontWeight: 600, color: "#374151", marginBottom: 8 }}
+                        style={{
+                            display: "block",
+                            fontSize: 13,
+                            fontWeight: 600,
+                            color: "var(--portal-text-label)",
+                            marginBottom: 8,
+                        }}
                     >
                         Motivo de la salida anticipada *
                     </label>
@@ -151,9 +159,14 @@ export function EarlyReasonModal() {
                             fontSize: 14,
                             resize: "vertical",
                             boxSizing: "border-box",
+                            background: "var(--portal-input-bg)",
+                            color: "var(--portal-input-text)",
+                            WebkitTextFillColor: "var(--portal-input-text)",
+                            borderColor: "var(--portal-input-border)",
+                            caretColor: "var(--portal-input-text)",
                         }}
                     />
-                    <p style={{ fontSize: 11, color: "#9ca3af", margin: "6px 0 0", textAlign: "right" }}>
+                    <p style={{ fontSize: 11, color: "var(--text-subtle)", margin: "6px 0 0", textAlign: "right" }}>
                         {reason.length}/500
                     </p>
                     {error && (
@@ -187,9 +200,9 @@ export function EarlyReasonModal() {
                                 setOpen(false);
                             }}
                             style={{
-                                background: "#f1f5f9",
-                                color: "#64748b",
-                                border: "none",
+                                background: "var(--portal-surface-muted)",
+                                color: "var(--portal-text-body)",
+                                border: "1px solid var(--portal-border)",
                                 borderRadius: 10,
                                 padding: "12px 16px",
                                 fontWeight: 600,

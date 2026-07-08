@@ -69,6 +69,22 @@ export function isEarlyCheckOut(now: Date, dateStr: string, schedule: DaySchedul
     return now.getTime() < end.getTime() - 60_000; // before scheduled end (1 min grace)
 }
 
+/** Minutes after scheduled end before the system auto-closes an open shift (olvido de cierre). */
+export const LATE_CHECKOUT_GRACE_MINUTES = 15;
+
+export function getLateCheckoutGraceMs(): number {
+    return LATE_CHECKOUT_GRACE_MINUTES * 60_000;
+}
+
+export function isPastLateCheckoutGrace(now: Date, dateStr: string, schedule: DaySchedule): boolean {
+    const workEnd = parseTimeOnDate(dateStr, schedule.workEnd);
+    return now.getTime() >= workEnd.getTime() + getLateCheckoutGraceMs();
+}
+
+export function isAtOrPastScheduledEnd(now: Date, dateStr: string, schedule: DaySchedule): boolean {
+    return now.getTime() >= parseTimeOnDate(dateStr, schedule.workEnd).getTime();
+}
+
 export function isInLunchWindow(now: Date, dateStr: string, schedule: DaySchedule): boolean {
     if (!schedule.hasLunchBreak) return false;
     const lunchStart = parseTimeOnDate(dateStr, schedule.lunchStart);

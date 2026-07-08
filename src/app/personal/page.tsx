@@ -154,11 +154,9 @@ function ReactionsBar({
 function CommentsSection({
     postId,
     comments: initialComments,
-    commentCount: _commentCount,
 }: {
     postId: string;
     comments: PostComment[];
-    commentCount: number;
 }) {
     const [comments, setComments] = useState(initialComments);
     const [expanded, setExpanded] = useState(false);
@@ -423,48 +421,52 @@ function AttendanceWidget({ status }: { status: "loading" | "authenticated" | "u
     if (loading) return null;
 
     return (
-        <div className="portal-attendance-card" style={{ marginBottom: 32 }}>
+        <div className="portal-attendance-card">
             <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                <div className="portal-attendance-head">
                     <div className="portal-section-icon" style={{ background: "#e0e7ff", color: "#4f46e5" }}>
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <circle cx="12" cy="12" r="10" />
                             <polyline points="12 6 12 12 16 14" />
                         </svg>
                     </div>
-                    <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0a2540", margin: 0 }}>Mi Asistencia</h2>
+                    <h2 className="portal-attendance-title">Mi Asistencia</h2>
                     {shift && !shift.checkOut && <div className="portal-attendance-pulse" title="Turno activo" />}
                 </div>
-                
+
                 {scheduleLabel && (
-                    <p style={{ color: "#94a3b8", fontSize: 11, margin: "0 0 8px" }}>
-                        Horario: {scheduleLabel}
-                    </p>
+                    <p className="portal-attendance-schedule">Horario: {scheduleLabel}</p>
                 )}
                 {shift?.status === "lunch_break" && (
-                    <p style={{ color: "#d97706", fontSize: 13, fontWeight: 600, margin: "0 0 8px" }}>
+                    <p className="portal-attendance-lunch">
                         En almuerzo{lunchRange ? ` (${lunchRange})` : ""} — seguimiento en pausa
                     </p>
                 )}
                 {!shift ? (
-                    <p style={{ color: "#64748b", fontSize: 13, margin: 0 }}>
+                    <p className="portal-attendance-hint">
                         Use el reloj para registrar entrada y salida del turno.
                     </p>
                 ) : (
-                    <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
+                    <div className="portal-attendance-metrics">
                         <div>
-                            <p style={{ fontSize: 11, color: "#94a3b8", textTransform: "uppercase", fontWeight: 600, margin: "0 0 4px" }}>Entrada</p>
-                            <p style={{ fontSize: 15, fontWeight: 700, color: "#0f4c8a", margin: 0 }}>{formatTime(shift.checkIn)}</p>
+                            <p className="portal-attendance-metric-label">Entrada</p>
+                            <p className="portal-attendance-metric-value portal-attendance-metric-value--in">
+                                {formatTime(shift.checkIn)}
+                            </p>
                         </div>
                         {shift.checkOut ? (
                             <div>
-                                <p style={{ fontSize: 11, color: "#94a3b8", textTransform: "uppercase", fontWeight: 600, margin: "0 0 4px" }}>Salida</p>
-                                <p style={{ fontSize: 15, fontWeight: 700, color: "#ef4444", margin: 0 }}>{formatTime(shift.checkOut)}</p>
+                                <p className="portal-attendance-metric-label">Salida</p>
+                                <p className="portal-attendance-metric-value portal-attendance-metric-value--out">
+                                    {formatTime(shift.checkOut)}
+                                </p>
                             </div>
                         ) : (
                             <div>
-                                <p style={{ fontSize: 11, color: "#94a3b8", textTransform: "uppercase", fontWeight: 600, margin: "0 0 4px" }}>Tiempo Activo</p>
-                                <p style={{ fontSize: 15, fontWeight: 700, color: "#10b981", margin: 0 }}>{elapsed || "0h 0m"}</p>
+                                <p className="portal-attendance-metric-label">Tiempo Activo</p>
+                                <p className="portal-attendance-metric-value portal-attendance-metric-value--active">
+                                    {elapsed || "0h 0m"}
+                                </p>
                             </div>
                         )}
                     </div>
@@ -536,15 +538,13 @@ export default function PersonalPage() {
                         {/* ── Pinned Institutional Documents ─────── */}
                         {pinned.length > 0 && (
                             <section>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                                <div className="portal-feed-section-head">
                                     <div className="portal-section-icon pinned">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                             <path d="M12 2L12 22M12 2L8 6M12 2L16 6" />
                                         </svg>
                                     </div>
-                                    <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0a2540', margin: 0 }}>
-                                        Documentos Institucionales
-                                    </h2>
+                                    <h2 className="portal-feed-section-title">Documentos Institucionales</h2>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                     {pinned.map((post) => (
@@ -554,7 +554,7 @@ export default function PersonalPage() {
                                                     <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
                                                     <polyline points="14 2 14 8 20 8" />
                                                 </svg>
-                                                <h3 style={{ fontSize: 14, fontWeight: 600, color: '#0a2540', margin: 0 }}>{post.title}</h3>
+                                                <h3 className="portal-post-card-title">{post.title}</h3>
                                             </div>
                                             <div style={{ padding: '0 20px 16px' }}>
                                                 {post.fileUrl && post.fileUrl.endsWith('.pdf') ? (
@@ -612,7 +612,6 @@ export default function PersonalPage() {
                                                 <CommentsSection
                                                     postId={post.id}
                                                     comments={post.comments}
-                                                    commentCount={post.commentCount}
                                                 />
                                             </div>
                                         </div>
@@ -631,25 +630,20 @@ export default function PersonalPage() {
                         {/* ── Announcements ─────────────────────── */}
                         {announcements.length > 0 && (
                             <section>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                                <div className="portal-feed-section-head">
                                     <div className="portal-section-icon announcement">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                             <path d="M22 2L11 13M22 2L15 22L11 13L2 9L22 2Z" />
                                         </svg>
                                     </div>
-                                    <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0a2540', margin: 0 }}>Tablero de Comunicaciones</h2>
+                                    <h2 className="portal-feed-section-title">Tablero de Comunicaciones</h2>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                     {announcements.map((post) => (
                                         <div key={post.id} className="portal-post-card">
-                                            <div style={{
-                                                padding: '14px 20px', borderBottom: '1px solid #f5f5f5',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                                background: 'linear-gradient(to right, #fafbfc, #fff)',
-                                                flexWrap: 'wrap', gap: 8,
-                                            }}>
-                                                <h3 style={{ fontSize: 14, fontWeight: 600, color: '#0a2540', margin: 0 }}>{post.title}</h3>
-                                                <span style={{ fontSize: 11, color: '#94a3b8' }}>{formatDate(post.createdAt)}</span>
+                                            <div className="portal-post-card-banner">
+                                                <h3 className="portal-post-card-title">{post.title}</h3>
+                                                <span className="portal-post-date">{formatDate(post.createdAt)}</span>
                                             </div>
                                             <div style={{ padding: '16px 20px' }}>
                                                 {post.body && (
@@ -674,7 +668,6 @@ export default function PersonalPage() {
                                                 <CommentsSection
                                                     postId={post.id}
                                                     comments={post.comments}
-                                                    commentCount={post.commentCount}
                                                 />
                                             </div>
                                         </div>
@@ -686,27 +679,27 @@ export default function PersonalPage() {
                         {/* ── Documents ─────────────────────────── */}
                         {documents.length > 0 && (
                             <section>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+                                <div className="portal-feed-section-head">
                                     <div className="portal-section-icon document">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                             <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z" />
                                         </svg>
                                     </div>
-                                    <h2 style={{ fontSize: 16, fontWeight: 700, color: '#0a2540', margin: 0 }}>Documentos y Reglamentación</h2>
+                                    <h2 className="portal-feed-section-title">Documentos y Reglamentación</h2>
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                                     {documents.map((post) => (
                                         <div key={post.id} className="portal-post-card">
-                                            <div style={{
-                                                padding: '14px 20px', borderBottom: '1px solid #f5f5f5',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                                background: 'linear-gradient(to right, #fafbfc, #fff)',
-                                                flexWrap: 'wrap', gap: 8,
-                                            }}>
-                                                <h3 style={{ fontSize: 14, fontWeight: 600, color: '#0a2540', margin: 0 }}>{post.title}</h3>
-                                                <span style={{ fontSize: 11, color: '#94a3b8' }}>{formatDate(post.createdAt)}</span>
+                                            <div className="portal-post-card-banner">
+                                                <h3 className="portal-post-card-title">{post.title}</h3>
+                                                <span className="portal-post-date">{formatDate(post.createdAt)}</span>
                                             </div>
                                             <div style={{ padding: '16px 20px' }}>
+                                                {post.body && (
+                                                    <p style={{ color: '#64748b', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap', margin: 0, marginBottom: post.fileUrl ? 14 : 0 }}>
+                                                        {post.body}
+                                                    </p>
+                                                )}
                                                 {post.fileUrl && (
                                                     <PostAttachment fileUrl={post.fileUrl} title={post.title} isImage={isImage} />
                                                 )}
@@ -724,7 +717,6 @@ export default function PersonalPage() {
                                                 <CommentsSection
                                                     postId={post.id}
                                                     comments={post.comments}
-                                                    commentCount={post.commentCount}
                                                 />
                                             </div>
                                         </div>

@@ -254,7 +254,7 @@ export default function RelojPage() {
 
                                 {autoAttendance && !dayOff && (
                                     <p className="portal-reloj-notice">
-                                        Su asistencia se registra automáticamente.
+                                        Su entrada y salida se registran automáticamente según su horario asignado.
                                     </p>
                                 )}
 

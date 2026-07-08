@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 const SLIDES = [
   { src: '/images/Banner-2026.png', alt: 'Bihospharma — Banner 2026' },
-  { src: '/images/junio2-2026.png', alt: 'Bihospharma — Junio 2026' },
+  { src: '/images/julio-2026.jpg', alt: 'Bihospharma — Julio 2026' },
   { src: '/images/3.png', alt: 'Bihospharma — Servicios de salud' },
 ] as const;
 

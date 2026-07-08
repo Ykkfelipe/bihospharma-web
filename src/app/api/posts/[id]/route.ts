@@ -4,6 +4,12 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+function normalizePostType(value: unknown): "announcement" | "document" | "pinned" {
+    if (value === "document") return "document";
+    if (value === "pinned") return "pinned";
+    return "announcement";
+}
+
 // DELETE — delete a post (admin only)
 export async function DELETE(
     _req: NextRequest,
@@ -38,18 +44,27 @@ export async function PATCH(
     const { id } = await params;
     const body = await req.json();
     const { title, bodyText, fileUrl, type } = body;
+    const normalizedType = normalizePostType(type);
+    const normalizedFileUrl = fileUrl?.trim() || null;
+    const normalizedBody = bodyText?.trim() || null;
 
     if (!title?.trim()) {
         return NextResponse.json({ error: "El título es obligatorio." }, { status: 400 });
+    }
+    if (normalizedType === "document" && !normalizedFileUrl) {
+        return NextResponse.json(
+            { error: "Los documentos deben incluir un PDF o imagen adjunta." },
+            { status: 400 }
+        );
     }
 
     const post = await prisma.post.update({
         where: { id },
         data: {
             title: title.trim(),
-            body: bodyText?.trim() || null,
-            fileUrl: fileUrl?.trim() || null,
-            type: type === "document" ? "document" : "announcement",
+            body: normalizedBody,
+            fileUrl: normalizedFileUrl,
+            type: normalizedType,
         },
     });
 

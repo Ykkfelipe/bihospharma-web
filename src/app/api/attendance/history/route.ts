@@ -28,77 +28,35 @@ export async function GET(req: Request) {
         const limit = Math.min(parseInt(url.searchParams.get("limit") || "100"), 500); // Max 500
         const offset = parseInt(url.searchParams.get("offset") || "0");
 
-        if (user.role === "admin") {
-            const shifts = await prisma.shift.findMany({
-                orderBy: [{ date: "desc" }, { checkIn: "desc" }],
-                take: limit,
-                skip: offset,
-                include: {
-                    user: {
-                        select: {
-                            id: true,
-                            name: true,
-                            email: true,
-                            workStart: true,
-                            morningEnd: true,
-                            lunchStart: true,
-                            lunchEnd: true,
-                            workEnd: true,
-                            satWorkStart: true,
-                            satWorkEnd: true,
-                        },
-                    },
-                },
-            });
+        const shifts = await getAttendanceHistory(user.id, limit, offset);
+        const total = await prisma.shift.count({ where: { userId: user.id } });
 
-            const total = await prisma.shift.count();
+        const scheduleUser = user as ScheduleUser;
+        const data = shifts.map((shift) => {
+            const schedule = getScheduleForUser(scheduleUser, shift.date);
+            const durations = computeShiftDurations(shift, schedule);
+            return {
+                id: shift.id,
+                date: shift.date,
+                checkIn: shift.checkIn,
+                checkOut: shift.checkOut,
+                isLate: shift.isLate,
+                lateReason: shift.lateReason,
+                isEarly: shift.isEarly,
+                earlyReason: shift.earlyReason,
+                autoCheckIn: shift.autoCheckIn,
+                autoCheckout: shift.autoCheckout,
+                isLateCheckout: shift.isLateCheckout,
+                workHours: formatDurationMinutes(durations.workMinutes),
+                breakHours: formatDurationMinutes(durations.breakMinutes),
+                totalHours: formatDurationMinutes(durations.totalMinutes),
+            };
+        });
 
-            const data = shifts.map((shift) => {
-                const schedule = getScheduleForUser(shift.user as ScheduleUser, shift.date);
-                const durations = computeShiftDurations(shift, schedule);
-                return {
-                    ...shift,
-                    workHours: formatDurationMinutes(durations.workMinutes),
-                    breakHours: formatDurationMinutes(durations.breakMinutes),
-                    totalHours: formatDurationMinutes(durations.totalMinutes),
-                    workMinutes: durations.workMinutes,
-                    breakMinutes: durations.breakMinutes,
-                    totalMinutes: durations.totalMinutes,
-                };
-            });
-
-            return NextResponse.json({
-                data,
-                pagination: { limit, offset, total },
-            });
-        } else {
-            const shifts = await getAttendanceHistory(user.id, limit, offset);
-            const total = await prisma.shift.count({ where: { userId: user.id } });
-
-            const scheduleUser = user as ScheduleUser;
-            const data = shifts.map((shift) => {
-                const schedule = getScheduleForUser(scheduleUser, shift.date);
-                const durations = computeShiftDurations(shift, schedule);
-                return {
-                    id: shift.id,
-                    date: shift.date,
-                    checkIn: shift.checkIn,
-                    checkOut: shift.checkOut,
-                    isLate: shift.isLate,
-                    lateReason: shift.lateReason,
-                    isEarly: shift.isEarly,
-                    earlyReason: shift.earlyReason,
-                    workHours: formatDurationMinutes(durations.workMinutes),
-                    breakHours: formatDurationMinutes(durations.breakMinutes),
-                    totalHours: formatDurationMinutes(durations.totalMinutes),
-                };
-            });
-
-            return NextResponse.json({
-                data,
-                pagination: { limit, offset, total },
-            });
-        }
+        return NextResponse.json({
+            data,
+            pagination: { limit, offset, total },
+        });
     } catch (err) {
         console.error("[GET /api/attendance/history] Error:", err);
         return formatErrorResponse(err);

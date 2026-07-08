@@ -88,20 +88,23 @@ export async function POST(req: Request) {
             return NextResponse.json(cached, { headers: { "X-Deduped": "true" } });
         }
 
-        const { getScheduleForUser } = await import("@/lib/work-schedule");
-        if (!getScheduleForUser(user, today)) {
+        const { getScheduleForUser, isAtOrPastScheduledEnd } = await import("@/lib/work-schedule");
+        const schedule = getScheduleForUser(user, today);
+        if (!schedule) {
             return NextResponse.json(
                 { error: "Hoy no hay jornada laboral.", dayOff: true },
                 { status: 400 }
             );
         }
+        if (isAtOrPastScheduledEnd(new Date(), today, schedule)) {
+            return NextResponse.json(
+                {
+                    error: "La jornada de hoy ya terminó. Si necesita registrar una novedad, contacte al administrador.",
+                },
+                { status: 400 }
+            );
+        }
 
-            // -------------------------------------------------
-            // Guard: ensure a shift for today does not already exist.
-            // The Prisma schema defines a unique composite index
-            // (`@@unique([userId, date])`), which creates the helper
-            // field `userId_date` for `findUnique`.
-            // -------------------------------------------------
         const ipAddress = req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || null;
         const userAgent = req.headers.get("user-agent") || null;
 

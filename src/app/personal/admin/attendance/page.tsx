@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { AdminPortalShell } from "../../components/PortalShell";
+import { AdminPortalShell, PortalShell } from "../../components/PortalShell";
 
 type RosterStatus =
     | "sin_entrada"
@@ -28,6 +28,9 @@ type RosterRow = {
         isEarly?: boolean;
         earlyReason?: string | null;
         earlyReasonAt?: string | null;
+        autoCheckIn?: boolean;
+        autoCheckout?: boolean;
+        isLateCheckout?: boolean;
         status?: string;
         workHours?: string;
         breakHours?: string;
@@ -45,15 +48,16 @@ type Summary = {
     turnoCerrado: number;
     tarde: number;
     salidaAnticipada?: number;
+    cierreTardio?: number;
     diaLibre?: number;
 };
 
 const STATUS_LABEL: Record<RosterStatus, { label: string; className: string }> = {
-    sin_entrada: { label: "Sin entrada", className: "bg-gray-100 text-gray-600" },
-    tarde_sin_entrada: { label: "Tarde (sin entrada)", className: "bg-red-100 text-red-700" },
-    en_turno: { label: "En turno", className: "bg-green-100 text-green-700" },
-    turno_cerrado: { label: "Turno cerrado", className: "bg-blue-100 text-blue-700" },
-    dia_libre: { label: "Día libre", className: "bg-slate-100 text-slate-500" },
+    sin_entrada: { label: "Sin entrada", className: "portal-roster-status--sin_entrada" },
+    tarde_sin_entrada: { label: "Tarde (sin entrada)", className: "portal-roster-status--tarde_sin_entrada" },
+    en_turno: { label: "En turno", className: "portal-roster-status--en_turno" },
+    turno_cerrado: { label: "Turno cerrado", className: "portal-roster-status--turno_cerrado" },
+    dia_libre: { label: "Día libre", className: "portal-roster-status--dia_libre" },
 };
 
 export default function AttendanceReportPage() {
@@ -67,7 +71,7 @@ export default function AttendanceReportPage() {
 
     const todayStr = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
 
-    const loadData = () => {
+    const loadData = useCallback(() => {
         setLoading(true);
         setLoadError(null);
         const date = filterDate || todayStr;
@@ -95,17 +99,17 @@ export default function AttendanceReportPage() {
                 setSummary(null);
             })
             .finally(() => setLoading(false));
-    };
+    }, [filterDate, todayStr]);
 
     useEffect(() => {
         if (!filterDate) setFilterDate(todayStr);
-    }, [todayStr]);
+    }, [filterDate, todayStr]);
 
     useEffect(() => {
         if (filterDate) loadData();
         const interval = setInterval(loadData, 60_000);
         return () => clearInterval(interval);
-    }, [filterDate]);
+    }, [filterDate, loadData]);
 
     const filteredRoster = useMemo(() => {
         if (filterUser === "all") return roster;
@@ -168,6 +172,8 @@ export default function AttendanceReportPage() {
             "Salida anticipada",
             "Motivo salida anticipada",
             "Motivo salida registrado",
+            "Cierre tardío",
+            "Salida automática",
             "Último acceso portal",
         ];
         const dataRows = filteredRoster.map((r) => {
@@ -184,6 +190,8 @@ export default function AttendanceReportPage() {
             const motivoAnticipada =
                 r.shift?.earlyReason ?? (r.shift?.isEarly ? "Pendiente" : "");
             const motivoAnticipadaAt = r.shift?.earlyReasonAt ? formatTime24(r.shift.earlyReasonAt) : "";
+            const cierreTardio = r.shift?.isLateCheckout ? "Sí" : "No";
+            const salidaAutomatica = r.shift?.autoCheckout ? "Sí" : "No";
             return csvRow([
                 r.user.name,
                 r.user.email,
@@ -203,6 +211,8 @@ export default function AttendanceReportPage() {
                 anticipada,
                 motivoAnticipada,
                 motivoAnticipadaAt,
+                cierreTardio,
+                salidaAutomatica,
                 r.lastPortalLogin ? formatPortalLogin(r.lastPortalLogin) : "",
             ]);
         });
@@ -218,22 +228,26 @@ export default function AttendanceReportPage() {
 
     if (status === "loading") {
         return (
-            <main className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <p className="text-sm text-gray-500">Cargando panel...</p>
-            </main>
+            <PortalShell title="Administración">
+                <div className="portal-page">
+                    <p className="portal-admin-loading">Cargando panel…</p>
+                </div>
+            </PortalShell>
         );
     }
 
     if (session?.user?.role !== "admin") {
         return (
-            <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-                <div className="text-center">
-                    <p className="text-red-600 font-semibold mb-4">Acceso denegado</p>
-                    <Link href="/personal" className="text-[#0f4c8a] text-sm font-medium">
-                        Volver al portal
-                    </Link>
+            <PortalShell title="Administración">
+                <div className="portal-page">
+                    <div className="portal-admin-alert" role="alert">
+                        Acceso denegado.{" "}
+                        <Link href="/personal" className="portal-profile-inline-link">
+                            Volver al portal
+                        </Link>
+                    </div>
                 </div>
-            </main>
+            </PortalShell>
         );
     }
 
@@ -242,32 +256,24 @@ export default function AttendanceReportPage() {
             heading="Control de asistencia"
             lead="Consulte entradas, salidas, tardanzas y horas del equipo."
         >
-            <div className="space-y-6">
-                <div className="flex flex-wrap gap-2 items-center">
+            <div>
+                <div className="portal-admin-toolbar">
                     <input
                         type="date"
                         value={filterDate}
                         onChange={(e) => setFilterDate(e.target.value)}
-                        className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
+                        className="portal-input"
                     />
-                    <button
-                        type="button"
-                        onClick={loadData}
-                        className="text-xs font-semibold text-[#0f4c8a] bg-[#e0e7ff] px-3 py-1.5 rounded-lg"
-                    >
+                    <button type="button" onClick={loadData} className="portal-admin-btn portal-admin-btn--primary">
                         Actualizar
                     </button>
-                    <button
-                        type="button"
-                        onClick={exportCsv}
-                        className="text-xs font-semibold text-gray-700 bg-gray-100 px-3 py-1.5 rounded-lg"
-                    >
+                    <button type="button" onClick={exportCsv} className="portal-admin-btn">
                         Exportar CSV
                     </button>
                     <select
                         value={filterUser}
                         onChange={(e) => setFilterUser(e.target.value)}
-                        className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm min-w-[160px]"
+                        className="portal-equipo-select"
                     >
                         <option value="all">Todos los empleados</option>
                         {roster.map((r) => (
@@ -279,41 +285,43 @@ export default function AttendanceReportPage() {
                 </div>
 
                 {loadError && (
-                    <div
-                        role="alert"
-                        className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
-                    >
+                    <div role="alert" className="portal-admin-alert" style={{ marginBottom: 24 }}>
                         {loadError}
                     </div>
                 )}
 
                 {summary && (
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="portal-admin-stat-grid">
                         {[
-                            { label: "Empleados", value: summary.totalEmployees, color: "#64748b" },
-                            { label: "Sin entrada", value: summary.sinEntrada, color: "#94a3b8" },
+                            { label: "Empleados", value: summary.totalEmployees, color: "var(--portal-text-body)" },
+                            { label: "Sin entrada", value: summary.sinEntrada, color: "var(--text-subtle)" },
                             {
                                 label: "Tarde sin entrada",
                                 value: summary.tardeSinEntrada ?? 0,
-                                color: "#ef4444",
+                                color: "#f87171",
                             },
-                            { label: "En turno", value: summary.enTurno, color: "#10b981" },
-                            { label: "Cerrados", value: summary.turnoCerrado, color: "#6366f1" },
-                            { label: "Tarde (total)", value: summary.tarde, color: "#dc2626" },
+                            { label: "En turno", value: summary.enTurno, color: "#34d399" },
+                            { label: "Cerrados", value: summary.turnoCerrado, color: "#a5b4fc" },
+                            { label: "Tarde (total)", value: summary.tarde, color: "#f87171" },
                             {
                                 label: "Salida anticipada",
                                 value: summary.salidaAnticipada ?? 0,
-                                color: "#d97706",
+                                color: "#fbbf24",
+                            },
+                            {
+                                label: "Cierre tardío",
+                                value: summary.cierreTardio ?? 0,
+                                color: "#fb923c",
                             },
                             {
                                 label: "Día libre",
                                 value: summary.diaLibre ?? 0,
-                                color: "#94a3b8",
+                                color: "var(--text-subtle)",
                             },
                         ].map((card) => (
-                            <div key={card.label} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
-                                <p className="text-[10px] uppercase text-gray-500 font-semibold m-0">{card.label}</p>
-                                <p className="text-2xl font-bold m-0 mt-1" style={{ color: card.color }}>
+                            <div key={card.label} className="portal-admin-stat-card">
+                                <p className="portal-admin-stat-label">{card.label}</p>
+                                <p className="portal-admin-stat-value" style={{ color: card.color }}>
                                     {card.value}
                                 </p>
                             </div>
@@ -321,153 +329,177 @@ export default function AttendanceReportPage() {
                     </div>
                 )}
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                    <h2 className="text-base font-bold text-[#0a2540] m-0 mb-4">
-                        Equipo y horarios — {filterDate}
-                    </h2>
+                <p className="portal-equipo-scroll-hint">Deslice horizontalmente para ver todas las columnas</p>
+                <div className="portal-section-card portal-equipo-table-wrap" style={{ padding: 24 }}>
+                    <h2 className="portal-admin-panel-title">Equipo y horarios — {filterDate}</h2>
                     {loading ? (
-                        <p className="text-sm text-gray-500 text-center py-8">Cargando…</p>
+                        <p className="portal-admin-loading">Cargando…</p>
                     ) : loadError ? (
-                        <p className="text-sm text-red-600 text-center py-8">
+                        <p className="portal-admin-loading">
                             No se pudo mostrar el equipo. Use «Actualizar» para reintentar.
                         </p>
                     ) : filteredRoster.length === 0 ? (
-                        <p className="text-sm text-gray-500">No hay empleados registrados.</p>
+                        <p className="portal-empty-hint">No hay empleados registrados.</p>
                     ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left min-w-[1560px]">
-                                <thead className="text-xs text-gray-500 uppercase bg-gray-50 border-b">
-                                    <tr>
-                                        <th className="px-3 py-3 min-w-[180px]">Empleado</th>
-                                        <th className="px-3 py-3 min-w-[120px]">Estado</th>
-                                        <th className="px-3 py-3 min-w-[200px]">Motivo tarde</th>
-                                        <th className="px-3 py-3 min-w-[200px]">Motivo salida anticipada</th>
-                                        <th className="px-3 py-3 min-w-[200px]">Horario hoy</th>
-                                        <th className="px-3 py-3 min-w-[220px]">Horario asignado</th>
-                                        <th className="px-3 py-3">Entrada</th>
-                                        <th className="px-3 py-3">Salida</th>
-                                        <th className="px-3 py-3">Horas trabajo</th>
-                                        <th className="px-3 py-3">Horas almuerzo</th>
-                                        <th className="px-3 py-3">Tiempo en turno</th>
-                                        <th className="px-3 py-3 min-w-[140px]">Último acceso portal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {filteredRoster.map((row) => (
-                                        <tr key={row.user.id} className="border-b last:border-0 hover:bg-gray-50">
-                                            <td className="px-3 py-3">
-                                                <span className="font-medium block">{row.user.name}</span>
-                                                <span className="text-xs text-gray-500">{row.user.email}</span>
-                                            </td>
-                                            <td className="px-3 py-3">
-                                                <span
-                                                    className={`px-2 py-0.5 text-[10px] font-bold rounded-full whitespace-nowrap ${STATUS_LABEL[row.status].className}`}
-                                                >
-                                                    {STATUS_LABEL[row.status].label}
+                        <table className="portal-equipo-table portal-attendance-table">
+                            <thead>
+                                <tr>
+                                    <th>Empleado</th>
+                                    <th>Estado</th>
+                                    <th>Motivo tarde</th>
+                                    <th>Motivo salida anticipada</th>
+                                    <th>Cierre de turno</th>
+                                    <th>Horario hoy</th>
+                                    <th>Horario asignado</th>
+                                    <th>Entrada</th>
+                                    <th>Salida</th>
+                                    <th>Horas trabajo</th>
+                                    <th>Horas almuerzo</th>
+                                    <th>Tiempo en turno</th>
+                                    <th>Último acceso portal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {filteredRoster.map((row) => (
+                                    <tr key={row.user.id}>
+                                        <td>
+                                            <span className="portal-equipo-name" style={{ display: "block" }}>
+                                                {row.user.name}
+                                            </span>
+                                            <span className="portal-equipo-email">{row.user.email}</span>
+                                        </td>
+                                        <td>
+                                            <span className={`portal-roster-status ${STATUS_LABEL[row.status].className}`}>
+                                                {STATUS_LABEL[row.status].label}
+                                            </span>
+                                            {row.shift?.isLate && row.status !== "tarde_sin_entrada" && (
+                                                <span className="portal-attendance-tag portal-attendance-tag--late">Tarde</span>
+                                            )}
+                                            {row.shift?.isEarly && (
+                                                <span className="portal-attendance-tag portal-attendance-tag--early">
+                                                    Salida anticipada
                                                 </span>
-                                                {row.shift?.isLate && row.status !== "tarde_sin_entrada" && (
-                                                    <span className="ml-1 text-[10px] text-red-600 font-semibold">
-                                                        Tarde
-                                                    </span>
-                                                )}
-                                                {row.shift?.isEarly && (
-                                                    <span className="ml-1 text-[10px] text-amber-600 font-semibold">
-                                                        Salida anticipada
-                                                    </span>
-                                                )}
-                                                {row.shift?.status === "lunch_break" && (
-                                                    <span className="ml-1 text-[10px] text-amber-600">Almuerzo</span>
-                                                )}
-                                            </td>
-                                            <td className="px-3 py-3 text-xs text-gray-700 whitespace-normal leading-snug max-w-[280px]">
-                                                {row.shift?.isLate || row.status === "tarde_sin_entrada" ? (
-                                                    row.shift?.lateReason ? (
-                                                        <span title={row.shift.lateReason}>{row.shift.lateReason}</span>
-                                                    ) : row.status === "tarde_sin_entrada" ? (
-                                                        <span className="text-red-500 italic">Sin entrada al portal</span>
-                                                    ) : (
-                                                        <span className="text-amber-600 italic">Pendiente</span>
-                                                    )
+                                            )}
+                                            {row.shift?.isLateCheckout && (
+                                                <span className="portal-attendance-tag portal-attendance-tag--late-checkout">
+                                                    Cierre tardío
+                                                </span>
+                                            )}
+                                            {row.shift?.autoCheckout && !row.shift?.isLateCheckout && (
+                                                <span className="portal-attendance-tag portal-attendance-tag--auto">
+                                                    Salida automática
+                                                </span>
+                                            )}
+                                            {row.shift?.status === "lunch_break" && (
+                                                <span className="portal-attendance-tag portal-attendance-tag--lunch">Almuerzo</span>
+                                            )}
+                                        </td>
+                                        <td className="portal-attendance-cell-muted">
+                                            {row.shift?.isLate || row.status === "tarde_sin_entrada" ? (
+                                                row.shift?.lateReason ? (
+                                                    <span title={row.shift.lateReason}>{row.shift.lateReason}</span>
+                                                ) : row.status === "tarde_sin_entrada" ? (
+                                                    <span className="portal-attendance-missing">Sin entrada al portal</span>
                                                 ) : (
-                                                    "—"
-                                                )}
-                                                {row.shift?.lateReasonAt && (
-                                                    <span className="block text-[10px] text-gray-400 mt-1">
-                                                        {new Date(row.shift.lateReasonAt).toLocaleString("es-CO", {
-                                                            timeZone: "America/Bogota",
-                                                            dateStyle: "short",
-                                                            timeStyle: "short",
-                                                        })}
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td className="px-3 py-3 text-xs text-gray-700 whitespace-normal leading-snug max-w-[280px]">
-                                                {row.shift?.isEarly ? (
-                                                    row.shift.earlyReason ? (
-                                                        <span title={row.shift.earlyReason}>{row.shift.earlyReason}</span>
-                                                    ) : (
-                                                        <span className="text-amber-600 italic">Pendiente</span>
-                                                    )
+                                                    <span className="portal-attendance-pending">Pendiente</span>
+                                                )
+                                            ) : (
+                                                "—"
+                                            )}
+                                            {row.shift?.lateReasonAt && (
+                                                <span
+                                                    className="portal-attendance-cell-expected"
+                                                    style={{ display: "block", marginTop: 4 }}
+                                                >
+                                                    {new Date(row.shift.lateReasonAt).toLocaleString("es-CO", {
+                                                        timeZone: "America/Bogota",
+                                                        dateStyle: "short",
+                                                        timeStyle: "short",
+                                                    })}
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="portal-attendance-cell-muted">
+                                            {row.shift?.isEarly ? (
+                                                row.shift.earlyReason ? (
+                                                    <span title={row.shift.earlyReason}>{row.shift.earlyReason}</span>
                                                 ) : (
-                                                    "—"
-                                                )}
-                                                {row.shift?.earlyReasonAt && (
-                                                    <span className="block text-[10px] text-gray-400 mt-1">
-                                                        {new Date(row.shift.earlyReasonAt).toLocaleString("es-CO", {
-                                                            timeZone: "America/Bogota",
-                                                            dateStyle: "short",
-                                                            timeStyle: "short",
-                                                        })}
-                                                    </span>
-                                                )}
-                                            </td>
-                                            <td className="px-3 py-3 text-xs text-[#0f4c8a] whitespace-normal leading-snug">
-                                                {row.scheduleToday ?? "—"}
-                                            </td>
-                                            <td className="px-3 py-3 text-[10px] text-gray-500 whitespace-normal leading-snug">
-                                                {row.scheduleProfile}
-                                            </td>
-                                            <td className="px-3 py-3 text-[#10b981] whitespace-nowrap">
-                                                {row.shift ? (
-                                                    formatTime(row.shift.checkIn)
-                                                ) : row.expectedStart ? (
-                                                    <span className="text-gray-400">
-                                                        Esperado {row.expectedStart}
-                                                    </span>
-                                                ) : (
-                                                    "—"
-                                                )}
-                                            </td>
-                                            <td className="px-3 py-3 text-[#ef4444] whitespace-nowrap">
-                                                {row.shift?.checkOut ? (
-                                                    formatTime(row.shift.checkOut)
-                                                ) : row.expectedEnd ? (
-                                                    <span className="text-gray-400">
-                                                        Esperado {row.expectedEnd}
-                                                    </span>
-                                                ) : (
-                                                    "—"
-                                                )}
-                                            </td>
-                                            <td className="px-3 py-3 text-[#0f4c8a]">
-                                                {row.shift?.workHours ?? "—"}
-                                            </td>
-                                            <td className="px-3 py-3 text-amber-700">
-                                                {row.shift?.breakHours ?? "—"}
-                                            </td>
-                                            <td className="px-3 py-3 text-gray-600">
-                                                {row.shift?.totalHours ?? "—"}
-                                            </td>
-                                            <td className="px-3 py-3 text-xs text-gray-600 whitespace-nowrap">
-                                                {row.lastPortalLogin
-                                                    ? formatPortalLogin(row.lastPortalLogin)
-                                                    : "—"}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                                    <span className="portal-attendance-pending">Pendiente</span>
+                                                )
+                                            ) : (
+                                                "—"
+                                            )}
+                                            {row.shift?.earlyReasonAt && (
+                                                <span
+                                                    className="portal-attendance-cell-expected"
+                                                    style={{ display: "block", marginTop: 4 }}
+                                                >
+                                                    {new Date(row.shift.earlyReasonAt).toLocaleString("es-CO", {
+                                                        timeZone: "America/Bogota",
+                                                        dateStyle: "short",
+                                                        timeStyle: "short",
+                                                    })}
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td className="portal-attendance-cell-muted">
+                                            {row.shift?.checkOut ? (
+                                                <>
+                                                    {row.shift.isLateCheckout && (
+                                                        <span className="portal-attendance-missing">
+                                                            No registró salida — cierre automático
+                                                        </span>
+                                                    )}
+                                                    {row.shift.autoCheckout && !row.shift.isLateCheckout && (
+                                                        <span>Cierre automático (horario)</span>
+                                                    )}
+                                                    {row.shift.isEarly && (
+                                                        <span>Salida anticipada</span>
+                                                    )}
+                                                    {!row.shift.isLateCheckout &&
+                                                        !row.shift.autoCheckout &&
+                                                        !row.shift.isEarly && (
+                                                            <span>Registro manual</span>
+                                                        )}
+                                                </>
+                                            ) : (
+                                                "—"
+                                            )}
+                                        </td>
+                                        <td className="portal-attendance-cell-schedule">{row.scheduleToday ?? "—"}</td>
+                                        <td className="portal-attendance-cell-profile">{row.scheduleProfile}</td>
+                                        <td className="portal-attendance-cell-in">
+                                            {row.shift ? (
+                                                formatTime(row.shift.checkIn)
+                                            ) : row.expectedStart ? (
+                                                <span className="portal-attendance-cell-expected">
+                                                    Esperado {row.expectedStart}
+                                                </span>
+                                            ) : (
+                                                "—"
+                                            )}
+                                        </td>
+                                        <td className="portal-attendance-cell-out">
+                                            {row.shift?.checkOut ? (
+                                                formatTime(row.shift.checkOut)
+                                            ) : row.expectedEnd ? (
+                                                <span className="portal-attendance-cell-expected">
+                                                    Esperado {row.expectedEnd}
+                                                </span>
+                                            ) : (
+                                                "—"
+                                            )}
+                                        </td>
+                                        <td className="portal-attendance-cell-hours">{row.shift?.workHours ?? "—"}</td>
+                                        <td className="portal-attendance-cell-break">{row.shift?.breakHours ?? "—"}</td>
+                                        <td className="portal-attendance-cell-muted">{row.shift?.totalHours ?? "—"}</td>
+                                        <td className="portal-attendance-cell-muted">
+                                            {row.lastPortalLogin ? formatPortalLogin(row.lastPortalLogin) : "—"}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     )}
                 </div>
             </div>

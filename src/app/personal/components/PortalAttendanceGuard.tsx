@@ -3,7 +3,6 @@
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
-import { autoCheckInIfNeeded } from "../lib/attendance-client";
 import { PORTAL_AUTH_PATHS } from "@/lib/portalRoutes";
 
 const PUBLIC_AUTH_PATHS = [...PORTAL_AUTH_PATHS];
@@ -19,21 +18,10 @@ export function PortalAttendanceGuard() {
             return;
         }
         if (!pathname || PUBLIC_AUTH_PATHS.some((p) => pathname.startsWith(p))) return;
+        if (ranForSession.current) return;
 
-        void (async () => {
-            const res = await fetch("/api/attendance", { cache: "no-store" });
-            const data = await res.json();
-            if (data.dayOff) return;
-
-            if (data.autoAttendance) {
-                await autoCheckInIfNeeded();
-                return;
-            }
-
-            if (ranForSession.current) return;
-            ranForSession.current = true;
-            await autoCheckInIfNeeded();
-        })();
+        ranForSession.current = true;
+        void fetch("/api/attendance", { cache: "no-store" }).catch(() => undefined);
     }, [status, pathname]);
 
     return null;

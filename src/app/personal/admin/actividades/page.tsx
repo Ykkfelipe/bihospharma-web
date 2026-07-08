@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { AdminPortalShell } from "../../components/PortalShell";
@@ -33,10 +33,10 @@ export default function AdminActividadesPage() {
 
     const todayStr = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
 
-    const loadData = () => {
+    const loadData = useCallback(() => {
         setLoading(true);
         const date = filterDate || todayStr;
-        const params = new URLSearchParams({ date });
+        const params = new URLSearchParams({ date, view: "admin" });
         if (filterArea !== "all") params.set("area", filterArea);
         if (filterUser !== "all") params.set("userId", filterUser);
 
@@ -48,15 +48,15 @@ export default function AdminActividadesPage() {
                 setLoading(false);
             })
             .catch(() => setLoading(false));
-    };
+    }, [filterArea, filterDate, filterUser, todayStr]);
 
     useEffect(() => {
         if (!filterDate) setFilterDate(todayStr);
-    }, [todayStr]);
+    }, [filterDate, todayStr]);
 
     useEffect(() => {
         if (filterDate && status === "authenticated") loadData();
-    }, [filterDate, filterArea, filterUser, status]);
+    }, [filterDate, loadData, status]);
 
     const formatTime = (iso: string) =>
         new Date(iso).toLocaleTimeString("es-CO", { hour: "2-digit", minute: "2-digit" });

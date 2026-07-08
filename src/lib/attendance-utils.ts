@@ -163,6 +163,10 @@ export function formatErrorResponse(error: unknown, fallbackStatus: number = 500
     if (errorMessage.includes("Ya registraste tu salida")) {
         return NextResponse.json({ error: errorMessage }, { status: 400 });
     }
+
+    if (errorMessage.includes("La jornada de hoy ya terminó")) {
+        return NextResponse.json({ error: errorMessage }, { status: 400 });
+    }
     
     if (errorMessage.includes("SQLITE_BUSY") || errorMessage.includes("database is locked")) {
         return NextResponse.json(

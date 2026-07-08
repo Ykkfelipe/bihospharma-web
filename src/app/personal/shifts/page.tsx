@@ -15,6 +15,8 @@ type Shift = {
     lateReason?: string | null;
     isEarly?: boolean;
     earlyReason?: string | null;
+    isLateCheckout?: boolean;
+    autoCheckout?: boolean;
     workHours?: string;
 };
 
@@ -74,115 +76,110 @@ export default function EmployeeShiftsPage() {
     };
 
     const shiftReason = (s: Shift) => {
+        if (s.isLateCheckout) return "Cierre tardío (automático)";
         if (s.isLate && s.lateReason) return s.lateReason;
         if (s.isEarly && s.earlyReason) return s.earlyReason;
         if (s.isLate) return "Pendiente";
         if (s.isEarly) return "Pendiente";
+        if (s.autoCheckout) return "Salida automática";
         return null;
     };
 
     if (status === "loading" || loading) {
         return (
             <PortalShell title="Mis turnos">
-                <p style={{ textAlign: "center", color: "#94a3b8", padding: 48 }}>Cargando…</p>
+                <div className="portal-page portal-animate-in">
+                    <p className="portal-admin-loading">Cargando…</p>
+                </div>
             </PortalShell>
         );
     }
 
     return (
         <PortalShell title="Mis turnos">
-            <div style={{ maxWidth: 720, margin: "0 auto", padding: "24px 16px 48px" }}>
-                <p style={{ textAlign: "center", color: "#64748b", fontSize: 13, margin: "0 0 20px" }}>
-                    {todayStr}
-                </p>
+            <div className="portal-page portal-animate-in">
+                <header className="portal-page-hero">
+                    <p className="portal-page-eyebrow">Asistencia</p>
+                    <h1 className="portal-page-title">Mis turnos</h1>
+                    <p className="portal-page-lead portal-shifts-date">{todayStr}</p>
+                </header>
 
-                <div className="portal-attendance-card portal-attendance-card--stacked" style={{ marginBottom: 24 }}>
-                    <h2 style={{ fontSize: 16, fontWeight: 700, color: "#0a2540", margin: 0 }}>Turno de hoy</h2>
+                <section className="portal-surface portal-shifts-today">
+                    <h2 className="portal-surface-title">Turno de hoy</h2>
                     {!todayShift ? (
-                        <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>
-                            Sin entrada registrada hoy.
-                        </p>
+                        <p className="portal-shifts-empty">Sin entrada registrada hoy.</p>
                     ) : (
-                        <div style={{ display: "flex", gap: 32, flexWrap: "wrap" }}>
+                        <div className="portal-shifts-metrics">
                             <div>
-                                <p style={{ fontSize: 10, textTransform: "uppercase", color: "#94a3b8", fontWeight: 600, margin: 0 }}>
-                                    Entrada
-                                </p>
-                                <p style={{ fontSize: 20, fontWeight: 700, color: "#0f4c8a", margin: "4px 0 0" }}>
+                                <p className="portal-shifts-metric-label">Entrada</p>
+                                <p className="portal-shifts-metric-value portal-shifts-metric-value--in">
                                     {formatTime(todayShift.checkIn)}
                                 </p>
                             </div>
                             {todayShift.checkOut && (
                                 <div>
-                                    <p style={{ fontSize: 10, textTransform: "uppercase", color: "#94a3b8", fontWeight: 600, margin: 0 }}>
-                                        Salida
-                                    </p>
-                                    <p style={{ fontSize: 20, fontWeight: 700, color: "#ef4444", margin: "4px 0 0" }}>
+                                    <p className="portal-shifts-metric-label">Salida</p>
+                                    <p className="portal-shifts-metric-value portal-shifts-metric-value--out">
                                         {formatTime(todayShift.checkOut)}
                                     </p>
                                 </div>
                             )}
                         </div>
                     )}
-                    <Link href="/personal/reloj" className="portal-btn-checkin" style={{ alignSelf: "flex-start", textDecoration: "none" }}>
+                    <Link href="/personal/reloj" className="portal-btn-checkin portal-shifts-reloj-link">
                         Ir al reloj
                     </Link>
-                </div>
+                </section>
 
-                <div className="portal-section-card">
+                <div className="portal-section-card portal-equipo-table-wrap">
                     <div className="portal-section-header">
-                        <h2 style={{ fontSize: 14, fontWeight: 700, color: "#0a2540", margin: 0 }}>Historial reciente</h2>
+                        <h2 className="portal-shifts-section-title">Historial reciente</h2>
                     </div>
                     {shifts.length === 0 ? (
-                        <p style={{ fontSize: 14, color: "#64748b", textAlign: "center", padding: "40px 16px", margin: 0 }}>
-                            Sin registros aún.
-                        </p>
+                        <p className="portal-shifts-empty portal-shifts-empty--padded">Sin registros aún.</p>
                     ) : (
-                        <div style={{ overflowX: "auto" }}>
-                            <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse", minWidth: 520 }}>
+                        <>
+                            <p className="portal-equipo-scroll-hint">Desliza horizontalmente para ver todas las columnas</p>
+                            <table className="portal-equipo-table portal-shifts-table">
                                 <thead>
-                                    <tr style={{ background: "#f8fafc", fontSize: 10, textTransform: "uppercase", color: "#64748b" }}>
-                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Fecha</th>
-                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Entrada</th>
-                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Salida</th>
-                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Tarde</th>
-                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Sal. ant.</th>
-                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600 }}>Horas</th>
-                                        <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, minWidth: 120 }}>Motivo</th>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Entrada</th>
+                                        <th>Salida</th>
+                                        <th>Tarde</th>
+                                        <th>Sal. ant.</th>
+                                        <th>Cierre tardío</th>
+                                        <th>Horas</th>
+                                        <th>Motivo</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {shifts.map((s) => {
                                         const reason = shiftReason(s);
                                         return (
-                                            <tr key={s.id} style={{ borderTop: "1px solid #f1f5f9" }}>
-                                                <td style={{ padding: "10px 12px", color: "#334155", whiteSpace: "nowrap" }}>
-                                                    {formatDate(s.date)}
-                                                </td>
-                                                <td style={{ padding: "10px 12px", color: "#10b981", fontWeight: 600, whiteSpace: "nowrap" }}>
-                                                    {formatTime(s.checkIn)}
-                                                </td>
-                                                <td style={{ padding: "10px 12px", color: "#64748b", whiteSpace: "nowrap" }}>
+                                            <tr key={s.id}>
+                                                <td className="portal-shifts-cell-date">{formatDate(s.date)}</td>
+                                                <td className="portal-shifts-cell-in">{formatTime(s.checkIn)}</td>
+                                                <td className="portal-shifts-cell-muted">
                                                     {s.checkOut ? formatTime(s.checkOut) : "—"}
                                                 </td>
-                                                <td style={{ padding: "10px 12px", color: s.isLate ? "#dc2626" : "#64748b", whiteSpace: "nowrap" }}>
+                                                <td className={s.isLate ? "portal-shifts-cell-late" : "portal-shifts-cell-muted"}>
                                                     {s.isLate ? "Sí" : "No"}
                                                 </td>
-                                                <td style={{ padding: "10px 12px", color: s.isEarly ? "#d97706" : "#64748b", whiteSpace: "nowrap" }}>
+                                                <td className={s.isEarly ? "portal-shifts-cell-early" : "portal-shifts-cell-muted"}>
                                                     {s.isEarly ? "Sí" : "No"}
                                                 </td>
-                                                <td style={{ padding: "10px 12px", color: "#0f4c8a", whiteSpace: "nowrap" }}>
-                                                    {s.workHours ?? "—"}
+                                                <td className={s.isLateCheckout ? "portal-shifts-cell-late-checkout" : "portal-shifts-cell-muted"}>
+                                                    {s.isLateCheckout ? "Sí" : "No"}
                                                 </td>
-                                                <td style={{ padding: "10px 12px", color: "#64748b", fontSize: 12, maxWidth: 160 }}>
-                                                    {reason ?? "—"}
-                                                </td>
+                                                <td className="portal-shifts-cell-hours">{s.workHours ?? "—"}</td>
+                                                <td className="portal-shifts-cell-reason">{reason ?? "—"}</td>
                                             </tr>
                                         );
                                     })}
                                 </tbody>
                             </table>
-                        </div>
+                        </>
                     )}
                 </div>
             </div>

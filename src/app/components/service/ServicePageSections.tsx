@@ -40,7 +40,7 @@ export function ServicePageHero({
 /** Intro paragraph with Bihospharma logo watermark (same as original pages) */
 export function ServiceWatermarkIntro({ children }: { children: React.ReactNode }) {
   return (
-    <section className="relative bg-white px-4 py-10 sm:px-6 sm:py-12">
+    <section className="relative bg-[var(--surface)] px-4 py-10 sm:px-6 sm:py-12">
       <div className="relative mx-auto max-w-4xl overflow-hidden text-center">
         <div
           className="pointer-events-none absolute inset-0 flex items-center justify-center"
@@ -55,7 +55,7 @@ export function ServiceWatermarkIntro({ children }: { children: React.ReactNode 
             priority
           />
         </div>
-        <div className="relative z-10 text-base font-medium leading-relaxed text-gray-800 sm:text-lg sm:leading-8">
+        <div className="relative z-10 text-base font-medium leading-relaxed text-[var(--text-secondary)] sm:text-lg sm:leading-8">
           {children}
         </div>
       </div>
@@ -78,13 +78,13 @@ export function ServiceSplitBlock({
   imageOnRight?: boolean;
 }) {
   return (
-    <section className="bg-white px-4 py-10 sm:px-6 sm:py-14">
+    <section className="bg-[var(--surface)] px-4 py-10 sm:px-6 sm:py-14">
       <div
         className={`mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-2 md:gap-12 ${
           imageOnRight ? 'md:[&>div:first-child]:order-2' : ''
         }`}
       >
-        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg ring-1 ring-gray-100">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg ring-1 ring-[var(--border)]">
           <Image
             src={image}
             alt={imageAlt}
@@ -95,8 +95,8 @@ export function ServiceSplitBlock({
           />
         </div>
         <div>
-          <h2 className="mb-4 text-2xl font-extrabold text-[#48a4dc] sm:text-3xl">{title}</h2>
-          <div className="text-base leading-relaxed text-gray-800 sm:text-lg sm:leading-8">{children}</div>
+          <h2 className="mb-4 text-2xl font-extrabold text-[var(--brand-blue)] sm:text-3xl">{title}</h2>
+          <div className="text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg sm:leading-8">{children}</div>
         </div>
       </div>
     </section>
@@ -114,9 +114,9 @@ export function ServiceListColumn({
 }) {
   return (
     <div className="text-left">
-      <h3 className="mb-4 text-xl font-extrabold text-[#1C2B4E] sm:text-2xl">{title}</h3>
-      {intro && <p className="mb-4 text-base leading-relaxed text-gray-800 sm:text-lg">{intro}</p>}
-      <ul className="list-disc space-y-2 pl-5 text-base leading-relaxed text-gray-800 sm:text-lg">
+      <h3 className="mb-4 text-xl font-extrabold text-[var(--text-primary)] sm:text-2xl">{title}</h3>
+      {intro && <p className="mb-4 text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">{intro}</p>}
+      <ul className="list-disc space-y-2 pl-5 text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
         {items.map((item) => (
           <li key={item}>{item}</li>
         ))}
@@ -128,7 +128,7 @@ export function ServiceListColumn({
 /** Light blue band with two columns of lists */
 export function ServiceInfoBand({ children }: { children: React.ReactNode }) {
   return (
-    <section className="bg-[#e8f4fc] px-4 py-10 sm:px-6 sm:py-14">
+    <section className="bg-[var(--surface-tint)] px-4 py-10 sm:px-6 sm:py-14">
       <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-2 md:gap-12">{children}</div>
     </section>
   );
@@ -187,11 +187,13 @@ export function ServiceServicesPanel({
   children: ReactNode;
 }) {
   return (
-    <section className="bg-white px-4 py-10 sm:px-6 sm:py-14">
+    <section className="bg-[var(--surface)] px-4 py-10 sm:px-6 sm:py-14">
       <div className="mx-auto grid max-w-6xl items-start gap-8 md:grid-cols-2 md:gap-12">
         <div>
-          <h2 className="mb-4 text-2xl font-extrabold text-[#1C2B4E] sm:text-3xl">Servicios</h2>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg ring-1 ring-gray-100">
+          <h2 className="mb-4 inline-flex rounded-full bg-[var(--brand-navy)] px-5 py-2 text-2xl font-extrabold text-white shadow-lg sm:text-3xl">
+            Servicios
+          </h2>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg ring-1 ring-[var(--border)]">
             <Image
               src={image}
               alt={imageAlt}
@@ -203,8 +205,8 @@ export function ServiceServicesPanel({
           </div>
         </div>
         <div>
-          <h2 className="mb-4 text-2xl font-extrabold text-[#48a4dc] sm:text-3xl">{title}</h2>
-          <div className="space-y-4 text-base leading-relaxed text-gray-800 sm:text-lg sm:leading-8">
+          <h2 className="mb-4 text-2xl font-extrabold text-[var(--brand-blue)] sm:text-3xl">{title}</h2>
+          <div className="space-y-4 text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg sm:leading-8">
             {children}
           </div>
         </div>
@@ -226,17 +228,19 @@ export function ServiceSplitWithServicesImage({
   children: ReactNode;
 }) {
   return (
-    <section className="bg-white px-4 py-10 sm:px-6 sm:py-14">
+    <section className="bg-[var(--surface)] px-4 py-10 sm:px-6 sm:py-14">
       <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-2 md:gap-12">
         <div>
-          <h2 className="mb-4 text-2xl font-extrabold text-[#48a4dc] sm:text-3xl">{title}</h2>
-          <div className="space-y-4 text-base leading-relaxed text-gray-800 sm:text-lg sm:leading-8">
+          <h2 className="mb-4 text-2xl font-extrabold text-[var(--brand-blue)] sm:text-3xl">{title}</h2>
+          <div className="space-y-4 text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg sm:leading-8">
             {children}
           </div>
         </div>
         <div>
-          <h3 className="mb-3 text-xl font-bold text-[#1C2B4E]">Servicios</h3>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg ring-1 ring-gray-100">
+          <h3 className="mb-3 inline-flex rounded-full bg-[var(--brand-navy)] px-4 py-1.5 text-xl font-bold text-white shadow-md">
+            Servicios
+          </h3>
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg ring-1 ring-[var(--border)]">
             <Image
               src={image}
               alt={imageAlt}
@@ -267,9 +271,9 @@ export function ServiceLaboralFeatures({
   features: ServiceLaboralFeature[];
 }) {
   return (
-    <section className="bg-white px-4 py-10 sm:px-6 sm:py-14">
+    <section className="bg-[var(--surface)] px-4 py-10 sm:px-6 sm:py-14">
       <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-2 md:gap-12">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg ring-1 ring-gray-100 md:order-1">
+        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl shadow-lg ring-1 ring-[var(--border)] md:order-1">
           <Image
             src="/images/laboral-2.png"
             alt="Medicina Laboral"
@@ -280,14 +284,14 @@ export function ServiceLaboralFeatures({
           />
         </div>
         <div className="md:order-2">
-          <h2 className="mb-6 text-2xl font-extrabold text-[#48a4dc] sm:text-3xl">{title}</h2>
+          <h2 className="mb-6 text-2xl font-extrabold text-[var(--brand-blue)] sm:text-3xl">{title}</h2>
           <ul className="space-y-5">
             {features.map((f) => (
               <li key={f.imageAlt} className="flex items-center gap-4">
-                <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full border-8 border-[#48a4dc]/40 bg-[#e8f4fc]">
+                <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-full border-8 border-[color:color-mix(in_srgb,var(--brand-blue)_40%,transparent)] bg-[var(--surface-tint)]">
                   <Image src={f.image} alt={f.imageAlt} fill className="object-cover" sizes="96px" quality={85} />
                 </div>
-                <div className="text-lg font-extrabold leading-snug text-[#48a4dc] sm:text-xl">{f.label}</div>
+                <div className="text-lg font-extrabold leading-snug text-[var(--brand-blue)] sm:text-xl">{f.label}</div>
               </li>
             ))}
           </ul>
@@ -299,8 +303,8 @@ export function ServiceLaboralFeatures({
 
 export function ServiceTagline({ children }: { children: ReactNode }) {
   return (
-    <section className="bg-slate-100 px-4 py-6 text-center sm:py-7">
-      <p className="mx-auto max-w-3xl text-base font-medium text-gray-800 sm:text-lg">{children}</p>
+    <section className="bg-[var(--surface-muted)] px-4 py-6 text-center sm:py-7">
+      <p className="mx-auto max-w-3xl text-base font-medium text-[var(--text-secondary)] sm:text-lg">{children}</p>
     </section>
   );
 }

@@ -30,7 +30,7 @@ export default function ServicePageLayout({
       />
 
       {intro && (
-        <section className="relative bg-white px-4 py-10 sm:px-6 sm:py-12">
+        <section className="relative bg-[var(--surface)] px-4 py-10 sm:px-6 sm:py-12">
           <div className="relative mx-auto max-w-4xl overflow-hidden text-center">
             <div
               className="pointer-events-none absolute inset-0 flex items-center justify-center opacity-30"
@@ -44,7 +44,7 @@ export default function ServicePageLayout({
                 className="object-contain"
               />
             </div>
-            <p className="relative z-10 text-base leading-relaxed text-gray-800 sm:text-lg md:text-xl">
+            <p className="relative z-10 text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg md:text-xl">
               {intro}
             </p>
           </div>
@@ -66,7 +66,8 @@ export function ServiceSection({
   children: React.ReactNode;
   variant?: 'white' | 'gray';
 }) {
-  const bg = variant === 'gray' ? 'bg-slate-100' : 'bg-white';
+  const bg =
+    variant === 'gray' ? 'bg-[var(--surface-muted)]' : 'bg-[var(--surface)]';
   return (
     <section className={`${bg} px-4 py-10 sm:px-6 sm:py-12`}>
       <div className="mx-auto max-w-5xl">{children}</div>

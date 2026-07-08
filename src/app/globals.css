@@ -54,6 +54,16 @@
   --portal-auth-card-bg: rgba(255, 255, 255, 0.98);
   --portal-schedule-break-bg: #fffbeb;
   --portal-schedule-break-border: #f0d878;
+  --portal-danger-bg: #fef2f2;
+  --portal-danger-border: #fecaca;
+  --portal-danger-text: #b91c1c;
+  --portal-danger-bg-hover: #fee2e2;
+  --portal-danger-border-hover: #fca5a5;
+  --portal-link: #0f4c8a;
+  --portal-link-hover: #48a4dc;
+  --portal-badge-bg: #e0f2fe;
+  --portal-badge-border: #bae6fd;
+  --portal-badge-text: #0f4c8a;
 
   /* PQRS */
   --pqrs-outer-bg: rgba(255, 255, 255, 0.96);
@@ -114,6 +124,16 @@
     --portal-auth-card-bg: rgba(255, 255, 255, 0.98);
     --portal-schedule-break-bg: rgba(245, 158, 11, 0.12);
     --portal-schedule-break-border: rgba(245, 158, 11, 0.35);
+    --portal-danger-bg: rgba(239, 68, 68, 0.12);
+    --portal-danger-border: rgba(239, 68, 68, 0.35);
+    --portal-danger-text: #fca5a5;
+    --portal-danger-bg-hover: rgba(239, 68, 68, 0.2);
+    --portal-danger-border-hover: rgba(239, 68, 68, 0.5);
+    --portal-link: #7dd3fc;
+    --portal-link-hover: #bae6fd;
+    --portal-badge-bg: rgba(72, 164, 220, 0.14);
+    --portal-badge-border: rgba(72, 164, 220, 0.35);
+    --portal-badge-text: #7dd3fc;
 
     --pqrs-outer-bg: rgba(26, 35, 50, 0.96);
     --pqrs-form-bg: #1a2332;
@@ -137,7 +157,14 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: light dark;
+}
+
+body,
+input,
+textarea,
+select,
+button {
+  color-scheme: light;
 }
 
 body {

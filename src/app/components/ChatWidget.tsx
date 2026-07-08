@@ -124,8 +124,12 @@ export default function ChatWidget() {
           />
 
           <div
-            className="fixed left-4 right-4 z-[9998] flex max-h-[min(52dvh,420px)] flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-2xl sm:left-auto sm:right-6 sm:w-[380px] sm:max-h-[min(70dvh,480px)]"
-            style={{ bottom: panelBottom }}
+            className="fixed left-4 right-4 z-[9998] flex max-h-[min(52dvh,420px)] flex-col overflow-hidden rounded-2xl border shadow-2xl sm:left-auto sm:right-6 sm:w-[380px] sm:max-h-[min(70dvh,480px)]"
+            style={{
+              bottom: panelBottom,
+              background: 'var(--surface)',
+              borderColor: 'var(--border)',
+            }}
             role="dialog"
             aria-modal="true"
             aria-label="Asistente virtual Bihospharma"
@@ -153,21 +157,28 @@ export default function ChatWidget() {
               </button>
             </div>
 
-            <div ref={listRef} className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overscroll-contain p-3 sm:gap-3 sm:p-4">
+            <div
+              ref={listRef}
+              className="flex min-h-0 flex-1 flex-col gap-2.5 overflow-y-auto overscroll-contain p-3 sm:gap-3 sm:p-4"
+              style={{
+                background: 'var(--surface)',
+                borderColor: 'var(--border)',
+              }}
+            >
               {messages.map((msg, i) => (
                 <div
                   key={i}
                   className={`max-w-[92%] rounded-2xl px-3 py-2 text-[13px] leading-relaxed whitespace-pre-wrap sm:px-3.5 sm:py-2.5 sm:text-sm ${
                     msg.role === 'user'
                       ? 'ml-auto bg-[#48a4dc] text-white'
-                      : 'mr-auto bg-[#e8f4fc] text-gray-800'
+                      : 'mr-auto bg-[var(--surface-tint)] text-[var(--text-primary)]'
                   }`}
                 >
                   {msg.content}
                 </div>
               ))}
               {loading && (
-                <div className="mr-auto flex items-center gap-1.5 rounded-2xl bg-[#e8f4fc] px-3.5 py-2.5" aria-live="polite">
+                <div className="mr-auto flex items-center gap-1.5 rounded-2xl bg-[var(--surface-tint)] px-3.5 py-2.5" aria-live="polite">
                   <span className="h-2 w-2 animate-bounce rounded-full bg-[#48a4dc] [animation-delay:0ms]" />
                   <span className="h-2 w-2 animate-bounce rounded-full bg-[#48a4dc] [animation-delay:150ms]" />
                   <span className="h-2 w-2 animate-bounce rounded-full bg-[#48a4dc] [animation-delay:300ms]" />
@@ -180,7 +191,7 @@ export default function ChatWidget() {
                       key={q}
                       type="button"
                       onClick={() => send(q)}
-                      className="rounded-full border border-[#48a4dc]/40 bg-white px-2.5 py-1 text-left text-[11px] text-[#1C2B4E] transition hover:border-[#48a4dc] hover:bg-[#e8f4fc] sm:px-3 sm:py-1.5 sm:text-xs"
+                      className="rounded-full border border-[#48a4dc]/40 bg-[var(--surface)] px-2.5 py-1 text-left text-[11px] text-[var(--text-primary)] transition hover:border-[#48a4dc] hover:bg-[var(--surface-tint)] sm:px-3 sm:py-1.5 sm:text-xs"
                     >
                       {q}
                     </button>
@@ -190,7 +201,11 @@ export default function ChatWidget() {
             </div>
 
             <form
-              className="flex shrink-0 gap-2 border-t border-gray-100 bg-gray-50/50 p-2.5 sm:p-3"
+              className="flex shrink-0 gap-2 border-t p-2.5 sm:p-3"
+              style={{
+                background: 'color-mix(in srgb, var(--surface-muted) 86%, transparent)',
+                borderColor: 'var(--border)',
+              }}
               onSubmit={(e) => {
                 e.preventDefault();
                 send();
@@ -204,8 +219,13 @@ export default function ChatWidget() {
                 placeholder="Escribe tu pregunta…"
                 maxLength={500}
                 disabled={loading}
-                className="min-h-[42px] min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 placeholder:text-gray-500 focus:border-[#48a4dc] focus:outline-none focus:ring-2 focus:ring-[#48a4dc]/30 disabled:opacity-60"
-                style={{ WebkitTextFillColor: '#111827', color: '#111827' }}
+                className="min-h-[42px] min-w-0 flex-1 rounded-xl border px-3 text-sm focus:border-[#48a4dc] focus:outline-none focus:ring-2 focus:ring-[#48a4dc]/30 disabled:opacity-60"
+                style={{
+                  background: 'var(--input-bg)',
+                  borderColor: 'var(--input-border)',
+                  color: 'var(--input-text)',
+                  WebkitTextFillColor: 'var(--input-text)',
+                }}
                 aria-label="Mensaje"
               />
               <button
