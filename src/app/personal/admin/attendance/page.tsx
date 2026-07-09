@@ -67,6 +67,10 @@ export default function AttendanceReportPage() {
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [filterDate, setFilterDate] = useState("");
+    const [exportFromDate, setExportFromDate] = useState("");
+    const [exportToDate, setExportToDate] = useState("");
+    const [exporting, setExporting] = useState(false);
+    const [exportError, setExportError] = useState<string | null>(null);
     const [filterUser, setFilterUser] = useState("all");
 
     const todayStr = new Date().toLocaleDateString("en-CA", { timeZone: "America/Bogota" });
@@ -103,7 +107,9 @@ export default function AttendanceReportPage() {
 
     useEffect(() => {
         if (!filterDate) setFilterDate(todayStr);
-    }, [filterDate, todayStr]);
+        if (!exportFromDate) setExportFromDate(todayStr);
+        if (!exportToDate) setExportToDate(todayStr);
+    }, [exportFromDate, exportToDate, filterDate, todayStr]);
 
     useEffect(() => {
         if (filterDate) loadData();
@@ -151,79 +157,166 @@ export default function AttendanceReportPage() {
 
     const csvRow = (fields: string[]) => fields.map(escapeCsvField).join(CSV_SEP);
 
-    const exportCsv = () => {
-        const date = filterDate || todayStr;
+    const listDatesInclusive = (start: string, end: string) => {
+        const dates: string[] = [];
+        const current = new Date(`${start}T00:00:00.000Z`);
+        const last = new Date(`${end}T00:00:00.000Z`);
+
+        while (current.getTime() <= last.getTime()) {
+            dates.push(current.toISOString().slice(0, 10));
+            current.setUTCDate(current.getUTCDate() + 1);
+        }
+
+        return dates;
+    };
+
+    const formatReason = (reason: string, recordedAt?: string | null) => {
+        if (!recordedAt) return reason;
+        return `${reason} (registrado ${formatTime24(recordedAt)})`;
+    };
+
+    const buildCsvRows = (rows: Array<{ date: string; roster: RosterRow[] }>) => {
         const headers = [
+            "Fecha",
             "Empleado",
             "Email",
             "Estado",
-            "Horario hoy",
-            "Horario asignado",
+            "Horario del día",
             "Entrada esperada",
+            "Entrada registrada",
             "Salida esperada",
-            "Entrada",
-            "Salida",
-            "Horas trabajo",
-            "Horas almuerzo",
-            "Tiempo en turno",
-            "Tarde",
-            "Motivo tarde",
-            "Motivo registrado",
+            "Salida registrada",
+            "Horas trabajadas",
+            "Almuerzo",
+            "Total jornada",
+            "Llegada tarde",
+            "Motivo llegada tarde",
             "Salida anticipada",
             "Motivo salida anticipada",
-            "Motivo salida registrado",
-            "Cierre tardío",
-            "Salida automática",
+            "Tipo de cierre",
             "Último acceso portal",
+            "Observaciones",
         ];
-        const dataRows = filteredRoster.map((r) => {
-            const st = STATUS_LABEL[r.status].label;
-            const entrada = r.shift ? formatTime24(r.shift.checkIn) : "";
-            const salida = r.shift?.checkOut ? formatTime24(r.shift.checkOut) : "";
-            const tarde =
-                r.status === "tarde_sin_entrada" || r.shift?.isLate ? "Sí" : "No";
-            const motivo =
-                r.shift?.lateReason ??
-                (r.shift?.isLate ? "Pendiente" : r.status === "tarde_sin_entrada" ? "Sin entrada" : "");
-            const motivoAt = r.shift?.lateReasonAt ? formatTime24(r.shift.lateReasonAt) : "";
-            const anticipada = r.shift?.isEarly ? "Sí" : "No";
-            const motivoAnticipada =
-                r.shift?.earlyReason ?? (r.shift?.isEarly ? "Pendiente" : "");
-            const motivoAnticipadaAt = r.shift?.earlyReasonAt ? formatTime24(r.shift.earlyReasonAt) : "";
-            const cierreTardio = r.shift?.isLateCheckout ? "Sí" : "No";
-            const salidaAutomatica = r.shift?.autoCheckout ? "Sí" : "No";
-            return csvRow([
-                r.user.name,
-                r.user.email,
-                st,
-                r.scheduleToday ?? "",
-                r.scheduleProfile,
-                r.expectedStart ?? "",
-                r.expectedEnd ?? "",
-                entrada,
-                salida,
-                r.shift?.workHours ?? "",
-                r.shift?.breakHours ?? "",
-                r.shift?.totalHours ?? "",
-                tarde,
-                motivo,
-                motivoAt,
-                anticipada,
-                motivoAnticipada,
-                motivoAnticipadaAt,
-                cierreTardio,
-                salidaAutomatica,
-                r.lastPortalLogin ? formatPortalLogin(r.lastPortalLogin) : "",
-            ]);
-        });
+
+        const dataRows = rows.flatMap(({ date, roster }) =>
+            roster
+                .filter((r) => filterUser === "all" || r.user.id === filterUser)
+                .map((r) => {
+                    const entrada = r.shift ? formatTime24(r.shift.checkIn) : "";
+                    const salida = r.shift?.checkOut ? formatTime24(r.shift.checkOut) : "";
+                    const tarde = r.status === "tarde_sin_entrada" || r.shift?.isLate;
+                    const motivoTarde =
+                        r.shift?.lateReason ??
+                        (r.shift?.isLate
+                            ? "Pendiente"
+                            : r.status === "tarde_sin_entrada"
+                              ? "Sin entrada al portal"
+                              : "");
+                    const anticipada = Boolean(r.shift?.isEarly);
+                    const motivoAnticipada =
+                        r.shift?.earlyReason ?? (r.shift?.isEarly ? "Pendiente" : "");
+                    const tipoCierre = r.shift?.checkOut
+                        ? r.shift.isLateCheckout
+                            ? "Cierre automático por olvido"
+                            : r.shift.autoCheckout
+                              ? "Cierre automático por horario"
+                              : r.shift.isEarly
+                                ? "Salida anticipada"
+                                : "Registro manual"
+                        : "";
+                    const observations = [
+                        r.shift?.autoCheckIn ? "Entrada automática" : "",
+                        r.shift?.autoCheckout ? "Salida automática" : "",
+                        r.status === "dia_libre" ? "Día sin horario asignado" : "",
+                    ].filter(Boolean);
+
+                    return csvRow([
+                        date,
+                        r.user.name,
+                        r.user.email,
+                        STATUS_LABEL[r.status].label,
+                        r.scheduleToday ?? "",
+                        r.expectedStart ?? "",
+                        entrada,
+                        r.expectedEnd ?? "",
+                        salida,
+                        r.shift?.workHours ?? "",
+                        r.shift?.breakHours ?? "",
+                        r.shift?.totalHours ?? "",
+                        tarde ? "Sí" : "No",
+                        motivoTarde ? formatReason(motivoTarde, r.shift?.lateReasonAt) : "",
+                        anticipada ? "Sí" : "No",
+                        motivoAnticipada ? formatReason(motivoAnticipada, r.shift?.earlyReasonAt) : "",
+                        tipoCierre,
+                        r.lastPortalLogin ? formatPortalLogin(r.lastPortalLogin) : "",
+                        observations.join(" · "),
+                    ]);
+                })
+        );
+
         const lines = [`sep=${CSV_SEP}`, csvRow(headers), ...dataRows];
-        const blob = new Blob(["\uFEFF" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `asistencia-${date}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
+        return lines.join("\r\n");
+    };
+
+    const exportCsv = async () => {
+        const from = exportFromDate || filterDate || todayStr;
+        const to = exportToDate || from;
+        const start = new Date(`${from}T00:00:00.000Z`);
+        const end = new Date(`${to}T00:00:00.000Z`);
+
+        setExportError(null);
+
+        if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
+            setExportError("Seleccione fechas válidas para exportar.");
+            return;
+        }
+
+        if (start.getTime() > end.getTime()) {
+            setExportError("La fecha inicial no puede ser mayor que la fecha final.");
+            return;
+        }
+
+        const dates = listDatesInclusive(from, to);
+        if (dates.length > 120) {
+            setExportError("Seleccione un rango de máximo 120 días por exportación.");
+            return;
+        }
+
+        setExporting(true);
+        try {
+            const rows: Array<{ date: string; roster: RosterRow[] }> = [];
+            for (const date of dates) {
+                const response = await fetch(`/api/admin/attendance-summary?date=${date}`, {
+                    cache: "no-store",
+                });
+                const payload = await response.json().catch(() => ({}));
+                if (!response.ok) {
+                    throw new Error(
+                        typeof payload.error === "string"
+                            ? payload.error
+                            : `No se pudo exportar la asistencia de ${date}.`
+                    );
+                }
+                rows.push({
+                    date,
+                    roster: Array.isArray(payload.roster) ? (payload.roster as RosterRow[]) : [],
+                });
+            }
+
+            const csv = buildCsvRows(rows);
+            const dateSuffix = from === to ? from : `${from}_a_${to}`;
+            const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `asistencia-${dateSuffix}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (err) {
+            setExportError(err instanceof Error ? err.message : "No se pudo generar el CSV.");
+        } finally {
+            setExporting(false);
+        }
     };
 
     if (status === "loading") {
@@ -258,18 +351,46 @@ export default function AttendanceReportPage() {
         >
             <div>
                 <div className="portal-admin-toolbar">
-                    <input
-                        type="date"
-                        value={filterDate}
-                        onChange={(e) => setFilterDate(e.target.value)}
-                        className="portal-input"
-                    />
+                    <label className="portal-admin-field">
+                        <span>Ver día</span>
+                        <input
+                            type="date"
+                            value={filterDate}
+                            onChange={(e) => setFilterDate(e.target.value)}
+                            className="portal-input"
+                        />
+                    </label>
                     <button type="button" onClick={loadData} className="portal-admin-btn portal-admin-btn--primary">
                         Actualizar
                     </button>
-                    <button type="button" onClick={exportCsv} className="portal-admin-btn">
-                        Exportar CSV
-                    </button>
+                    <div className="portal-admin-export-range" aria-label="Rango para exportar CSV">
+                        <label className="portal-admin-field">
+                            <span>Exportar desde</span>
+                            <input
+                                type="date"
+                                value={exportFromDate}
+                                onChange={(e) => setExportFromDate(e.target.value)}
+                                className="portal-input"
+                            />
+                        </label>
+                        <label className="portal-admin-field">
+                            <span>Hasta</span>
+                            <input
+                                type="date"
+                                value={exportToDate}
+                                onChange={(e) => setExportToDate(e.target.value)}
+                                className="portal-input"
+                            />
+                        </label>
+                        <button
+                            type="button"
+                            onClick={exportCsv}
+                            disabled={exporting}
+                            className="portal-admin-btn"
+                        >
+                            {exporting ? "Exportando…" : "Exportar CSV"}
+                        </button>
+                    </div>
                     <select
                         value={filterUser}
                         onChange={(e) => setFilterUser(e.target.value)}
@@ -283,6 +404,12 @@ export default function AttendanceReportPage() {
                         ))}
                     </select>
                 </div>
+
+                {exportError && (
+                    <div role="alert" className="portal-admin-alert" style={{ marginBottom: 24 }}>
+                        {exportError}
+                    </div>
+                )}
 
                 {loadError && (
                     <div role="alert" className="portal-admin-alert" style={{ marginBottom: 24 }}>
