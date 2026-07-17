@@ -2,7 +2,8 @@
  * Restaura entradas del 2026-07-17 borradas por sobrescritura accidental de prod.db.
  * Usa el roster que sí marcó el día anterior (2026-07-16) + Sonia (login hoy).
  *
- *   DATABASE_URL=file:./prisma/prod.db npx tsx scripts/restore-shifts-2026-07-17.ts
+ * Live SQLite path (Prisma resolves relative to prisma/schema.prisma):
+ *   DATABASE_URL='file:/home/ec2-user/bihospharma-web/prisma/prod.db' npx tsx scripts/restore-shifts-2026-07-17.ts
  */
 import path from "path";
 import { PrismaClient } from "@prisma/client";
