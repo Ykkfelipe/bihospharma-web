@@ -4,12 +4,13 @@
  */
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
+import { STANDARD_SCHEDULE } from "../src/lib/work-schedule";
 
 const prisma = new PrismaClient();
 const PASSWORD = process.env.STAFF_DEFAULT_PASSWORD || "BihosStaff2026!";
 
 const BATCH = [
-    { email: "carolina.bonilla@bihospharma.com", name: "CAROLINA BONILLA" },
+    { email: "carolinabonillarozo@hotmail.com", name: "CAROLINA BONILLA ROZO" },
     { email: "maria.montano@bihospharma.com", name: "MARIA MONTANO" },
     { email: "paola.rodriguez@bihospharma.com", name: "PAOLA RODRIGUEZ" },
 ];
@@ -29,11 +30,7 @@ async function main() {
                 passwordHash,
                 name: s.name,
                 role,
-                workStart: "07:30",
-                morningEnd: "13:00",
-                lunchStart: "13:00",
-                lunchEnd: "14:00",
-                workEnd: "17:30",
+                ...STANDARD_SCHEDULE,
             },
         });
         console.log(`✅ ${existing ? "updated" : "created"} ${s.email} — ${s.name}`);

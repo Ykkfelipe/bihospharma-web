@@ -1,5 +1,12 @@
 /** Colombia (Bogota) work schedule helpers */
 
+export type RestBreakConfig = {
+    label: string;
+    windowStart: string;
+    windowEnd: string;
+    durationMinutes: number;
+};
+
 export type DaySchedule = {
     workStart: string;
     morningEnd: string;
@@ -7,6 +14,9 @@ export type DaySchedule = {
     lunchEnd: string;
     workEnd: string;
     hasLunchBreak: boolean;
+    restBreaks?: RestBreakConfig[];
+    /** Minutos de descanso corto a descontar del trabajo (auto-asistencia). */
+    scheduledRestMinutes?: number;
 };
 
 export type ScheduleUser = {
@@ -15,9 +25,85 @@ export type ScheduleUser = {
     lunchStart: string;
     lunchEnd: string;
     workEnd: string;
+    friWorkEnd?: string | null;
     satWorkStart: string | null;
     satWorkEnd: string | null;
+    morningBreakStart?: string | null;
+    morningBreakEnd?: string | null;
+    afternoonBreakStart?: string | null;
+    afternoonBreakEnd?: string | null;
+    restBreakMinutes?: number | null;
 };
+
+export type ProfileScheduleBlock = {
+    label: string;
+    time: string;
+    kind?: "break";
+};
+
+export const STANDARD_SCHEDULE = {
+    workStart: "08:00",
+    morningEnd: "13:00",
+    lunchStart: "13:00",
+    lunchEnd: "14:00",
+    workEnd: "17:30",
+    friWorkEnd: "17:00",
+} as const;
+
+/** Servicios Generales Bogotá — María Angélica Arenas Gómez */
+export const MARIA_ANGELICA_EMAIL = "mariaangelicaar02@gmail.com";
+
+export const MARIA_ANGELICA_SCHEDULE = {
+    workStart: "08:00",
+    morningEnd: "13:00",
+    lunchStart: "13:00",
+    lunchEnd: "14:00",
+    workEnd: "16:30",
+    friWorkEnd: "16:30",
+    satWorkStart: "08:00",
+    satWorkEnd: "12:30",
+    morningBreakStart: "10:00",
+    morningBreakEnd: "11:00",
+    afternoonBreakStart: "16:00",
+    afternoonBreakEnd: "16:30",
+    restBreakMinutes: 15,
+} as const;
+
+export function getRestBreaks(user: ScheduleUser): RestBreakConfig[] {
+    const durationMinutes = user.restBreakMinutes ?? 15;
+    const breaks: RestBreakConfig[] = [];
+
+    if (user.morningBreakStart && user.morningBreakEnd) {
+        breaks.push({
+            label: "Descanso (mañana)",
+            windowStart: user.morningBreakStart,
+            windowEnd: user.morningBreakEnd,
+            durationMinutes,
+        });
+    }
+    if (user.afternoonBreakStart && user.afternoonBreakEnd) {
+        breaks.push({
+            label: "Descanso (tarde)",
+            windowStart: user.afternoonBreakStart,
+            windowEnd: user.afternoonBreakEnd,
+            durationMinutes,
+        });
+    }
+
+    return breaks;
+}
+
+export function formatRestBreakTime(breakConfig: RestBreakConfig): string {
+    return `${breakConfig.durationMinutes} min (entre ${breakConfig.windowStart} – ${breakConfig.windowEnd})`;
+}
+
+function attachRestBreaks(user: ScheduleUser, schedule: DaySchedule): DaySchedule {
+    const restBreaks = getRestBreaks(user);
+    if (restBreaks.length === 0) return schedule;
+
+    const scheduledRestMinutes = restBreaks.reduce((sum, b) => sum + b.durationMinutes, 0);
+    return { ...schedule, restBreaks, scheduledRestMinutes };
+}
 
 export function parseTimeOnDate(dateStr: string, hhmm: string): Date {
     return new Date(`${dateStr}T${hhmm}:00-05:00`);
@@ -46,14 +132,16 @@ export function getScheduleForUser(user: ScheduleUser, dateStr: string): DaySche
 
     if (day === 6) return null; // Sábado sin horario asignado
 
-    return {
+    const workEnd = day === 5 ? (user.friWorkEnd ?? user.workEnd) : user.workEnd;
+
+    return attachRestBreaks(user, {
         workStart: user.workStart,
         morningEnd: user.morningEnd,
         lunchStart: user.lunchStart,
         lunchEnd: user.lunchEnd,
-        workEnd: user.workEnd,
+        workEnd,
         hasLunchBreak: true,
-    };
+    });
 }
 
 export function isLateCheckIn(now: Date, schedule: DaySchedule): boolean {
@@ -166,16 +254,80 @@ export function formatScheduleLabel(schedule: DaySchedule): string {
     if (!schedule.hasLunchBreak) {
         return `Sábado · ${schedule.workStart} – ${schedule.workEnd}`;
     }
-    return `Mañana ${schedule.workStart}–${schedule.morningEnd} · Almuerzo ${schedule.lunchStart}–${schedule.lunchEnd} · Tarde ${schedule.lunchEnd}–${schedule.workEnd}`;
+    const rest =
+        schedule.restBreaks?.map((b) => `${b.label.replace("Descanso ", "")} ${formatRestBreakTime(b)}`).join(" · ") ??
+        "";
+    const base = `Mañana ${schedule.workStart}–${schedule.morningEnd} · Almuerzo ${schedule.lunchStart}–${schedule.lunchEnd} · Tarde ${schedule.lunchEnd}–${schedule.workEnd}`;
+    return rest ? `${base} · ${rest}` : base;
 }
 
 /** Horario completo del empleado (para panel admin). */
 export function formatEmployeeScheduleProfile(user: ScheduleUser): string {
-    const base = `L-V · Mañana ${user.workStart}–${user.morningEnd} · Almuerzo ${user.lunchStart}–${user.lunchEnd} · Tarde ${user.lunchEnd}–${user.workEnd}`;
+    const friEnd = user.friWorkEnd ?? user.workEnd;
+    const weekdayBlock = `Mañana ${user.workStart}–${user.morningEnd} · Almuerzo ${user.lunchStart}–${user.lunchEnd}`;
+    const restBreaks = getRestBreaks(user)
+        .map((b) => `${b.label} ${formatRestBreakTime(b)}`)
+        .join(" · ");
+    const restSuffix = restBreaks ? ` · ${restBreaks}` : "";
+    const base =
+        friEnd === user.workEnd
+            ? `L-V · ${weekdayBlock} · Tarde ${user.lunchEnd}–${user.workEnd}${restSuffix}`
+            : `L-J · ${weekdayBlock} · Tarde ${user.lunchEnd}–${user.workEnd} · V · ${weekdayBlock} · Tarde ${user.lunchEnd}–${friEnd}${restSuffix}`;
     if (user.satWorkStart && user.satWorkEnd) {
         return `${base} · Sáb: ${user.satWorkStart}–${user.satWorkEnd}`;
     }
     return base;
+}
+
+export function buildProfileScheduleBlocks(user: ScheduleUser): {
+    weekdays: ProfileScheduleBlock[];
+    saturday: ProfileScheduleBlock | null;
+} {
+    const friEnd = user.friWorkEnd ?? user.workEnd;
+    const restBreaks = getRestBreaks(user);
+    const morningRest = restBreaks.find((b) => b.label.includes("mañana"));
+    const afternoonRest = restBreaks.find((b) => b.label.includes("tarde"));
+
+    const weekdays: ProfileScheduleBlock[] = [
+        { label: "Mañana", time: `${user.workStart} – ${user.morningEnd}` },
+    ];
+
+    if (morningRest) {
+        weekdays.push({
+            label: morningRest.label,
+            time: formatRestBreakTime(morningRest),
+            kind: "break",
+        });
+    }
+
+    weekdays.push({
+        label: "Almuerzo",
+        time: `${user.lunchStart} – ${user.lunchEnd}`,
+        kind: "break",
+    });
+
+    if (friEnd === user.workEnd) {
+        weekdays.push({ label: "Tarde (L–V)", time: `${user.lunchEnd} – ${user.workEnd}` });
+    } else {
+        weekdays.push({ label: "Tarde (L–J)", time: `${user.lunchEnd} – ${user.workEnd}` });
+        weekdays.push({ label: "Tarde (V)", time: `${user.lunchEnd} – ${friEnd}` });
+    }
+
+    if (afternoonRest) {
+        weekdays.push({
+            label: afternoonRest.label,
+            time: formatRestBreakTime(afternoonRest),
+            kind: "break",
+        });
+    }
+
+    return {
+        weekdays,
+        saturday:
+            user.satWorkStart && user.satWorkEnd
+                ? { label: "Sábado", time: `${user.satWorkStart} – ${user.satWorkEnd}` }
+                : null,
+    };
 }
 
 export function getNowInBogota(): Date {
@@ -259,6 +411,16 @@ export function computeShiftDurations(
     }
 
     const workMinutes = Math.max(0, spanMinutes - breakMinutes);
+
+    if (schedule?.scheduledRestMinutes && schedule.scheduledRestMinutes > 0) {
+        breakMinutes += schedule.scheduledRestMinutes;
+        return {
+            workMinutes: Math.max(0, workMinutes - schedule.scheduledRestMinutes),
+            breakMinutes,
+            totalMinutes: spanMinutes,
+        };
+    }
+
     return {
         workMinutes,
         breakMinutes,

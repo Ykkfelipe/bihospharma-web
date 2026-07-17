@@ -11,6 +11,7 @@ dotenv.config();
 
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
+import { MARIA_ANGELICA_EMAIL, MARIA_ANGELICA_SCHEDULE, STANDARD_SCHEDULE } from "../src/lib/work-schedule";
 
 const prisma = new PrismaClient();
 const PASSWORD = process.env.STAFF_DEFAULT_PASSWORD || "BihosStaff2026!";
@@ -19,16 +20,14 @@ const STAFF: Array<{
     email: string;
     name: string;
     role?: "admin" | "employee";
-    satWorkStart?: string;
-    satWorkEnd?: string;
+    fullSchedule?: typeof MARIA_ANGELICA_SCHEDULE;
     autoAttendance?: boolean;
 }> = [
     { email: "amanda.bonilla@bihospharma.com", name: "AMANDA  BONILLA ROZO" },
     {
-        email: "mariaangelicaar02@gmail.com",
+        email: MARIA_ANGELICA_EMAIL,
         name: "MARIA ANGELICA ARENAS GOMEZ",
-        satWorkStart: "08:00",
-        satWorkEnd: "12:00",
+        fullSchedule: MARIA_ANGELICA_SCHEDULE,
         autoAttendance: true,
     },
     { email: "duglas.cifuentes@bihospharma.com", name: "DUGLAS MIGUEL CIFUENTES MARTINEZ", role: "admin" },
@@ -41,7 +40,7 @@ const STAFF: Array<{
     { email: "sonia.gomez@bihospharma.com", name: "SONIA MARCELA GOMEZ ACOSTA" },
     { email: "julian.villamil@bihospharma.com", name: "JULIAN DAVID VILLAMIL BENAVIDES" },
     { email: "ingridt.tumay@bihospharma.com", name: "INGRIDT ANGELICA TUMAY" },
-    { email: "carolina.bonilla@bihospharma.com", name: "CAROLINA BONILLA" },
+    { email: "carolinabonillarozo@hotmail.com", name: "CAROLINA BONILLA ROZO" },
     { email: "maria.montano@bihospharma.com", name: "MARIA MONTANO" },
     { email: "paola.rodriguez@bihospharma.com", name: "PAOLA RODRIGUEZ" },
 ];
@@ -53,18 +52,37 @@ async function main() {
         const existing = await prisma.user.findUnique({ where: { email: s.email } });
         const role = s.role ?? existing?.role ?? "employee";
 
+        const scheduleFields = s.fullSchedule
+            ? (() => {
+                  const { satWorkStart, satWorkEnd, ...weekday } = s.fullSchedule;
+                  return {
+                      ...weekday,
+                      satWorkStart,
+                      satWorkEnd,
+                      morningBreakStart: weekday.morningBreakStart ?? null,
+                      morningBreakEnd: weekday.morningBreakEnd ?? null,
+                      afternoonBreakStart: weekday.afternoonBreakStart ?? null,
+                      afternoonBreakEnd: weekday.afternoonBreakEnd ?? null,
+                      restBreakMinutes: weekday.restBreakMinutes ?? null,
+                  };
+              })()
+            : {
+                  ...STANDARD_SCHEDULE,
+                  satWorkStart: null,
+                  satWorkEnd: null,
+                  morningBreakStart: null,
+                  morningBreakEnd: null,
+                  afternoonBreakStart: null,
+                  afternoonBreakEnd: null,
+                  restBreakMinutes: null,
+              };
+
         await prisma.user.upsert({
             where: { email: s.email },
             update: {
                 name: s.name,
                 role,
-                workStart: "07:30",
-                morningEnd: "13:00",
-                lunchStart: "13:00",
-                lunchEnd: "14:00",
-                workEnd: "17:30",
-                satWorkStart: s.satWorkStart ?? null,
-                satWorkEnd: s.satWorkEnd ?? null,
+                ...scheduleFields,
                 autoAttendance: s.autoAttendance ?? false,
             },
             create: {
@@ -72,13 +90,7 @@ async function main() {
                 passwordHash,
                 name: s.name,
                 role,
-                workStart: "07:30",
-                morningEnd: "13:00",
-                lunchStart: "13:00",
-                lunchEnd: "14:00",
-                workEnd: "17:30",
-                satWorkStart: s.satWorkStart ?? null,
-                satWorkEnd: s.satWorkEnd ?? null,
+                ...scheduleFields,
                 autoAttendance: s.autoAttendance ?? false,
             },
         });

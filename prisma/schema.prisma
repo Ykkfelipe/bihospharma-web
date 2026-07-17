@@ -17,15 +17,22 @@ model User {
   name         String
   role         String     @default("employee") // "admin" | "employee"
   createdAt    DateTime   @default(now())
-  // Horario laboral (America/Bogota) — L-V estándar
-  workStart    String     @default("07:30")
+  // Horario laboral (America/Bogota) — L-J estándar, V sale antes
+  workStart    String     @default("08:00")
   morningEnd   String     @default("13:00")
   lunchStart   String     @default("13:00")
   lunchEnd     String     @default("14:00")
-  workEnd      String     @default("17:30")
+  workEnd      String     @default("17:30") // L-J
+  friWorkEnd   String     @default("17:00") // Viernes
   // Sábado especial (ej. María Angélica)
   satWorkStart String?
   satWorkEnd   String?
+  // Descansos cortos opcionales (ventana flexible + duración fija)
+  morningBreakStart   String?
+  morningBreakEnd     String?
+  afternoonBreakStart String?
+  afternoonBreakEnd   String?
+  restBreakMinutes    Int?
   autoAttendance Boolean    @default(false) // Registro automático sin botones manuales
   area         String?       // Área operativa (ej. "Enfermería", "Administración")
   reactions    Reaction[]

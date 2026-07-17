@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { todayCO } from "@/lib/attendance-utils";
 import {
+    buildProfileScheduleBlocks,
     formatEmployeeScheduleProfile,
     formatScheduleLabel,
     getScheduleForUser,
@@ -29,8 +30,14 @@ export async function GET() {
             lunchStart: true,
             lunchEnd: true,
             workEnd: true,
+            friWorkEnd: true,
             satWorkStart: true,
             satWorkEnd: true,
+            morningBreakStart: true,
+            morningBreakEnd: true,
+            afternoonBreakStart: true,
+            afternoonBreakEnd: true,
+            restBreakMinutes: true,
             createdAt: true,
         },
     });
@@ -48,17 +55,7 @@ export async function GET() {
         ...user,
         scheduleLabel,
         scheduleTodayLabel,
-        scheduleBlocks: {
-            weekdays: [
-                { label: "Mañana", time: `${user.workStart} – ${user.morningEnd}` },
-                { label: "Almuerzo", time: `${user.lunchStart} – ${user.lunchEnd}`, kind: "break" as const },
-                { label: "Tarde", time: `${user.lunchEnd} – ${user.workEnd}` },
-            ],
-            saturday:
-                user.satWorkStart && user.satWorkEnd
-                    ? { label: "Sábado", time: `${user.satWorkStart} – ${user.satWorkEnd}` }
-                    : null,
-        },
+        scheduleBlocks: buildProfileScheduleBlocks(user),
         roleLabel: user.role === "admin" ? "Administrador" : "Colaborador",
     });
 }

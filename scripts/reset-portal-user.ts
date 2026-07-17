@@ -8,6 +8,7 @@
 import path from "path";
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
+import { STANDARD_SCHEDULE } from "../src/lib/work-schedule";
 
 const prisma = new PrismaClient();
 
@@ -52,11 +53,7 @@ async function main() {
             passwordHash,
             role,
             name: existing?.name ?? email,
-            workStart: "07:30",
-            morningEnd: "13:00",
-            lunchStart: "13:00",
-            lunchEnd: "14:00",
-            workEnd: "17:30",
+            ...STANDARD_SCHEDULE,
         },
     });
 

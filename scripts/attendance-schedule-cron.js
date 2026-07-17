@@ -35,12 +35,14 @@ function getScheduleForUser(user, dateStr) {
 
     if (day === 6) return null;
 
+    const workEnd = day === 5 ? (user.friWorkEnd ?? user.workEnd) : user.workEnd;
+
     return {
         workStart: user.workStart,
         morningEnd: user.morningEnd,
         lunchStart: user.lunchStart,
         lunchEnd: user.lunchEnd,
-        workEnd: user.workEnd,
+        workEnd,
         hasLunchBreak: true,
     };
 }
