@@ -40,7 +40,7 @@ async function main() {
             },
         });
         console.log(
-            `✅ María Angélica: L-J 08:00–17:30 · V 08:00–17:00 · Sáb 08:00–12:30 · almuerzo 13:00–14:00 · descansos 15 min`
+            `✅ María Angélica (Servicios Generales): L-V 08:00–16:30 · Sáb 08:00–12:30 · almuerzo 13:00–14:00 · descansos 15 min`
         );
     } else {
         console.log(`⚠️  No se encontró ${MARIA_ANGELICA_EMAIL}`);
@@ -82,7 +82,7 @@ async function main() {
 
     console.log("\nHorarios aplicados:");
     console.log("  General — L-J: 08:00–17:30 · V: 08:00–17:00 · almuerzo 13:00–14:00");
-    console.log("  María Angélica — L-J: 08:00–17:30 · V: 08:00–17:00 · Sáb: 08:00–12:30 · almuerzo 13:00–14:00");
+    console.log("  María Angélica (solo ella) — L-V: 08:00–16:30 · Sáb: 08:00–12:30 · almuerzo 13:00–14:00");
     console.log("    Descansos: 15 min entre 10:00–11:00 y 15 min entre 16:00–16:30");
 }
 
