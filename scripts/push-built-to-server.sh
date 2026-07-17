@@ -32,10 +32,14 @@ rsync_to_server \
   --exclude='.git' \
   --exclude='node_modules' \
   --exclude='dev.db' \
+  --exclude='prod.db' \
+  --exclude='*.db' \
+  --exclude='*.db-journal' \
   --exclude='.env.local' \
   --exclude='.env.production' \
   --exclude='public/uploads' \
   --exclude='remediation-log' \
+  --exclude='.deploy-backups' \
   "$LOCAL_APP_DIR/" "${SSH_TARGET}:~/bihospharma-web/"
 
 rsync_to_server \

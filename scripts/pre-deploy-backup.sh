@@ -18,7 +18,10 @@ fi
 mkdir -p "$DEST"
 cp -a "$APP_DIR/.next" "$DEST/.next"
 
-if [ -f "$APP_DIR/prod.db" ]; then
+if [ -f "$APP_DIR/prisma/prod.db" ]; then
+  cp -a "$APP_DIR/prisma/prod.db" "$DEST/prod.db"
+  echo "  (backed up prisma/prod.db — live SQLite DB)"
+elif [ -f "$APP_DIR/prod.db" ]; then
   cp -a "$APP_DIR/prod.db" "$DEST/prod.db"
 fi
 
