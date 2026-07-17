@@ -264,70 +264,100 @@ export function formatScheduleLabel(schedule: DaySchedule): string {
 /** Horario completo del empleado (para panel admin). */
 export function formatEmployeeScheduleProfile(user: ScheduleUser): string {
     const friEnd = user.friWorkEnd ?? user.workEnd;
-    const weekdayBlock = `Mañana ${user.workStart}–${user.morningEnd} · Almuerzo ${user.lunchStart}–${user.lunchEnd}`;
+    const lunch = `Almuerzo ${user.lunchStart}–${user.lunchEnd}`;
     const restBreaks = getRestBreaks(user)
         .map((b) => `${b.label} ${formatRestBreakTime(b)}`)
         .join(" · ");
     const restSuffix = restBreaks ? ` · ${restBreaks}` : "";
+
+    // Mirror the CAMBIO DE HORARIO flyer: Lunes a Jueves vs Viernes when they differ
     const base =
         friEnd === user.workEnd
-            ? `L-V · ${weekdayBlock} · Tarde ${user.lunchEnd}–${user.workEnd}${restSuffix}`
-            : `L-J · ${weekdayBlock} · Tarde ${user.lunchEnd}–${user.workEnd} · V · ${weekdayBlock} · Tarde ${user.lunchEnd}–${friEnd}${restSuffix}`;
+            ? `Lunes a viernes ${user.workStart}–${user.workEnd} · ${lunch}${restSuffix}`
+            : `Lunes a jueves ${user.workStart}–${user.workEnd} · Viernes ${user.workStart}–${friEnd} · ${lunch}${restSuffix}`;
+
     if (user.satWorkStart && user.satWorkEnd) {
-        return `${base} · Sáb: ${user.satWorkStart}–${user.satWorkEnd}`;
+        return `${base} · Sábado ${user.satWorkStart}–${user.satWorkEnd}`;
     }
     return base;
 }
 
+export type ProfileScheduleSection = {
+    heading: string;
+    rows: ProfileScheduleBlock[];
+};
+
 export function buildProfileScheduleBlocks(user: ScheduleUser): {
-    weekdays: ProfileScheduleBlock[];
-    saturday: ProfileScheduleBlock | null;
+    sections: ProfileScheduleSection[];
 } {
     const friEnd = user.friWorkEnd ?? user.workEnd;
     const restBreaks = getRestBreaks(user);
     const morningRest = restBreaks.find((b) => b.label.includes("mañana"));
     const afternoonRest = restBreaks.find((b) => b.label.includes("tarde"));
 
-    const weekdays: ProfileScheduleBlock[] = [
-        { label: "Mañana", time: `${user.workStart} – ${user.morningEnd}` },
-    ];
-
-    if (morningRest) {
-        weekdays.push({
-            label: morningRest.label,
-            time: formatRestBreakTime(morningRest),
-            kind: "break",
-        });
-    }
-
-    weekdays.push({
+    const lunchRow: ProfileScheduleBlock = {
         label: "Almuerzo",
-        time: `${user.lunchStart} – ${user.lunchEnd}`,
+        time: `${user.lunchStart} – ${user.lunchEnd} (1 hora)`,
         kind: "break",
-    });
+    };
+
+    const dayDetailRows = (end: string): ProfileScheduleBlock[] => {
+        const rows: ProfileScheduleBlock[] = [
+            { label: "Hora", time: `${user.workStart} – ${end}` },
+            { label: "Mañana", time: `${user.workStart} – ${user.morningEnd}` },
+        ];
+        if (morningRest) {
+            rows.push({
+                label: morningRest.label,
+                time: formatRestBreakTime(morningRest),
+                kind: "break",
+            });
+        }
+        rows.push(lunchRow);
+        rows.push({ label: "Tarde", time: `${user.lunchEnd} – ${end}` });
+        if (afternoonRest) {
+            rows.push({
+                label: afternoonRest.label,
+                time: formatRestBreakTime(afternoonRest),
+                kind: "break",
+            });
+        }
+        return rows;
+    };
+
+    const sections: ProfileScheduleSection[] = [];
 
     if (friEnd === user.workEnd) {
-        weekdays.push({ label: "Tarde (L–V)", time: `${user.lunchEnd} – ${user.workEnd}` });
+        sections.push({
+            heading: "Lunes a viernes",
+            rows: dayDetailRows(user.workEnd),
+        });
     } else {
-        weekdays.push({ label: "Tarde (L–J)", time: `${user.lunchEnd} – ${user.workEnd}` });
-        weekdays.push({ label: "Tarde (V)", time: `${user.lunchEnd} – ${friEnd}` });
-    }
-
-    if (afternoonRest) {
-        weekdays.push({
-            label: afternoonRest.label,
-            time: formatRestBreakTime(afternoonRest),
-            kind: "break",
+        // Exact flyer structure: Lunes a Jueves, then Viernes
+        sections.push({
+            heading: "Lunes a jueves",
+            rows: [
+                { label: "Hora", time: `${user.workStart} – ${user.workEnd}` },
+                lunchRow,
+            ],
+        });
+        sections.push({
+            heading: "Viernes",
+            rows: [
+                { label: "Hora", time: `${user.workStart} – ${friEnd}` },
+                lunchRow,
+            ],
         });
     }
 
-    return {
-        weekdays,
-        saturday:
-            user.satWorkStart && user.satWorkEnd
-                ? { label: "Sábado", time: `${user.satWorkStart} – ${user.satWorkEnd}` }
-                : null,
-    };
+    if (user.satWorkStart && user.satWorkEnd) {
+        sections.push({
+            heading: "Sábado",
+            rows: [{ label: "Hora", time: `${user.satWorkStart} – ${user.satWorkEnd}` }],
+        });
+    }
+
+    return { sections };
 }
 
 export function getNowInBogota(): Date {

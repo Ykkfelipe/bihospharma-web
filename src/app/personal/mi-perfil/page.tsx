@@ -12,14 +12,18 @@ type ScheduleBlock = {
   kind?: "break";
 };
 
+type ScheduleSection = {
+  heading: string;
+  rows: ScheduleBlock[];
+};
+
 type Profile = {
   name: string;
   email: string;
   roleLabel: string;
   area: string | null;
   scheduleBlocks?: {
-    weekdays: ScheduleBlock[];
-    saturday: ScheduleBlock | null;
+    sections: ScheduleSection[];
   };
   createdAt: string;
 };
@@ -35,29 +39,28 @@ function getInitials(name?: string | null) {
 }
 
 function ScheduleDisplay({ blocks }: { blocks: Profile["scheduleBlocks"] }) {
-  if (!blocks) return <p className="portal-profile-muted">—</p>;
+  if (!blocks?.sections?.length) return <p className="portal-profile-muted">—</p>;
 
   return (
     <div className="portal-schedule-blocks">
-      <p className="portal-schedule-heading">Lunes a viernes</p>
-      {blocks.weekdays.map((row) => (
-        <div
-          key={row.label}
-          className={`portal-schedule-row${row.kind === "break" ? " portal-schedule-row--break" : ""}`}
-        >
-          <span className="portal-schedule-row-label">{row.label}</span>
-          <span className="portal-schedule-row-time">{row.time}</span>
+      {blocks.sections.map((section, index) => (
+        <div key={section.heading}>
+          <p
+            className={`portal-schedule-heading${index > 0 ? " portal-schedule-heading--spaced" : ""}`}
+          >
+            {section.heading}
+          </p>
+          {section.rows.map((row) => (
+            <div
+              key={`${section.heading}-${row.label}`}
+              className={`portal-schedule-row${row.kind === "break" ? " portal-schedule-row--break" : ""}`}
+            >
+              <span className="portal-schedule-row-label">{row.label}</span>
+              <span className="portal-schedule-row-time">{row.time}</span>
+            </div>
+          ))}
         </div>
       ))}
-      {blocks.saturday && (
-        <>
-          <p className="portal-schedule-heading portal-schedule-heading--spaced">{blocks.saturday.label}</p>
-          <div className="portal-schedule-row">
-            <span className="portal-schedule-row-label">Jornada</span>
-            <span className="portal-schedule-row-time">{blocks.saturday.time}</span>
-          </div>
-        </>
-      )}
     </div>
   );
 }
