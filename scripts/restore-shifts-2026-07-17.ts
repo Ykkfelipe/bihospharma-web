@@ -13,7 +13,7 @@ const DATE = "2026-07-17";
 const SCHEDULED_START = new Date(`${DATE}T08:00:00-05:00`);
 const NOTE = "Restaurado automáticamente tras incidente de BD (deploy 2026-07-17).";
 
-/** Empleados que marcaron el 16 y deben aparecer el 17 (excepto ya restaurados). */
+/** Personal real a restaurar para el 17 (roster habitual + resto del equipo). */
 const RESTORE_EMAILS = [
     "juan.solano@bihospharma.com",
     "johanna.ruiz@bihospharma.com",
@@ -23,6 +23,13 @@ const RESTORE_EMAILS = [
     "yaneth.alfonso@bihospharma.com",
     "julian.villamil@bihospharma.com",
     "mariaangelicaar02@gmail.com",
+    "duglas.cifuentes@bihospharma.com",
+    "luis.bello@bihospharma.com",
+    "amanda.bonilla@bihospharma.com",
+    "carolinabonillarozo@hotmail.com",
+    "alexander.solano@bihospharma.com",
+    "maria.montano@bihospharma.com",
+    "paola.rodriguez@bihospharma.com",
 ];
 
 async function main() {
