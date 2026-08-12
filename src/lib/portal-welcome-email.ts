@@ -28,41 +28,44 @@ export function buildAccountCreatedEmailHtml(input: {
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
                         <div style="background: linear-gradient(135deg, #0a2540, #0f4c8a); padding: 30px; border-radius: 16px 16px 0 0; text-align: center;">
                             <h1 style="color: white; margin: 0; font-size: 20px;">Bihospharma IPS</h1>
-                            <p style="color: #b6d9f7; margin: 5px 0 0; font-size: 14px;">Cuenta del portal corporativo</p>
+                            <p style="color: #b6d9f7; margin: 5px 0 0; font-size: 14px;">Notificación de acceso al portal corporativo</p>
                         </div>
                         <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 16px 16px; border: 1px solid #e5e7eb; border-top: none;">
                             <p style="color: #374151; font-size: 15px; line-height: 1.6;">
-                                Hola <strong>${escapeHtml(name)}</strong>,
+                                Estimado(a) <strong>${escapeHtml(name)}</strong>:
                             </p>
                             <p style="color: #374151; font-size: 15px; line-height: 1.6;">
-                                La creación de tu cuenta en el portal corporativo de Bihospharma IPS ya está lista.
+                                Se informa que su cuenta de acceso al portal corporativo de Bihospharma IPS ha sido creada exitosamente.
                             </p>
                             <p style="color: #374151; font-size: 15px; line-height: 1.6; margin-bottom: 8px;">
-                                Puedes ingresar con estos datos temporales:
+                                A continuación se detallan las credenciales temporales de ingreso:
                             </p>
                             <div style="background: #ffffff; border: 1px solid #d1d5db; border-radius: 10px; padding: 16px 18px; margin: 12px 0 20px;">
-                                <p style="color: #6b7280; font-size: 12px; margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.04em;">Correo</p>
+                                <p style="color: #6b7280; font-size: 12px; margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.04em;">Usuario (correo electrónico)</p>
                                 <p style="color: #111827; font-size: 15px; margin: 0 0 14px; font-weight: 600;">${escapeHtml(email)}</p>
                                 <p style="color: #6b7280; font-size: 12px; margin: 0 0 6px; text-transform: uppercase; letter-spacing: 0.04em;">Contraseña temporal</p>
                                 <p style="color: #111827; font-size: 15px; margin: 0; font-weight: 600; font-family: Consolas, Monaco, monospace;">${escapeHtml(temporaryPassword)}</p>
                             </div>
                             <p style="color: #374151; font-size: 15px; line-height: 1.6;">
-                                Por seguridad, te recomendamos crear tu propia contraseña ahora mismo:
+                                Por políticas de seguridad, debe establecer una contraseña personal antes de continuar. Utilice el siguiente enlace:
                             </p>
                             <div style="text-align: center; margin: 25px 0;">
                                 <a href="${resetLink}" style="background: #0f4c8a; color: white; padding: 12px 30px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 14px; display: inline-block;">
-                                    Crear mi contraseña
+                                    Establecer contraseña
                                 </a>
                             </div>
                             <p style="color: #6b7280; font-size: 13px; line-height: 1.5;">
-                                Este enlace para crear tu contraseña expira en <strong>7 días</strong>.
-                                También puedes iniciar sesión con la contraseña temporal en
-                                <a href="${loginUrl}" style="color: #0f4c8a;">${loginUrl}</a>
-                                y luego usar «Olvidé mi contraseña» si lo necesitas.
+                                El enlace de establecimiento de contraseña tiene una vigencia de <strong>7 días</strong>.
+                                El acceso al portal se encuentra disponible en
+                                <a href="${loginUrl}" style="color: #0f4c8a;">${loginUrl}</a>.
+                                Si el enlace expira, podrá solicitar uno nuevo mediante la opción «Olvidé mi contraseña» en la pantalla de inicio de sesión.
+                            </p>
+                            <p style="color: #6b7280; font-size: 13px; line-height: 1.5; margin-top: 18px;">
+                                Este es un mensaje automático del sistema. Por favor no responda a este correo.
                             </p>
                             <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;" />
                             <p style="color: #9ca3af; font-size: 11px; text-align: center;">
-                                Bihospharma IPS — Acceso Corporativo
+                                Bihospharma IPS — Portal Corporativo
                             </p>
                         </div>
                     </div>
@@ -119,7 +122,7 @@ export async function sendAccountCreatedEmail(
     const info = await transporter.sendMail({
         from: `"Bihospharma IPS" <${process.env.SMTP_USER}>`,
         to,
-        subject: "Tu cuenta del portal ya está lista — Bihospharma IPS",
+        subject: "Cuenta de acceso creada — Portal Corporativo Bihospharma IPS",
         html,
     });
 
