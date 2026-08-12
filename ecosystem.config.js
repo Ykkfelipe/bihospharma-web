@@ -40,6 +40,10 @@ const sharedEnv = {
   REQUEST_TIMEOUT_MS: prodEnv.REQUEST_TIMEOUT_MS || '30000',
   NODE_OPTIONS: prodEnv.NODE_OPTIONS || '--max-old-space-size=768',
   REBUILD_ON_FAILURE: prodEnv.REBUILD_ON_FAILURE || 'false',
+  SMTP_HOST: prodEnv.SMTP_HOST,
+  SMTP_PORT: prodEnv.SMTP_PORT,
+  SMTP_USER: prodEnv.SMTP_USER,
+  SMTP_PASS: prodEnv.SMTP_PASS,
 };
 
 module.exports = {

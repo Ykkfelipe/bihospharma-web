@@ -12,9 +12,11 @@ dotenv.config();
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import { MARIA_ANGELICA_EMAIL, MARIA_ANGELICA_SCHEDULE, STANDARD_SCHEDULE } from "../src/lib/work-schedule";
+import { sendAccountCreatedEmail } from "../src/lib/portal-welcome-email";
 
 const prisma = new PrismaClient();
 const PASSWORD = process.env.STAFF_DEFAULT_PASSWORD || "BihosStaff2026!";
+const sendWelcome = process.env.SEND_WELCOME_EMAIL !== "0";
 
 const STAFF: Array<{
     email: string;
@@ -47,11 +49,16 @@ const STAFF: Array<{
 ];
 
 async function main() {
+    if (!process.env.NEXTAUTH_URL) {
+        process.env.NEXTAUTH_URL = "https://bihospharma.com";
+    }
+
     const passwordHash = await bcrypt.hash(PASSWORD, 10);
 
     for (const s of STAFF) {
         const existing = await prisma.user.findUnique({ where: { email: s.email } });
         const role = s.role ?? existing?.role ?? "employee";
+        const created = !existing;
 
         const scheduleFields = s.fullSchedule
             ? (() => {
@@ -95,10 +102,19 @@ async function main() {
                 autoAttendance: s.autoAttendance ?? false,
             },
         });
-        console.log(`✅ ${s.email} — ${s.name}`);
+        console.log(`✅ ${created ? "created" : "updated"} ${s.email} — ${s.name}`);
+
+        if (created && sendWelcome) {
+            const mail = await sendAccountCreatedEmail(prisma, {
+                email: s.email,
+                name: s.name,
+                temporaryPassword: PASSWORD,
+            });
+            if (mail) console.log(`   ✉️  welcome email sent`);
+        }
     }
 
-    console.log(`\nContraseña temporal para todos: ${PASSWORD}`);
+    console.log(`\nContraseña temporal para cuentas nuevas: ${PASSWORD}`);
 }
 
 main()

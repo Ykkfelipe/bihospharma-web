@@ -5,6 +5,9 @@
  *   PORTAL_TEMP_PASSWORD='YourTemp123!' node scripts/provision-portal-users.mjs
  *
  * Optional env PORTAL_USERS_JSON — array of { email, name, role? }
+ *
+ * For new staff with welcome email (temp password + set-password link), prefer:
+ *   DATABASE_URL=file:./prod.db npx tsx scripts/add-staff-batch.ts
  */
 
 import bcrypt from 'bcryptjs';
@@ -49,6 +52,7 @@ try {
     console.log('✓', u.email, existing ? (forcePassword ? '(password updated)' : '(password kept)') : '(created)');
   }
   console.log(`Done — ${users.length} user(s) ready.${forcePassword ? '' : ' Existing passwords were not changed.'}`);
+  console.log('Tip: use add-staff-batch.ts to email new accounts their temp password + setup link.');
 } finally {
   await prisma.$disconnect();
 }
