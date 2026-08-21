@@ -9,8 +9,12 @@ import {
 import { buildChatServicesBlock, CHAT_KNOWLEDGE_NOTE, CHAT_MEDICAL_RULES } from '@/lib/chatKnowledge';
 import { CONTACT } from '@/lib/contactInfo';
 
-const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
-const MODEL = 'llama-3.1-8b-instant';
+/** Azure AI Foundry OpenAI-compatible base, e.g. https://….services.ai.azure.com/openai/v1 */
+function azureChatCompletionsUrl(base: string): string {
+  const trimmed = base.replace(/\/+$/, '');
+  if (trimmed.endsWith('/chat/completions')) return trimmed;
+  return `${trimmed}/chat/completions`;
+}
 
 const MOBILE = CONTACT.phoneMobile;
 
@@ -90,8 +94,10 @@ function checkRateLimit(ip: string): 'ok' | 'hourly' | 'burst' | 'fast' {
 }
 
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) {
+  const apiKey = process.env.AZURE_AI_API_KEY;
+  const endpoint = process.env.AZURE_AI_ENDPOINT;
+  const deployment = process.env.AZURE_AI_DEPLOYMENT || 'Phi-4-mini-instruct';
+  if (!apiKey || !endpoint) {
     return NextResponse.json(
       { error: 'El asistente no está configurado. Contacta a info@bihospharma.com' },
       { status: 503 }
@@ -152,16 +158,22 @@ export async function POST(req: NextRequest) {
     .slice(-8);
 
   try {
-    const res = await fetch(GROQ_URL, {
+    // Phi-4-mini often ignores `system` role on this Azure endpoint; prime via user+assistant instead.
+    const res = await fetch(azureChatCompletionsUrl(endpoint), {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: deployment,
         messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: SYSTEM_PROMPT },
+          {
+            role: 'assistant',
+            content:
+              'Entendido. Soy el asistente de Bihospharma en este sitio: responderé en español, breve, con los datos de arriba (horario, sedes, WhatsApp) y sin inventar.',
+          },
           ...sanitizedHistory.map((t) => ({ role: t.role, content: t.content.trim() })),
           { role: 'user', content: message },
         ],
@@ -172,7 +184,7 @@ export async function POST(req: NextRequest) {
 
     if (!res.ok) {
       const err = await res.text();
-      console.error('[chat] Groq error:', res.status, err);
+      console.error('[chat] Azure AI error:', res.status, err);
       return NextResponse.json(
         { error: 'No pudimos procesar tu consulta. Intenta de nuevo o contáctanos directamente.' },
         { status: 502 }

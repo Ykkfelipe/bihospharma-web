@@ -74,7 +74,7 @@ remote "cd ~/bihospharma-web && touch .env.production && chmod 600 .env.producti
 if [ -f "$LOCAL_APP_DIR/.env.local" ]; then
   echo "→ Ensuring server .env.production has chat vars (if missing)…"
   remote "touch ~/bihospharma-web/.env.production && chmod 600 ~/bihospharma-web/.env.production"
-  for key in GROQ_API_KEY NEXT_PUBLIC_ENABLE_CHAT NEXT_PUBLIC_SITE_URL; do
+  for key in AZURE_AI_ENDPOINT AZURE_AI_API_KEY AZURE_AI_DEPLOYMENT NEXT_PUBLIC_ENABLE_CHAT NEXT_PUBLIC_SITE_URL; do
     if grep -q "^${key}=" "$LOCAL_APP_DIR/.env.local" 2>/dev/null; then
       if ! remote "grep -q '^${key}=' ~/bihospharma-web/.env.production 2>/dev/null"; then
         grep "^${key}=" "$LOCAL_APP_DIR/.env.local" | remote "cat >> ~/bihospharma-web/.env.production"
