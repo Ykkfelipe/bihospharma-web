@@ -18,6 +18,42 @@ const QUICK_QUESTIONS = [
   '¿Cómo solicito una cita?',
 ];
 
+function fallbackChatError(): string {
+  return `No pudimos responder. Escríbenos por WhatsApp o llámanos al ${CONTACT.phoneMobile}.`;
+}
+
+/** Safari throws this English TypeError when response.json() gets HTML/plain text instead of JSON. */
+function isTechnicalClientError(message: string): boolean {
+  const lower = message.toLowerCase();
+  return (
+    lower.includes('did not match the expected pattern') ||
+    lower.includes('unexpected token') ||
+    lower.includes('unexpected end of json') ||
+    lower.includes('failed to fetch') ||
+    lower.includes('networkerror') ||
+    lower.includes('load failed')
+  );
+}
+
+function userFacingChatError(err: unknown): string {
+  if (!(err instanceof Error) || !err.message.trim()) return fallbackChatError();
+  if (isTechnicalClientError(err.message)) return fallbackChatError();
+  return err.message;
+}
+
+async function readChatResponse(res: Response): Promise<{ reply?: string; error?: string }> {
+  const raw = await res.text();
+  if (!raw.trim()) {
+    throw new Error(fallbackChatError());
+  }
+  try {
+    return JSON.parse(raw) as { reply?: string; error?: string };
+  } catch {
+    // Non-JSON (nginx HTML, timeout page, etc.) — never surface Safari's pattern error.
+    throw new Error(fallbackChatError());
+  }
+}
+
 function CloseIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -87,18 +123,17 @@ export default function ChatWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: text, history }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error ?? 'Error');
-      setMessages((m) => [...m, { role: 'assistant', content: data.reply }]);
+      const data = await readChatResponse(res);
+      if (!res.ok) throw new Error(data.error?.trim() || fallbackChatError());
+      const reply = data.reply?.trim();
+      if (!reply) throw new Error(fallbackChatError());
+      setMessages((m) => [...m, { role: 'assistant', content: reply }]);
     } catch (err) {
       setMessages((m) => [
         ...m,
         {
           role: 'assistant',
-          content:
-            err instanceof Error
-              ? err.message
-              : `No pudimos responder. Escríbenos por WhatsApp o llámanos al ${CONTACT.phoneMobile}.`,
+          content: userFacingChatError(err),
         },
       ]);
     } finally {
