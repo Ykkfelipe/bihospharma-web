@@ -6,6 +6,7 @@ import {
   isAllowedChatOrigin,
   validateChatMessage,
 } from '@/lib/chatGuardrails';
+import { matchFaqReply } from '@/lib/chatFaq';
 import { buildChatServicesBlock, CHAT_KNOWLEDGE_NOTE, CHAT_MEDICAL_RULES } from '@/lib/chatKnowledge';
 import { CONTACT } from '@/lib/contactInfo';
 
@@ -14,6 +15,62 @@ function azureChatCompletionsUrl(base: string): string {
   const trimmed = base.replace(/\/+$/, '');
   if (trimmed.endsWith('/chat/completions')) return trimmed;
   return `${trimmed}/chat/completions`;
+}
+
+const AZURE_TIMEOUT_MS = Number(process.env.CHAT_AZURE_TIMEOUT_MS ?? 18_000);
+const AZURE_RETRIES = Number(process.env.CHAT_AZURE_RETRIES ?? 1);
+
+async function fetchAzureChat(
+  url: string,
+  apiKey: string,
+  body: unknown
+): Promise<{ ok: true; data: { choices?: { message?: { content?: string } }[] } } | { ok: false; status: number; err: string }> {
+  let lastStatus = 0;
+  let lastErr = 'sin respuesta';
+
+  for (let attempt = 0; attempt <= AZURE_RETRIES; attempt++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), AZURE_TIMEOUT_MS);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body),
+        signal: controller.signal,
+      });
+
+      if (!res.ok) {
+        lastStatus = res.status;
+        lastErr = await res.text();
+        // Retry transient upstream failures
+        if ((res.status === 429 || res.status >= 500) && attempt < AZURE_RETRIES) {
+          await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+          continue;
+        }
+        return { ok: false, status: lastStatus, err: lastErr };
+      }
+
+      const data = (await res.json()) as {
+        choices?: { message?: { content?: string } }[];
+      };
+      return { ok: true, data };
+    } catch (err) {
+      lastStatus = 504;
+      lastErr = err instanceof Error ? err.message : 'error de red';
+      if (attempt < AZURE_RETRIES) {
+        await new Promise((r) => setTimeout(r, 400 * (attempt + 1)));
+        continue;
+      }
+      return { ok: false, status: lastStatus, err: lastErr };
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  return { ok: false, status: lastStatus, err: lastErr };
 }
 
 const MOBILE = CONTACT.phoneMobile;
@@ -41,8 +98,8 @@ DATOS DE LA IPS:
 - Correo: ${CONTACT.email}
 - WhatsApp y llamadas (citas): ${MOBILE}
 - PBX: 3103158806 Opción 1
-- Yopal: Tranversal 18 #7-05 Piso 5, Edificio Mont Black
-- Bogotá: Cra 25 No 4A-14
+- Yopal: ${CONTACT.locations[0].lines.join(', ')}
+- Bogotá: ${CONTACT.locations[1].lines.join(', ')}
 - Horario: Lun-Vie 7am-12pm y 2pm-5pm; Sáb 7am-1pm
 
 SERVICIOS DETALLADOS (usa esto al preguntar por una especialidad):
@@ -143,13 +200,23 @@ export async function POST(req: NextRequest) {
   }
 
   const message = body.message?.trim();
-  const validation = message ? validateChatMessage(message) : { ok: false as const, reason: 'Mensaje vacío.' };
+  if (!message) {
+    return NextResponse.json({ error: 'Mensaje vacío.' }, { status: 400 });
+  }
+  const validation = validateChatMessage(message);
   if (!validation.ok) {
     const isGuard = validation.reason === GUARD_REFUSAL;
     return NextResponse.json(
       isGuard ? { reply: validation.reason } : { error: validation.reason },
       { status: isGuard ? 200 : 400 }
     );
+  }
+
+  // Common FAQ (sedes, horarios, citas, servicios): answer locally so the widget
+  // stays reliable even when Azure is slow or returns non-JSON upstream errors.
+  const faqReply = matchFaqReply(message);
+  if (faqReply) {
+    return NextResponse.json({ reply: faqReply });
   }
 
   const history: ChatTurn[] = Array.isArray(body.history) ? body.history : [];
@@ -165,48 +232,49 @@ export async function POST(req: NextRequest) {
 
   try {
     // Phi-4-mini often ignores `system` role on this Azure endpoint; prime via user+assistant instead.
-    const res = await fetch(azureChatCompletionsUrl(endpoint), {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: deployment,
-        messages: [
-          { role: 'user', content: SYSTEM_PROMPT },
-          {
-            role: 'assistant',
-            content:
-              'Entendido. Soy el asistente de Bihospharma en este sitio. Responderé en español, breve y natural. En saludos simples no doy teléfono ni WhatsApp; solo cuando pregunten por citas o contacto. No invento ubicaciones de botones ni digo "en Bihospharma IPS".',
-          },
-          ...sanitizedHistory.map((t) => ({ role: t.role, content: t.content.trim() })),
-          { role: 'user', content: message },
-        ],
-        max_tokens: 280,
-        temperature: 0.25,
-      }),
+    const azure = await fetchAzureChat(azureChatCompletionsUrl(endpoint), apiKey, {
+      model: deployment,
+      messages: [
+        { role: 'user', content: SYSTEM_PROMPT },
+        {
+          role: 'assistant',
+          content:
+            'Entendido. Soy el asistente de Bihospharma en este sitio. Responderé en español, breve y natural. En saludos simples no doy teléfono ni WhatsApp; solo cuando pregunten por citas o contacto. No invento ubicaciones de botones ni digo "en Bihospharma IPS".',
+        },
+        ...sanitizedHistory.map((t) => ({ role: t.role, content: t.content.trim() })),
+        { role: 'user', content: message },
+      ],
+      max_tokens: 280,
+      temperature: 0.25,
     });
 
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('[chat] Azure AI error:', res.status, err);
+    if (!azure.ok) {
+      console.error('[chat] Azure AI error:', azure.status, azure.err);
       return NextResponse.json(
-        { error: 'No pudimos procesar tu consulta. Intenta de nuevo o contáctanos directamente.' },
+        {
+          error: `No pudimos procesar tu consulta. Escríbenos por WhatsApp o llámanos al ${MOBILE}.`,
+        },
         { status: 502 }
       );
     }
 
-    const data = await res.json();
-    const reply = data.choices?.[0]?.message?.content?.trim();
+    const reply = azure.data.choices?.[0]?.message?.content?.trim();
 
     if (!reply) {
-      return NextResponse.json({ error: 'Respuesta vacía del asistente' }, { status: 502 });
+      return NextResponse.json(
+        {
+          error: `No pudimos procesar tu consulta. Escríbenos por WhatsApp o llámanos al ${MOBILE}.`,
+        },
+        { status: 502 }
+      );
     }
 
     return NextResponse.json({ reply });
   } catch (err) {
     console.error('[chat] error:', err);
-    return NextResponse.json({ error: 'Error de conexión. Intenta más tarde.' }, { status: 500 });
+    return NextResponse.json(
+      { error: `Error de conexión. Escríbenos por WhatsApp o llámanos al ${MOBILE}.` },
+      { status: 500 }
+    );
   }
 }

@@ -69,6 +69,7 @@ export function isAllowedChatOrigin(req: NextRequest): boolean {
     'localhost',
     '127.0.0.1',
     'bihospharma.com',
+    'www.bihospharma.com',
   ]);
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXTAUTH_URL;

@@ -9,7 +9,7 @@ export const CONTACT = {
   locations: [
     {
       name: 'YOPAL (CASANARE)',
-      lines: ['Tranversal 18 #7-05 Piso 5', 'Edificio Mont Black'],
+      lines: ['Transversal 18 #7-05 Piso 5', 'Edificio Mont Black'],
     },
     {
       name: 'BOGOTÁ D.C',

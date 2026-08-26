@@ -31,7 +31,9 @@ function isTechnicalClientError(message: string): boolean {
     lower.includes('unexpected end of json') ||
     lower.includes('failed to fetch') ||
     lower.includes('networkerror') ||
-    lower.includes('load failed')
+    lower.includes('load failed') ||
+    lower.includes('aborted') ||
+    lower.includes('abort')
   );
 }
 
@@ -118,11 +120,19 @@ export default function ChatWidget() {
     const history = messages.slice(1).map((m) => ({ role: m.role, content: m.content }));
 
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, history }),
-      });
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 25_000);
+      let res: Response;
+      try {
+        res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text, history }),
+          signal: controller.signal,
+        });
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
       const data = await readChatResponse(res);
       if (!res.ok) throw new Error(data.error?.trim() || fallbackChatError());
       const reply = data.reply?.trim();
