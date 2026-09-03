@@ -34,8 +34,8 @@ jobs:
           export NEXT_PUBLIC_ENABLE_CHAT="${NEXT_PUBLIC_ENABLE_CHAT:-true}"
           npm ci --prefer-offline --no-audit --legacy-peer-deps
           npm run build
-          chmod +x scripts/deploy-on-ec2.sh
-          bash scripts/deploy-on-ec2.sh
+          chmod +x scripts/deploy-built-local-on-ec2.sh scripts/deploy-on-ec2.sh
+          bash scripts/deploy-built-local-on-ec2.sh
 
       - name: Verify site
         run: |
