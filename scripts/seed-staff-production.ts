@@ -46,6 +46,7 @@ const STAFF: Array<{
     { email: "maria.montano@bihospharma.com", name: "MARIA MONTANO" },
     { email: "paola.rodriguez@bihospharma.com", name: "PAOLA RODRIGUEZ" },
     { email: "martha.avella@bihospharma.com", name: "MARTHA ROCIO AVELLA ROJAS" },
+    { email: "gustavo.aguilera@bihospharma.com", name: "GUSTAVO ADOLFO AGUILERA RINCON" },
 ];
 
 async function main() {

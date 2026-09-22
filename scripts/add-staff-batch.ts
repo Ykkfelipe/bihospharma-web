@@ -15,7 +15,7 @@ const prisma = new PrismaClient();
 const PASSWORD = process.env.STAFF_DEFAULT_PASSWORD || "BihosStaff2026!";
 
 const BATCH = [
-    { email: "martha.avella@bihospharma.com", name: "MARTHA ROCIO AVELLA ROJAS" },
+    { email: "gustavo.aguilera@bihospharma.com", name: "GUSTAVO ADOLFO AGUILERA RINCON" },
 ];
 
 async function loadEnv() {
